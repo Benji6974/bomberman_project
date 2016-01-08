@@ -89,5 +89,6 @@ int main ( int argc, char** argv )
 
     // all is well ;)
     printf("Exited cleanly\n");
+    printf("plop\n");
     return 0;
 }
