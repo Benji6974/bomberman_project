@@ -21,7 +21,7 @@ int main ( int argc, char** argv )
     SDL_WM_SetCaption("Bomberman", NULL);
 
     // create a new window
-    SDL_Surface* screen = SDL_SetVideoMode(640, 480, 16,
+    SDL_Surface* screen = SDL_SetVideoMode(800, 600, 16,
                                            SDL_HWSURFACE|SDL_DOUBLEBUF);
     if ( !screen )
     {
@@ -44,7 +44,7 @@ int main ( int argc, char** argv )
 
     // program main loop
     int done = 0;
-    int i = 0;
+    SDL_Rect pos;
     while (!done)
     {
         // message processing loop
@@ -65,8 +65,14 @@ int main ( int argc, char** argv )
                     // exit if ESCAPE is pressed
                     if (event.key.keysym.sym == SDLK_ESCAPE)
                         done = 1;
+                    else if(event.key.keysym.sym == SDLK_LEFT)
+                        pos.x -= 10;
                     break;
                 }
+            case SDL_MOUSEMOTION:
+                pos.x = event.motion.x;
+                pos.y = event.motion.y;
+                break;
             } // end switch
         } // end of message processing
 
@@ -76,12 +82,13 @@ int main ( int argc, char** argv )
         SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, 0, 0, 0));
 
         // draw bitmap
-        SDL_BlitSurface(bmp, 0, screen, &dstrect);
+        SDL_BlitSurface(bmp, 0, screen, &pos);
 
         // DRAWING ENDS HERE
 
         // finally, update the screen :)
         SDL_Flip(screen);
+        SDL_Delay(15);
     } // end main loop
 
     // free loaded bitmap
@@ -89,6 +96,5 @@ int main ( int argc, char** argv )
 
     // all is well ;)
     printf("Exited cleanly\n");
-    printf("plop\n");
     return 0;
 }
