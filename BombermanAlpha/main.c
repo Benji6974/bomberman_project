@@ -96,5 +96,7 @@ int main ( int argc, char** argv )
 
     // all is well ;)
     printf("Exited cleanly\n");
+    printf("plop2\n");
+    printf("plop3\n");
     return 0;
 }
