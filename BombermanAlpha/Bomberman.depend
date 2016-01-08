@@ -1,0 +1,12 @@
+# depslib dependency file v1.0
+1452259127 source:/home/tp-home007/bdaujat/Documents/Bomberman/Bomberman/main.cpp
+	<cstdlib>
+	<stdlib.h>
+	<SDL/SDL.h>
+
+1452263427 source:/home/tp-home007/bdaujat/Documents/Bomberman/Bomberman/main.c
+	<stdlib.h>
+	<SDL/SDL.h>
+
+1452265425 source:/home/tp-home007/bdaujat/Documents/Bomberman/Bomberman/jeu.c
+
