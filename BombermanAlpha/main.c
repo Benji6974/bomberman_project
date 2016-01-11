@@ -1,102 +1,35 @@
 #include <stdlib.h>
-#include <SDL/SDL.h>
+#include <stdio.h>
 
-int main ( int argc, char** argv )
+#include <SDL.h>
+
+int main(int agrc, char** argv)
 {
-    // initialize SDL video
-    if ( SDL_Init( SDL_INIT_VIDEO ) < 0 )
-    {
-        printf( "Unable to init SDL: %s\n", SDL_GetError() );
-        return 1;
-    }
-
-    // make sure SDL cleans up before exit
-    atexit(SDL_Quit);
+    SDL_Init(SDL_INIT_VIDEO);
 
     SDL_version version;
     SDL_VERSION(&version)
 
-    printf("Version SDL: %d.%d.%d\n", version.major, version.minor, version.patch);
+    SDL_Window *fenetre = SDL_CreateWindow("SDL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 320, SDL_WINDOW_SHOWN);
 
-    SDL_WM_SetCaption("Bomberman", NULL);
+    SDL_Renderer *renderer = SDL_CreateRenderer(fenetre, -1, 0);
 
-    // create a new window
-    SDL_Surface* screen = SDL_SetVideoMode(800, 600, 16,
-                                           SDL_HWSURFACE|SDL_DOUBLEBUF);
-    if ( !screen )
+    char message[50];
+    sprintf(message, "Version SDL: %d.%d.%d", version.major, version.minor, version.patch);
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "SDL initialisee", message, fenetre);
+
+    int stop = 0;
+    SDL_Event event;
+    while(!stop)
     {
-        printf("Unable to set 640x480 video: %s\n", SDL_GetError());
-        return 1;
+        SDL_PollEvent(&event);
+        if(event.window.event == SDL_WINDOWEVENT_CLOSE)
+            stop = 1;
+
+
     }
 
-    // load an image
-    SDL_Surface* bmp = SDL_LoadBMP("bomberman.bmp");
-    if (!bmp)
-    {
-        printf("Unable to load bitmap: %s\n", SDL_GetError());
-        return 1;
-    }
-
-    // centre the bitmap on screen
-    SDL_Rect dstrect;
-    dstrect.x = (screen->w - bmp->w) / 2;
-    dstrect.y = (screen->h - bmp->h) / 2;
-
-    // program main loop
-    int done = 0;
-    SDL_Rect pos;
-    while (!done)
-    {
-        // message processing loop
-        SDL_Event event;
-        while (SDL_PollEvent(&event))
-        {
-            // check for messages
-            switch (event.type)
-            {
-                // exit if the window is closed
-            case SDL_QUIT:
-                done = 1;
-                break;
-
-                // check for keypresses
-            case SDL_KEYDOWN:
-                {
-                    // exit if ESCAPE is pressed
-                    if (event.key.keysym.sym == SDLK_ESCAPE)
-                        done = 1;
-                    else if(event.key.keysym.sym == SDLK_LEFT)
-                        pos.x -= 10;
-                    break;
-                }
-            case SDL_MOUSEMOTION:
-                pos.x = event.motion.x;
-                pos.y = event.motion.y;
-                break;
-            } // end switch
-        } // end of message processing
-
-        // DRAWING STARTS HERE
-
-        // clear screen
-        SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, 0, 0, 0));
-
-        // draw bitmap
-        SDL_BlitSurface(bmp, 0, screen, &pos);
-
-        // DRAWING ENDS HERE
-
-        // finally, update the screen :)
-        SDL_Flip(screen);
-        SDL_Delay(15);
-    } // end main loop
-
-    // free loaded bitmap
-    SDL_FreeSurface(bmp);
-
-    // all is well ;)
-    printf("Exited cleanly\n");
-    printf("plop2\n");
-    printf("plop3\n");
+    SDL_DestroyWindow(fenetre);
+    SDL_Quit();
     return 0;
 }
