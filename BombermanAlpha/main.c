@@ -12,6 +12,7 @@ int main(int agrc, char** argv)
 
     SDL_Window *fenetre = SDL_CreateWindow("SDL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 320, SDL_WINDOW_SHOWN);
 
+
     SDL_Renderer *renderer = SDL_CreateRenderer(fenetre, -1, 0);
 
     char message[50];
