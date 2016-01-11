@@ -10,9 +10,11 @@
 
 1452265425 source:/home/tp-home007/bdaujat/Documents/Bomberman/Bomberman/jeu.c
 
-1452501368 source:c:\users\benji\documents\bomberman\trunk\bombermanalpha\jeu.c
+1452514007 source:c:\users\benji\documents\bomberman\trunk\bombermanalpha\jeu.c
+	<stdlib.h>
+	<stdio.h>
 
-1452502329 source:c:\users\benji\documents\bomberman\trunk\bombermanalpha\main.c
+1452515523 source:c:\users\benji\documents\bomberman\trunk\bombermanalpha\main.c
 	<stdlib.h>
 	<stdio.h>
 	<SDL.h>
