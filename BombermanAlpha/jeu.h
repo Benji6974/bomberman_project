@@ -36,6 +36,10 @@ int time;
 Tile** table;
 }Game;
 
-int init_jeu();
+void init_tile();
+void init_bomb();
+void init_player();
+int init_game();
+void affiche_jeu();
 
 #endif // JEU_H
