@@ -3,23 +3,24 @@
 
 #include <SDL.h>
 
-#define graphismes 0
+#include "graphismes.h"
+
+#define graphismes 1
 
 int main(int agrc, char** argv)
 {
 
     init_jeu();
-    if (graphismes)
-    {
+
+    #if graphismes
+        /* Ceci est un test de la SDL2 */
         SDL_Init(SDL_INIT_VIDEO);
 
         SDL_version version;
         SDL_VERSION(&version)
 
-        SDL_Window *fenetre = SDL_CreateWindow("SDL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 320, SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE);
-
-
-        SDL_Renderer *renderer = SDL_CreateRenderer(fenetre, -1, 0);
+        SDL_Window *fenetre = init_fenetre("SDL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 320, SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE, 0);
+        SDL_Renderer *renderer = SDL_GetRenderer(fenetre);
 
         SDL_RendererInfo info;
         SDL_GetRenderDriverInfo(0, &info);
@@ -69,7 +70,7 @@ int main(int agrc, char** argv)
         SDL_DestroyTexture(image);
         SDL_DestroyWindow(fenetre);
         SDL_Quit();
-    }
+    #endif // graphismes
 
     return 0;
 }

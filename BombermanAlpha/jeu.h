@@ -1,39 +1,44 @@
 #ifndef JEU_H
 #define JEU_H
 
+#include "graphismes.h"
+
+typedef struct Coordonnees
+{
+    int x, y;
+}
+Coordonnees;
 
 typedef struct Player{
-    char name[256];
+    char nom[256];
     int vie;
     int score;
     int bouclier;
-    int sprite_index;
-    int sprite_no;
-    int x;
-    int y;
-}Player;
-
-typedef struct Tile{
-    int type;
-    int etat;
-    int sprite_index;
-    int sprite_no;
-}Tile;
+    Sprite sprite;
+    Coordonnees pos;
+}
+Player;
 
 typedef struct Bomb{
     int type;
     int puissance;
-    int sprite_index;
-    int sprite_no;
-    int x;
-    int y;
-}Bomb;
+    Sprite sprite;
+    Coordonnees pos;
+}
+Bomb;
+
+typedef struct Tile{
+    int type;
+    int etat;
+    Sprite sprite;
+}
+Tile;
 
 typedef struct Game{
-int type;
-Player* players;
-int time;
-Tile** table;
+    int type;
+    Player* players;
+    int time;
+    Tile** table;
 }Game;
 
 void init_tile();

@@ -35,34 +35,34 @@ int init_jeu()
         }
         printf("\n");
     }
-}*/ //marche pas
+}*/ //marche pas <- (JM) bah oui ça marche pas car Tile n'existe que dans la boucle for dans init_jeu, faudrait faire une alloc dynamique je pense
 
 void init_bomb(Bomb* b,int type, int puissance, int sprite_index, int sprite_no, int x , int y)
 {
     b->type = type;
     b->puissance = puissance;
-    b->sprite_index = sprite_index;
-    b->sprite_no = sprite_no;
-    b->x = x;
-    b->y = y;
+//    b->sprite_index = sprite_index;
+//    b->sprite_no = sprite_no;
+    b->pos.x = x;
+    b->pos.y = y;
 }
 
 void init_tile(Tile* t,int type, int etat, int sprite_index,int sprite_no)
 {
     t->type = type;
     t->etat = etat;
-    t->sprite_index = sprite_index;
-    t->sprite_no = sprite_no;
+//    t->sprite_index = sprite_index;
+//    t->sprite_no = sprite_no;
 }
 
 void init_player(Player* p ,char* name,int vie,int score, int bouclier, int sprite_index,int sprite_no,int x,int y)
 {
-    strcpy(name, p->name);
+    strcpy(name, p->nom);
     p->vie = vie;
     p->score = score;
     p->bouclier = bouclier;
-    p->sprite_index = sprite_index;
-    p->sprite_no = sprite_no;
-    p->x = x;
-    p->y = y;
+//    p->sprite_index = sprite_index;
+//    p->sprite_no = sprite_no;
+    p->pos.x = x;
+    p->pos.y = y;
 }
