@@ -5,23 +5,6 @@
 
 #define graphismes 0
 
-SDL_Texture* charger_sprite(SDL_Renderer *renderer, char *chemin)
-{
-    SDL_Texture *finale = NULL;
-    SDL_Surface *image_chargee = SDL_LoadBMP(chemin);
-    if(image_chargee != NULL)
-    {
-        finale = SDL_CreateTextureFromSurface(renderer, image_chargee);
-        if(finale == NULL)
-            printf("Erreur lors de la creation de %s\n", chemin);
-        SDL_FreeSurface(image_chargee);
-    }
-    else
-        printf("Erreur lors du chargement de %s\n", chemin);
-
-    return finale;
-}
-
 int main(int agrc, char** argv)
 {
 
@@ -42,7 +25,7 @@ int main(int agrc, char** argv)
         SDL_GetRenderDriverInfo(0, &info);
 
         char message[50];
-        sprintf(message, "Version SDL: %d.%d.%d\nDriver: %s", version.major, version.minor, version.patch, info.name);
+        sprintf(message, "Version SDL: %d.%d.%d\nMoteur de rendu: %s", version.major, version.minor, version.patch, info.name);
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "SDL initialisee", message, fenetre);
 
         SDL_Texture *image = charger_sprite(renderer, "bomberman.bmp");
