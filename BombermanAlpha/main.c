@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 
+#include "constantes.h"
 #include "graphismes.h"
 
 #define graphismes 1
@@ -10,7 +11,7 @@
 int main(int agrc, char** argv)
 {
 
-    init_jeu();
+    //init_jeu();
 
     #if graphismes
         /* Ceci est un test de la SDL2 */
@@ -19,14 +20,14 @@ int main(int agrc, char** argv)
         SDL_version version;
         SDL_VERSION(&version)
 
-        SDL_Window *fenetre = init_fenetre("SDL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 320, SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE, 0);
+        SDL_Window *fenetre = init_fenetre("SDL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN, 0);
         SDL_Renderer *renderer = SDL_GetRenderer(fenetre);
 
         SDL_RendererInfo info;
         SDL_GetRenderDriverInfo(0, &info);
 
         char message[50];
-        sprintf(message, "Version SDL: %d.%d.%d\nMoteur de rendu: %s", version.major, version.minor, version.patch, info.name);
+        sprintf(message, "Version SDL: %d.%d.%d\nMoteur de rendu: %s\nTaille de la fenetre: %d*%d\n", version.major, version.minor, version.patch, info.name, WINDOW_WIDTH, WINDOW_HEIGHT);
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "SDL initialisee", message, fenetre);
 
         SDL_Texture *image = charger_sprite(renderer, "bomberman.bmp");
@@ -41,7 +42,7 @@ int main(int agrc, char** argv)
         while(!stop)
         {
             SDL_PollEvent(&event);
-            if(event.window.event == SDL_WINDOWEVENT_CLOSE)
+            if(event.window.event == SDL_WINDOWEVENT_CLOSE || event.type == SDL_KEYDOWN)
                 stop = 1;
 
             switch(event.type)

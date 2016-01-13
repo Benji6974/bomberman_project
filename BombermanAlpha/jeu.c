@@ -7,14 +7,14 @@
 #define map_y 50
 int init_jeu()
 {
-    Tile map[map_x][map_y];
+    Tile *map[map_x][map_y];
     int i,y;
     for (i=0; i<map_x ; i++)
     {
         for (y=0; y< map_y; y++)
         {
-            Tile t;
-            init_tile(&t,0,0,0,0);
+            Tile *t = malloc(sizeof(Tile));
+            init_tile(t,0,0,0,0);
             map[i][y] = t;
         }
     }
@@ -25,7 +25,7 @@ int init_jeu()
 
 }
 
-/*void affiche_jeu(Tile*** t)
+/*void affiche_jeu(Tile** t)
 {
     for (i=0; i<map_x ; i++)
     {

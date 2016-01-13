@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "graphismes.h"
 
 SDL_Texture* charger_sprite(SDL_Renderer *renderer, char *chemin)
@@ -18,13 +19,13 @@ SDL_Texture* charger_sprite(SDL_Renderer *renderer, char *chemin)
     return finale; // on renvoie la nouvelle texture contenant l'image
 }
 
-SDL_Window* init_fenetre(char *titre, int x, int y, int l, int h, Uint32 flags_fenetre, Uint32 flags_renderer)
+SDL_Window* init_fenetre(char *titre, int x, int y, int w, int h, Uint32 flags_fenetre, Uint32 flags_renderer)
 {
     SDL_Window* fenetre = NULL;
     SDL_Renderer *renderer = NULL;
 
     /* Initialisation fenêtre */
-    fenetre = SDL_CreateWindow(titre, x, y, 640, 320, flags_fenetre);
+    fenetre = SDL_CreateWindow(titre, x, y, w, h, flags_fenetre);
     if(fenetre == NULL)
     {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Erreur", "Impossible d'instancier une fenetre.", NULL);

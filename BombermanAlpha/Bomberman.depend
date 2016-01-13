@@ -10,15 +10,17 @@
 
 1452265425 source:/home/tp-home007/bdaujat/Documents/Bomberman/Bomberman/jeu.c
 
-1452595834 source:c:\users\benji\documents\bomberman\trunk\bombermanalpha\jeu.c
+1452677959 source:c:\users\benji\documents\bomberman\trunk\bombermanalpha\jeu.c
 	<stdlib.h>
 	<stdio.h>
 	"jeu.h"
 
-1452595372 source:c:\users\benji\documents\bomberman\trunk\bombermanalpha\main.c
+1452679090 source:c:\users\benji\documents\bomberman\trunk\bombermanalpha\main.c
 	<stdlib.h>
 	<stdio.h>
 	<SDL.h>
+	"constantes.h"
+	"graphismes.h"
 
 1451764693 c:\program files (x86)\codeblocks\sdl2-2.0.4\i686-w64-mingw32\include\sdl2\sdl.h
 	"SDL_main.h"
@@ -339,9 +341,12 @@
 	"begin_code.h"
 	"close_code.h"
 
-1452513972 source:c:\users\benji\documents\bomberman\trunk\bombermanalpha\graphismes.c
+1452679357 source:c:\users\benji\documents\bomberman\trunk\bombermanalpha\graphismes.c
+	<stdio.h>
+	"graphismes.h"
 
-1452595106 c:\users\benji\documents\bomberman\trunk\bombermanalpha\jeu.h
+1452677563 c:\users\benji\documents\bomberman\trunk\bombermanalpha\jeu.h
+	"graphismes.h"
 
 1452625598 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\graphismes.c
 	"graphismes.h"
@@ -681,4 +686,9 @@
 	<stdio.h>
 	<SDL.h>
 	"graphismes.h"
+
+1452677563 c:\users\benji\documents\bomberman\trunk\bombermanalpha\graphismes.h
+	<SDL.h>
+
+1452679375 c:\users\benji\documents\bomberman\trunk\bombermanalpha\constantes.h
 
