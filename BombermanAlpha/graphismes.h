@@ -9,7 +9,7 @@
  * Attributs: - index_sprite (entier): coordonnée du tableau de sprite à la partir de laquelle récupérer les sprites
  *            - no_sprites (entier):   nombres de sprites à récupérer
  *            - frame (entier):        frame à laquelle se trouve l'animation
- *            - fps (enter):           frames par secondes de l'animation
+ *            - fps (entier):           frames par secondes de l'animation
  *            - rect (rectangle SDL):  position et taille du sprite
  */
 typedef struct Sprite{

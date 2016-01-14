@@ -29,8 +29,7 @@ Bomb;
 
 typedef struct Tile{
     int type;
-    int etat;
-    Sprite sprite;
+    int etat; /* pour les murs à plusieurs états de destruction */
 }
 Tile;
 
@@ -38,13 +37,16 @@ typedef struct Game{
     int type;
     Player* players;
     int time;
-    Tile** table;
+    Tile*** carte;
 }Game;
+
+Game* init_jeu(int type, int nb_joueurs, int temps);
 
 void init_tile();
 void init_bomb();
 void init_player();
-int init_game();
 void affiche_jeu();
+
+void detruire_jeu(Game *jeu);
 
 #endif // JEU_H

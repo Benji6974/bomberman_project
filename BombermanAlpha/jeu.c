@@ -1,28 +1,74 @@
 #include <stdlib.h>
 #include <stdio.h>
+
+#include "constantes.h"
 #include "jeu.h"
 
 
-#define map_x 50
-#define map_y 50
-int init_jeu()
+Game* init_jeu(int type, int nb_joueurs, int temps)
 {
-    Tile *map[map_x][map_y];
-    int i,y;
-    for (i=0; i<map_x ; i++)
+    Game *jeu;
+    Tile ***carte;
+    int i, j;
+
+    /* - Tableau pour tester la carte - */
+
+    int carte_data[TILE_HEIGHT][TILE_WIDTH] = {
+        {0},
+        {0, 1, 2, 1, 2, 1, 2, 1, 0, 1, 0, 1, 0, 1, 0},
+        {0, 2, 2, 2, 2, 2},
+        {2, 1, 2, 1, 2, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
+        {0},
+        {0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0},
+        {0},
+        {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
+        {0}
+    };
+
+    /* -------------------------------- */
+
+    jeu = malloc(sizeof(Game));
+
+    jeu->type = type;
+    jeu->time = temps;
+
+    /* Génération de la carte */
+    carte = (int***)malloc(MAP_HEIGHT*sizeof(Tile**)); /* tableau 2D de pointeurs sur Tiles */
+    for(i = 0; i < MAP_HEIGHT; i++)
     {
-        for (y=0; y< map_y; y++)
+        carte[i] = malloc(MAP_WIDTH*sizeof(Tile*));
+        for(j = 0; j < MAP_WIDTH; j++)
         {
-            Tile *t = malloc(sizeof(Tile));
-            init_tile(t,0,0,0,0);
-            map[i][y] = t;
+            carte[i][j] = malloc(sizeof(Tile));
+            carte[i][j]->type = carte_data[i][j];
         }
     }
-    printf("coucou");
-    //affiche_jeu(&map);
-    return 1;
 
+    jeu->carte = carte;
 
+    return jeu;
+}
+
+void detruire_jeu(Game* jeu)
+{
+    int i, j;
+
+    /* Vidage de la carte */
+    for(i = 0; i < MAP_HEIGHT; i++)
+    {
+        for(j = 0; j < MAP_WIDTH; j++)
+        {
+            free(jeu->carte[i][j]);
+        }
+        free(jeu->carte[i]);
+    }
+    free(jeu->carte);
+
+    /* Libération du tableau des joueurs */
+    /* A faire */
+
+    /* Destruction du jeu */
+    free(jeu);
 }
 
 /*void affiche_jeu(Tile** t)

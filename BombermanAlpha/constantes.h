@@ -4,8 +4,8 @@
 /* Taille de la carte et de la fenêtre */
 #define TILE_WIDTH    32
 #define TILE_HEIGHT   32
-#define MAP_WIDTH     32
-#define MAP_HEIGHT    18
+#define MAP_WIDTH     15
+#define MAP_HEIGHT    9
 #define WINDOW_WIDTH  TILE_WIDTH*MAP_WIDTH
 #define WINDOW_HEIGHT TILE_HEIGHT*MAP_HEIGHT
 
