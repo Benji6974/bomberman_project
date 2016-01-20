@@ -22,10 +22,65 @@ void affiche_carte(Tile ***carte)
     }
 }
 
+/* Verification collisions rectangle-rectangle avec le décor */
+int collision_joueur(Game *jeu, int joueur)
+{
+    int i=0, x=0, y=0, x1=0, x2=0, y1=0, y2=0;
+    const SDL_Rect pos = jeu->players[joueur]->pos;
+
+    x1 = pos.x/TILE_WIDTH;
+    y1 = pos.y/TILE_HEIGHT;
+    x2 = (pos.x + pos.w - 1)/TILE_WIDTH;
+    y2 = (pos.y + pos.h - 1)/TILE_HEIGHT;
+
+    for(x = x1; x <= x2; x++)
+    {
+        for(y = y1; y <= y2; y++)
+        {
+            if(jeu->carte[y][x]->type != 0)
+                return 1;
+        }
+    }
+
+    return 0;
+}
+
+void deplacer_joueur(Game *jeu, int joueur)
+{
+    Player *p = jeu->players[joueur];
+    int k = p->keymap_offset;
+
+    /* On déplace le joueur en fonction des touches appuyées */
+    if(jeu->touches.keys_pressed[k])
+    {
+        p->pos.y -= p->vitesse;
+        while(collision_joueur(jeu, joueur)) /* tant qu'il y a collision, on annule le déplacement de manière incrémentielle */
+            p->pos.y++;
+    }
+    if(jeu->touches.keys_pressed[k+1])
+    {
+        p->pos.y += p->vitesse;
+        while(collision_joueur(jeu, joueur))
+            p->pos.y--;
+    }
+    if(jeu->touches.keys_pressed[k+2])
+    {
+        p->pos.x -= p->vitesse;
+        while(collision_joueur(jeu, joueur))
+            p->pos.x++;
+    }
+    if(jeu->touches.keys_pressed[k+3])
+    {
+        p->pos.x += p->vitesse;
+        while(collision_joueur(jeu, joueur))
+            p->pos.x--;
+    }
+}
+
 int main(int agrc, char** argv)
 {
 
-    Game *jeu = init_jeu(0, 2, 0);
+    Game *jeu = init_jeu(0, 3, 0);
 
     affiche_carte(jeu->carte);
 
@@ -48,6 +103,7 @@ int main(int agrc, char** argv)
 
     SDL_Texture *feuille_tiles = charger_sprite(renderer, "img/tileset.bmp");
     SDL_Texture *feuille_perso = charger_sprite(renderer, "img/character_silver.bmp");
+
     SDL_Rect pos;
     pos.x = 0;
     pos.y = 0;
@@ -75,28 +131,39 @@ int main(int agrc, char** argv)
 
     int stop = 0, current_time = 0, previous_time = 0, frame_compte = 0, i, j;
     SDL_Event event;
+
+    SDL_Rect pos_pres;
+
     while(!stop)
     {
         SDL_PollEvent(&event);
         if(event.window.event == SDL_WINDOWEVENT_CLOSE)
             stop = 1;
-        int i;
-        for (i=0; i< jeu->nb_joueurs; i++)
-        {
-            maj_player(jeu,&event,jeu->players[i]);
-        }
-
-        // faire une boucle for
 
         switch(event.type)
         {
         case SDL_MOUSEMOTION:
-            pos.x = event.motion.x - pos.w/2;
-            pos.y = event.motion.y - pos.h/2;
+            /*
+            pos_pres = jeu->players[0]->pos;
+            jeu->players[0]->pos.x = event.motion.x - pos.w/2;
+            jeu->players[0]->pos.y = event.motion.y - pos.h/2;
+            if(collision_joueur(jeu, 0))
+                jeu->players[0]->pos = pos_pres;
+            */
             break;
+        case SDL_KEYUP:
+        case SDL_KEYDOWN:
+            for(i = 0; i < jeu->touches.num_keys; i++)
+            {
+                if(event.key.keysym.sym == jeu->touches.key_map[i])
+                    jeu->touches.keys_pressed[i] = (event.type == SDL_KEYDOWN) ? 1 : 0;
+            }
             break;
         }
 
+        for(i = 0; i < jeu->nb_joueurs; i++)
+            deplacer_joueur(jeu, i);
+        SDL_Delay(4);
 
 
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -169,6 +236,10 @@ int main(int agrc, char** argv)
     detruire_jeu(jeu);
     return 0;
 }
+
+
+
+/* Quel bazar!
 
 int collision(Game* jeu,Player * p)
 {
@@ -363,3 +434,5 @@ void maj_player(Game* jeu,SDL_Event* event,Player* p)
 
         }
     }
+
+*/

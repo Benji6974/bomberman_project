@@ -4,6 +4,7 @@
 #include "constantes.h"
 #include "jeu.h"
 
+int gKeys[KEYS_PER_PLAYER*3] = {SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_z, SDLK_s, SDLK_q, SDLK_d, SDLK_t, SDLK_g, SDLK_f, SDLK_h};
 
 Game* init_jeu(int type, int nb_joueurs, int temps)
 {
@@ -16,7 +17,7 @@ Game* init_jeu(int type, int nb_joueurs, int temps)
     int carte_data[TILE_HEIGHT][TILE_WIDTH] = {
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 1, 2, 1, 2, 1, 2, 1, 0, 1, 0, 1, 0, 1, 0, 1},
+        {1, 0, 0, 0, 0, 0, 1, 2, 1, 0, 1, 0, 1, 0, 1, 0, 1},
         {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
         {1, 2, 1, 2, 1, 2, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
         {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -49,17 +50,30 @@ Game* init_jeu(int type, int nb_joueurs, int temps)
 
     jeu->carte = carte;
 
+    /* Initialisation controles */
+    jeu->touches.num_keys = KEYS_PER_PLAYER*jeu->nb_joueurs;
+    jeu->touches.key_map = malloc(jeu->touches.num_keys*sizeof(int));
+    jeu->touches.keys_pressed = calloc(jeu->touches.num_keys, sizeof(int));
 
+    for(i = 0; i < jeu->touches.num_keys; i++)
+    {
+        jeu->touches.key_map[i] = gKeys[i];
+    }
 
     /* Generation du/des players*/
 
     jeu->players = (Player**)malloc(nb_joueurs*sizeof(Player*));
     for(i = 0; i < nb_joueurs; i++)
     {
-        jeu->players[i] = init_player("Joueur",i);
+        jeu->players[i] = init_player("Joueur");
+        jeu->players[i]->keymap_offset = i*KEYS_PER_PLAYER;
         if (i==1)
         {
-            jeu->players[i]->pos.y= TILE_HEIGHT*9;
+            jeu->players[i]->pos.x = TILE_WIDTH*(MAP_WIDTH-2);
+        }
+        if(i==2)
+        {
+            jeu->players[i]->pos.y = TILE_HEIGHT*9;
         }
     }
 
@@ -85,28 +99,17 @@ void detruire_jeu(Game* jeu)
     for(i = 0; i < jeu->nb_joueurs; i++)
         free(jeu->players[i]);
 
+    free(jeu->touches.key_map);
+    free(jeu->touches.keys_pressed);
+
     /* Destruction du jeu */
     free(jeu);
 }
-
-/*void affiche_jeu(Tile** t)
-{
-    for (i=0; i<map_x ; i++)
-    {
-        for (y=0; y< map_y; y++)
-        {
-            printf(t->type);
-        }
-        printf("\n");
-    }
-}*/ //marche pas <- (JM) bah oui ça marche pas car Tile n'existe que dans la boucle for dans init_jeu, faudrait faire une alloc dynamique je pense
 
 void init_bomb(Bomb* b,int type, int puissance, int sprite_index, int sprite_no, int x , int y)
 {
     b->type = type;
     b->puissance = puissance;
-//    b->sprite_index = sprite_index;
-//    b->sprite_no = sprite_no;
     b->pos.x = x;
     b->pos.y = y;
 }
@@ -115,26 +118,21 @@ void init_tile(Tile* t,int type, int etat, int sprite_index,int sprite_no)
 {
     t->type = type;
     t->etat = etat;
-//    t->sprite_index = sprite_index;
-//    t->sprite_no = sprite_no;
 }
 
-Player* init_player(char *name, int id)
+Player* init_player(char *name)
 {
     Player *p = malloc(sizeof(Player));
-    p->id = id;
     //strcpy(name, p->nom);
     p->vie = 1;
     p->score = 0;
     p->bouclier = 0;
-    p->se_deplace = 0;
-//    p->sprite_index = sprite_index;
-//    p->sprite_no = sprite_no;
+    p->vitesse = 1; /* pixels par seconde */
+
     p->pos.x = TILE_WIDTH;
     p->pos.y = TILE_HEIGHT;
     p->pos.h = HITBOX_PLAYER;
     p->pos.w = HITBOX_PLAYER;
-
 
     return p;
 }

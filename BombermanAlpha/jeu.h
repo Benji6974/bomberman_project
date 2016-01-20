@@ -9,10 +9,9 @@ typedef struct Player{
     int score;
     int bouclier;
     int direction;
-    int se_deplace;
     int vitesse;
     SDL_Rect pos;
-    int id;
+    int keymap_offset; /* Touches à assigner au joueur */
 }
 Player;
 
@@ -31,12 +30,20 @@ typedef struct Tile{
 }
 Tile;
 
+/* Structure gérant les touches claviers */
+typedef struct Controls{
+    int num_keys;      /* nombre de touches à gérer */
+    int *keys_pressed; /* touches actuellement pressées */
+    int *key_map;      /* ID de chaque touches (ex. SDLK_UP); correspond avec keys_pressed */
+}Controls;
+
 typedef struct Game{
     int type;
     Player** players;
     int nb_joueurs;
     int time;
     Tile*** carte;
+    Controls touches;
 }Game;
 
 Game* init_jeu(int type, int nb_joueurs, int temps);

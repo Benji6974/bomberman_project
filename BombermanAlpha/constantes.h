@@ -17,6 +17,10 @@
 #define TILE_INDESTRUCTIBLE_INDEX
 #define TILE_DESTRUCTIBLE_INDEX
 
+/* Autres */
+#define ACTIVER_COLLISIONS 1
+#define KEYS_PER_PLAYER 4    /* nombres de touches à assigner par joueur */
+
 enum{UP, DOWN, LEFT, RIGHT};
 
 #endif // CONSTANTES_H
