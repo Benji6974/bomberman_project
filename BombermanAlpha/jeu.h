@@ -3,7 +3,21 @@
 
 #include "graphismes.h"
 
+
+
+typedef struct Bomb{
+    int type;
+    int puissance;
+    int delai;
+    Sprite sprite;
+    SDL_Rect pos;
+    int id_proprietaire;
+    int posee;
+}
+Bomb;
+
 typedef struct Player{
+    int id_player;
     char nom[256];
     int vie;
     int score;
@@ -12,17 +26,11 @@ typedef struct Player{
     int vitesse;
     SDL_Rect pos;
     int keymap_offset; /* Touches à assigner au joueur */
+    Bomb* typebomb;
+    int nb_bomb_max;
+    int nb_bomb_jeu;
 }
 Player;
-
-typedef struct Bomb{
-    int type;
-    int puissance;
-    int delai;
-    Sprite sprite;
-    SDL_Rect pos;
-}
-Bomb;
 
 typedef struct Tile{
     int type; // faire enumeration
@@ -44,15 +52,17 @@ typedef struct Game{
     int time;
     Tile*** carte;
     Controls touches;
+    Bomb** bombs;
+    int nb_bombs;
 }Game;
 
 Game* init_jeu(int type, int nb_joueurs, int temps);
 
 int update_jeu(Game *jeu, int tick);
 
-void init_tile();
-void init_bomb();
-Player* init_player();
+void init_tile(Tile* t,int type, int etat, int sprite_index,int sprite_no);
+Bomb* init_bomb(int type, int id_player);
+Player* init_player(char *name, int id_player);
 void affiche_jeu();
 
 void detruire_jeu(Game *jeu);

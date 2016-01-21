@@ -1,10 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "constantes.h"
 #include "jeu.h"
 
-int gKeys[KEYS_PER_PLAYER*3] = {SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_z, SDLK_s, SDLK_q, SDLK_d, SDLK_t, SDLK_g, SDLK_f, SDLK_h};
+int gKeys[KEYS_PER_PLAYER*3] = {SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_RCTRL, SDLK_z, SDLK_s, SDLK_q, SDLK_d, SDLK_LCTRL, SDLK_t, SDLK_g, SDLK_f, SDLK_h, SDLK_SPACE};
 
 Game* init_jeu(int type, int nb_joueurs, int temps)
 {
@@ -13,6 +14,7 @@ Game* init_jeu(int type, int nb_joueurs, int temps)
     int i, j;
 
     /* - Tableau pour tester la carte - */
+
 
     int carte_data[TILE_HEIGHT][TILE_WIDTH] = {
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -31,6 +33,10 @@ Game* init_jeu(int type, int nb_joueurs, int temps)
     /* -------------------------------- */
 
     jeu = malloc(sizeof(Game));
+    jeu->bombs = (Bomb**)malloc(100*sizeof(Bomb*));
+    memset(jeu->bombs, NULL, 100*sizeof(Bomb*));
+
+    jeu->nb_bombs = 0;
 
     jeu->type = type;
     jeu->time = temps;
@@ -65,7 +71,7 @@ Game* init_jeu(int type, int nb_joueurs, int temps)
     jeu->players = (Player**)malloc(nb_joueurs*sizeof(Player*));
     for(i = 0; i < nb_joueurs; i++)
     {
-        jeu->players[i] = init_player("Joueur");
+        jeu->players[i] = init_player("Joueur",i);
         jeu->players[i]->keymap_offset = i*KEYS_PER_PLAYER;
         if (i==1)
         {
@@ -106,12 +112,16 @@ void detruire_jeu(Game* jeu)
     free(jeu);
 }
 
-void init_bomb(Bomb* b,int type, int puissance, int sprite_index, int sprite_no, int x , int y)
+Bomb* init_bomb(int type, int id_proprietaire)
 {
+    Bomb *b = malloc(sizeof(Bomb));
     b->type = type;
-    b->puissance = puissance;
-    b->pos.x = x;
-    b->pos.y = y;
+    b->puissance = 1;
+    b->pos.x = -1;
+    b->pos.y = -1;
+    b->id_proprietaire = id_proprietaire;
+    b->posee = 0;
+    return b;
 }
 
 void init_tile(Tile* t,int type, int etat, int sprite_index,int sprite_no)
@@ -120,7 +130,7 @@ void init_tile(Tile* t,int type, int etat, int sprite_index,int sprite_no)
     t->etat = etat;
 }
 
-Player* init_player(char *name)
+Player* init_player(char *name, int id_player)
 {
     Player *p = malloc(sizeof(Player));
     //strcpy(name, p->nom);
@@ -128,11 +138,15 @@ Player* init_player(char *name)
     p->score = 0;
     p->bouclier = 0;
     p->vitesse = 1; /* pixels par seconde */
-
+    p->id_player = id_player;
     p->pos.x = TILE_WIDTH;
     p->pos.y = TILE_HEIGHT;
     p->pos.h = HITBOX_PLAYER;
     p->pos.w = HITBOX_PLAYER;
+    Bomb *b = init_bomb(1,id_player);
+    p->typebomb = b;
+    p->nb_bomb_max = 99;
+    p->nb_bomb_jeu = 0;
 
     return p;
 }

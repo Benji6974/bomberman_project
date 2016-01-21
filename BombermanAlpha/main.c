@@ -23,10 +23,10 @@ void affiche_carte(Tile ***carte)
 }
 
 /* Verification collisions rectangle-rectangle avec le décor */
-int collision_joueur(Game *jeu, int joueur)
+int collision_joueur_decor(Game *jeu, int joueur)
 {
     int i=0, x=0, y=0, x1=0, x2=0, y1=0, y2=0;
-    const SDL_Rect pos = jeu->players[joueur]->pos;
+    const SDL_Rect pos = jeu->players[joueur]->pos, *pos_bomb;
 
     x1 = pos.x/TILE_WIDTH;
     y1 = pos.y/TILE_HEIGHT;
@@ -38,13 +38,90 @@ int collision_joueur(Game *jeu, int joueur)
         for(y = y1; y <= y2; y++)
         {
             if(jeu->carte[y][x]->type != 0)
+            {
                 return 1;
+            }
+
+            for(i = 0; i < jeu->nb_bombs; i++)
+            {
+
+                pos_bomb = &jeu->bombs[i]->pos;
+
+                if(x == pos_bomb->x && y == pos_bomb->y)
+                {
+                    if(jeu->bombs[i]->posee)
+                        return 0;
+                    else
+                        return 1;
+                }
+                else
+                {
+                    jeu->bombs[i]->posee = 0;
+                    return 0;
+                }
+
+            }
         }
     }
-
     return 0;
 }
 
+int collision_joueur_objet(Game *jeu, int joueur)
+{
+    int i=0, x=0, y=0, x1=0, x2=0, y1=0, y2=0;
+    SDL_Rect *pos_bomb;
+    Player *p = jeu->players[joueur];
+
+    x1 = p->pos.x/TILE_WIDTH;
+    y1 = p->pos.y/TILE_HEIGHT;
+    x2 = (p->pos.x + p->pos.w)/TILE_WIDTH;
+    y2 = (p->pos.y + p->pos.h)/TILE_HEIGHT;
+
+    /* Collision bombe */
+    for(i = 0; i < jeu->nb_bombs; i++)
+    {
+        pos_bomb = &jeu->bombs[i]->pos;
+        for(x = x1; x <= x2; x++)
+        {
+            for(y = y1; y <= y2; y++)
+            {
+                if(x == pos_bomb->x && y == pos_bomb->y)
+                    return 1;
+            }
+        }
+
+    }
+    return 0;
+}
+
+int poser_bomb(Game *jeu, int joueur)
+{
+    Player *p = jeu->players[joueur];
+    int i = 0;
+    if (p->nb_bomb_jeu < p->nb_bomb_max)
+    {
+        Bomb *b = malloc(sizeof(Bomb));
+        *b = *(p->typebomb);
+        int x1 = p->pos.x/TILE_WIDTH;
+        int y1 = p->pos.y/TILE_HEIGHT;
+        b->pos.x = x1;
+        b->pos.y = y1;
+
+        for(i = 0; jeu->bombs[i] != NULL; i++)
+        {
+            if(jeu->bombs[i]->pos.x == b->pos.x && jeu->bombs[i]->pos.y == b->pos.y)
+            {
+                free(b);
+                return;
+            }
+        }
+        jeu->bombs[i] = b;
+        jeu->nb_bombs++;
+        p->nb_bomb_jeu++;
+        b->posee = 1;
+    }
+
+}
 void deplacer_joueur(Game *jeu, int joueur)
 {
     Player *p = jeu->players[joueur];
@@ -54,26 +131,30 @@ void deplacer_joueur(Game *jeu, int joueur)
     if(jeu->touches.keys_pressed[k])
     {
         p->pos.y -= p->vitesse;
-        while(collision_joueur(jeu, joueur)) /* tant qu'il y a collision, on annule le déplacement de manière incrémentielle */
+        while(collision_joueur_decor(jeu, joueur)) /* tant qu'il y a collision, on annule le déplacement de manière incrémentielle */
             p->pos.y++;
     }
     if(jeu->touches.keys_pressed[k+1])
     {
         p->pos.y += p->vitesse;
-        while(collision_joueur(jeu, joueur))
+        while(collision_joueur_decor(jeu, joueur))
             p->pos.y--;
     }
     if(jeu->touches.keys_pressed[k+2])
     {
         p->pos.x -= p->vitesse;
-        while(collision_joueur(jeu, joueur))
+        while(collision_joueur_decor(jeu, joueur))
             p->pos.x++;
     }
     if(jeu->touches.keys_pressed[k+3])
     {
         p->pos.x += p->vitesse;
-        while(collision_joueur(jeu, joueur))
+        while(collision_joueur_decor(jeu, joueur))
             p->pos.x--;
+    }
+    if(jeu->touches.keys_pressed[k+4])
+    {
+        poser_bomb(jeu, joueur);
     }
 }
 
@@ -103,6 +184,7 @@ int main(int agrc, char** argv)
 
     SDL_Texture *feuille_tiles = charger_sprite(renderer, "img/tileset.bmp");
     SDL_Texture *feuille_perso = charger_sprite(renderer, "img/character_silver.bmp");
+    SDL_Texture *feuille_objets = charger_sprite(renderer, "img/atlas5_32.bmp");
 
     SDL_Rect pos;
     pos.x = 0;
@@ -162,7 +244,10 @@ int main(int agrc, char** argv)
         }
 
         for(i = 0; i < jeu->nb_joueurs; i++)
+        {
             deplacer_joueur(jeu, i);
+        }
+
         SDL_Delay(4);
 
 
@@ -211,6 +296,15 @@ int main(int agrc, char** argv)
             pos_perso.x = jeu->players[i]->pos.x;
             pos_perso.y = jeu->players[i]->pos.y - 16;
             SDL_RenderCopy(renderer, feuille_perso, &clip_perso, &pos_perso);
+        }
+
+        for(i = 0; i < jeu->nb_bombs; i++)
+        {
+            clip.x = 2*TILE_WIDTH;
+            clip.y = 0*TILE_HEIGHT;
+            pos.x = jeu->bombs[i]->pos.x*TILE_WIDTH;
+            pos.y = jeu->bombs[i]->pos.y*TILE_HEIGHT;
+            SDL_RenderCopy(renderer, feuille_objets, &clip, &pos);
         }
 
         SDL_RenderPresent(renderer);

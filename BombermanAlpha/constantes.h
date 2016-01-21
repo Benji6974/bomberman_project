@@ -19,7 +19,7 @@
 
 /* Autres */
 #define ACTIVER_COLLISIONS 1
-#define KEYS_PER_PLAYER 4    /* nombres de touches à assigner par joueur */
+#define KEYS_PER_PLAYER 5    /* nombres de touches à assigner par joueur */
 
 enum{UP, DOWN, LEFT, RIGHT};
 
