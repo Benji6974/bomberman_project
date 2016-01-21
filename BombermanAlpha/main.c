@@ -25,6 +25,9 @@ void affiche_carte(Tile ***carte)
 /* Verification collisions rectangle-rectangle avec le décor */
 int collision_joueur_decor(Game *jeu, int joueur)
 {
+    if(!ACTIVER_COLLISIONS)
+        return 0;
+
     int i=0, x=0, y=0, x1=0, x2=0, y1=0, y2=0;
     const SDL_Rect pos = jeu->players[joueur]->pos, *pos_bomb;
 
@@ -37,59 +40,20 @@ int collision_joueur_decor(Game *jeu, int joueur)
     {
         for(y = y1; y <= y2; y++)
         {
+            /* test collision avec les blocs de la carte */
             if(jeu->carte[y][x]->type != 0)
             {
                 return 1;
             }
 
+            /* test collision avec les bombes */
             for(i = 0; i < jeu->nb_bombs; i++)
             {
-
                 pos_bomb = &jeu->bombs[i]->pos;
-
-                if(x == pos_bomb->x && y == pos_bomb->y)
-                {
-                    if(jeu->bombs[i]->posee)
-                        return 0;
-                    else
-                        return 1;
-                }
-                else
-                {
-                    jeu->bombs[i]->posee = 0;
-                    return 0;
-                }
-
-            }
-        }
-    }
-    return 0;
-}
-
-int collision_joueur_objet(Game *jeu, int joueur)
-{
-    int i=0, x=0, y=0, x1=0, x2=0, y1=0, y2=0;
-    SDL_Rect *pos_bomb;
-    Player *p = jeu->players[joueur];
-
-    x1 = p->pos.x/TILE_WIDTH;
-    y1 = p->pos.y/TILE_HEIGHT;
-    x2 = (p->pos.x + p->pos.w)/TILE_WIDTH;
-    y2 = (p->pos.y + p->pos.h)/TILE_HEIGHT;
-
-    /* Collision bombe */
-    for(i = 0; i < jeu->nb_bombs; i++)
-    {
-        pos_bomb = &jeu->bombs[i]->pos;
-        for(x = x1; x <= x2; x++)
-        {
-            for(y = y1; y <= y2; y++)
-            {
-                if(x == pos_bomb->x && y == pos_bomb->y)
+                if(x == pos_bomb->x && y == pos_bomb->y && jeu->bombs[i]->id_proprietaire != jeu->players[joueur]->id_player) /* Collision seulement si la bombe n'est pas au joueur */
                     return 1;
             }
         }
-
     }
     return 0;
 }
@@ -118,44 +82,39 @@ int poser_bomb(Game *jeu, int joueur)
         jeu->bombs[i] = b;
         jeu->nb_bombs++;
         p->nb_bomb_jeu++;
-        b->posee = 1;
     }
 
 }
 void deplacer_joueur(Game *jeu, int joueur)
 {
     Player *p = jeu->players[joueur];
-    int k = p->keymap_offset;
+    int k = p->keymap_offset, no_clip = 0;
+    int move_x = 0, move_y = 0;
+
+    /* On vérifie si le joueur n'est pas déjà en collision
+     * Si c'est le cas, on le laisse bouger */
+    no_clip = collision_joueur_decor(jeu, joueur);
 
     /* On déplace le joueur en fonction des touches appuyées */
     if(jeu->touches.keys_pressed[k])
-    {
-        p->pos.y -= p->vitesse;
-        while(collision_joueur_decor(jeu, joueur)) /* tant qu'il y a collision, on annule le déplacement de manière incrémentielle */
-            p->pos.y++;
-    }
+        move_y += -1;
     if(jeu->touches.keys_pressed[k+1])
-    {
-        p->pos.y += p->vitesse;
-        while(collision_joueur_decor(jeu, joueur))
-            p->pos.y--;
-    }
+        move_y += 1;
     if(jeu->touches.keys_pressed[k+2])
-    {
-        p->pos.x -= p->vitesse;
-        while(collision_joueur_decor(jeu, joueur))
-            p->pos.x++;
-    }
+        move_x += -1;
     if(jeu->touches.keys_pressed[k+3])
-    {
-        p->pos.x += p->vitesse;
-        while(collision_joueur_decor(jeu, joueur))
-            p->pos.x--;
-    }
+        move_x += 1;
+
+    p->pos.x += move_x*p->vitesse;
+    while(move_x && collision_joueur_decor(jeu, joueur) && !no_clip)
+        p->pos.x -= move_x;
+    p->pos.y += move_y*p->vitesse;
+    while(move_y && collision_joueur_decor(jeu, joueur) && !no_clip)
+        p->pos.y -= move_y;
+
+    /* Si le joueur appuie sur la touche pour poser une bombe */
     if(jeu->touches.keys_pressed[k+4])
-    {
         poser_bomb(jeu, joueur);
-    }
 }
 
 int main(int agrc, char** argv)
@@ -291,13 +250,6 @@ int main(int agrc, char** argv)
             }
         }
 
-        for(i = 0; i < jeu->nb_joueurs; i++)
-        {
-            pos_perso.x = jeu->players[i]->pos.x;
-            pos_perso.y = jeu->players[i]->pos.y - 16;
-            SDL_RenderCopy(renderer, feuille_perso, &clip_perso, &pos_perso);
-        }
-
         for(i = 0; i < jeu->nb_bombs; i++)
         {
             clip.x = 2*TILE_WIDTH;
@@ -305,6 +257,13 @@ int main(int agrc, char** argv)
             pos.x = jeu->bombs[i]->pos.x*TILE_WIDTH;
             pos.y = jeu->bombs[i]->pos.y*TILE_HEIGHT;
             SDL_RenderCopy(renderer, feuille_objets, &clip, &pos);
+        }
+
+        for(i = 0; i < jeu->nb_joueurs; i++)
+        {
+            pos_perso.x = jeu->players[i]->pos.x;
+            pos_perso.y = jeu->players[i]->pos.y - 16;
+            SDL_RenderCopy(renderer, feuille_perso, &clip_perso, &pos_perso);
         }
 
         SDL_RenderPresent(renderer);
@@ -317,8 +276,6 @@ int main(int agrc, char** argv)
             frame_compte = 0;
             previous_time = current_time;
         }
-        //system("cls");
-        //printf("pos x : %d pos y : %d\n",jeu->players[0]->pos.x,jeu->players[0]->pos.y);
 
     }
 
@@ -330,203 +287,3 @@ int main(int agrc, char** argv)
     detruire_jeu(jeu);
     return 0;
 }
-
-
-
-/* Quel bazar!
-
-int collision(Game* jeu,Player * p)
-{
-    int i,x,y,res;
-    int posjoueurmapx ;
-    int posjoueurmapy;
-    int posjoueurmapx2 ;
-    int posjoueurmapy2;
-    switch(p->direction)
-    {
-    //
-    case RIGHT:
-        posjoueurmapx = (p->pos.x+p->pos.w+1)/TILE_WIDTH;
-        posjoueurmapy = (p->pos.y)/TILE_HEIGHT;
-        posjoueurmapy2 = (p->pos.y+p->pos.h)/TILE_HEIGHT;
-        if (p->pos.x+p->pos.w+1 >= TILE_WIDTH*MAP_WIDTH || (jeu->carte[posjoueurmapy][posjoueurmapx]->type != 0 || jeu->carte[posjoueurmapy2][posjoueurmapx]->type != 0))
-            return 1;
-        break;
-    case LEFT:
-        posjoueurmapx = (p->pos.x-1)/TILE_WIDTH;
-        posjoueurmapy = (p->pos.y)/TILE_HEIGHT;
-        posjoueurmapy2 = (p->pos.y+p->pos.h)/TILE_HEIGHT;
-        if (p->pos.x-1 < 0 || (jeu->carte[posjoueurmapy][posjoueurmapx]->type != 0 || jeu->carte[posjoueurmapy2][posjoueurmapx]->type != 0))
-            return 1;
-        break;
-    case UP:
-        posjoueurmapx = (p->pos.x)/TILE_WIDTH;
-        posjoueurmapx2 = (p->pos.x+p->pos.w)/TILE_WIDTH;
-        posjoueurmapy = (p->pos.y-1)/TILE_HEIGHT;
-        if (p->pos.y-1 < 0 || (jeu->carte[posjoueurmapy][posjoueurmapx]->type != 0 || jeu->carte[posjoueurmapy][posjoueurmapx2]->type != 0))
-            return 1;
-        break;
-    case DOWN:
-        posjoueurmapx = (p->pos.x)/TILE_WIDTH;
-        posjoueurmapx2 = (p->pos.x+p->pos.w)/TILE_WIDTH;
-        posjoueurmapy = (p->pos.y+p->pos.h+1)/TILE_HEIGHT;
-        if (p->pos.y+p->pos.h+1 >= TILE_HEIGHT*MAP_HEIGHT || (jeu->carte[posjoueurmapy][posjoueurmapx]->type != 0 || jeu->carte[posjoueurmapy][posjoueurmapx2]->type != 0))
-            return 1;
-        break;
-    }
-    //printf("%d / %d = x = %d\n",p->pos.x,TILE_WIDTH,posjoueurmapx);
-    //printf("%d / %d = y = %d\n",p->pos.y,TILE_HEIGHT,posjoueurmapy);
-
-    return 0;
-
-}
-void maj_player(Game* jeu,SDL_Event* event,Player* p)
-{
-
-
-    int res_collision=0;
-    switch(event->type)
-    {
-
-    case SDL_KEYDOWN:
-        if (p->id == 0)
-        {
-            switch(event->key.keysym.sym)
-            {
-            case SDLK_RIGHT:
-                p->direction = RIGHT;
-                p->se_deplace = 1;
-
-                break;
-            case SDLK_LEFT:
-                p->direction = LEFT;
-                p->se_deplace = 1;
-                break;
-            case SDLK_UP:
-                p->direction = UP;
-                p->se_deplace = 1;
-                break;
-            case SDLK_DOWN:
-                p->direction = DOWN;
-                p->se_deplace = 1;
-                break;
-            default:
-                return;
-                break;
-            }
-
-        }
-        else if (p->id== 1)
-        {
-            switch(event->key.keysym.sym)
-            {
-            case SDLK_d:
-                p->direction = RIGHT;
-                p->se_deplace = 1;
-                break;
-            case SDLK_q:
-                p->direction = LEFT;
-                p->se_deplace = 1;
-                break;
-            case SDLK_z:
-                p->direction = UP;
-                p->se_deplace = 1;
-                break;
-            case SDLK_s:
-                p->direction = DOWN;
-                p->se_deplace = 1;
-                break;
-            default:
-                return;
-                break;
-            }
-        }
-        if(p->se_deplace)
-        {
-            res_collision = collision(jeu,p);
-            printf("colision = %d direction = %d\n",res_collision,p->direction);
-            if (res_collision != 1)
-                if (res_collision == 0)
-                    deplacement(p);
-        }
-        break;
-
-    case SDL_KEYUP:
-
-        if (p->id == 0)
-        {
-            switch(event->key.keysym.sym)
-            {
-            case SDLK_RIGHT:
-                p->direction = RIGHT;
-                p->se_deplace = 0;
-                break;
-            case SDLK_LEFT:
-                p->direction = LEFT;
-                p->se_deplace = 0;
-                break;
-            case SDLK_UP:
-                p->direction = RIGHT;
-                p->se_deplace = 0;
-                break;
-            case SDLK_DOWN:
-                p->direction = RIGHT;
-                p->se_deplace = 0;
-                break;
-            default:
-                return;
-                break;
-            }
-        }
-        else if (p->id== 1)
-        {
-            switch(event->key.keysym.sym)
-            {
-            case SDLK_d:
-                p->direction = RIGHT;
-                p->se_deplace = 0;
-                break;
-            case SDLK_q:
-                p->direction = LEFT;
-                p->se_deplace = 0;
-                break;
-            case SDLK_z:
-                p->direction = UP;
-                p->se_deplace = 0;
-                break;
-            case SDLK_s:
-                p->direction = DOWN;
-                p->se_deplace = 0;
-                break;
-            default:
-                return;
-                break;
-            }
-        }
-        break;
-
-
-
-    }
-}
-    void deplacement(Player * p)
-    {
-        switch(p->direction)
-        {
-        case RIGHT:
-            p->pos.x++;
-            break;
-        case LEFT:
-            p->pos.x--;
-            break;
-        case UP:
-            p->pos.y--;
-            break;
-        case DOWN:
-            p->pos.y++;
-            break;
-
-        }
-    }
-
-*/

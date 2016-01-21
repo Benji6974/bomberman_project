@@ -71,7 +71,7 @@ Game* init_jeu(int type, int nb_joueurs, int temps)
     jeu->players = (Player**)malloc(nb_joueurs*sizeof(Player*));
     for(i = 0; i < nb_joueurs; i++)
     {
-        jeu->players[i] = init_player("Joueur",i);
+        jeu->players[i] = init_player("Joueur", i+1);
         jeu->players[i]->keymap_offset = i*KEYS_PER_PLAYER;
         if (i==1)
         {
@@ -120,7 +120,6 @@ Bomb* init_bomb(int type, int id_proprietaire)
     b->pos.x = -1;
     b->pos.y = -1;
     b->id_proprietaire = id_proprietaire;
-    b->posee = 0;
     return b;
 }
 

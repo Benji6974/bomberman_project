@@ -674,16 +674,17 @@
 	"begin_code.h"
 	"close_code.h"
 
-1453327269 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\jeu.c
+1453409744 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\jeu.c
 	<stdlib.h>
 	<stdio.h>
+	<string.h>
 	"constantes.h"
 	"jeu.h"
 
-1453321536 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\jeu.h
+1453391484 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\jeu.h
 	"graphismes.h"
 
-1453327691 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\main.c
+1453409644 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\main.c
 	<stdlib.h>
 	<stdio.h>
 	<SDL.h>
@@ -696,5 +697,5 @@
 
 1452679375 c:\users\benji\documents\bomberman\trunk\bombermanalpha\constantes.h
 
-1453321288 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\constantes.h
+1453391484 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\constantes.h
 
