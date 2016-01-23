@@ -119,7 +119,7 @@ int poser_bomb(Game *jeu, int joueur)
 
 int exploser_bombe(Game *jeu, int bombe)
 {
-    int i, j, x, y;
+    int i, j, x, y, x2, y2;
     Player *p = jeu->players[jeu->bombs[bombe]->id_proprietaire];
     Bomb *b = jeu->bombs[bombe];
 
@@ -129,20 +129,21 @@ int exploser_bombe(Game *jeu, int bombe)
         y = b->pos.y;
 
         /* destruction du décor et des joueurs */
-        for(i = 0; i <= b->puissance*2 + 1; i++)
+        for(i = 0; i < b->puissance*2 + 1; i++)
         {
-            if(y-b->puissance+i < MAP_HEIGHT && y-b->puissance+i >= 0)
+            y2 = y-b->puissance+i;
+            if(y2 < MAP_HEIGHT && y2 >= 0)
             {
-                switch(jeu->carte[y-b->puissance+i][x]->type)
+                switch(jeu->carte[y2][x]->type)
                 {
                 case 2:
-                    jeu->carte[y-b->puissance+i][x]->type = 0;
+                    jeu->carte[y2][x]->type = 0;
                     break;
                 }
 
                 for(j = 0; j < jeu->nb_joueurs; j++)
                 {
-                    if(jeu->players[j]->pos.x/TILE_WIDTH == x && jeu->players[j]->pos.y/TILE_HEIGHT == y-b->puissance+i && jeu->players[j]->vie > 0)
+                    if(jeu->players[j]->pos.x/TILE_WIDTH == x && jeu->players[j]->pos.y/TILE_HEIGHT == y2 && jeu->players[j]->vie > 0)
                     {
                         jeu->players[j]->vie--;
                     }
@@ -150,20 +151,21 @@ int exploser_bombe(Game *jeu, int bombe)
             }
         }
 
-        for(i = 0; i <= b->puissance*2 + 1; i++)
+        for(i = 0; i < b->puissance*2 + 1; i++)
         {
-            if(x-b->puissance+i < MAP_WIDTH && x-b->puissance+i >= 0)
+            x2 = x-b->puissance+i;
+            if(x2 < MAP_WIDTH && x2 >= 0)
             {
-                switch(jeu->carte[y][x-b->puissance+i]->type)
+                switch(jeu->carte[y][x2]->type)
                 {
                 case 2:
-                    jeu->carte[y][x-b->puissance+i]->type = 0;
+                    jeu->carte[y][x2]->type = 0;
                     break;
                 }
 
                 for(j = 0; j < jeu->nb_joueurs; j++)
                 {
-                    if(jeu->players[j]->pos.x/TILE_WIDTH == x-b->puissance+i && jeu->players[j]->pos.y/TILE_HEIGHT == y && jeu->players[j]->vie > 0)
+                    if(jeu->players[j]->pos.x/TILE_WIDTH == x2 && jeu->players[j]->pos.y/TILE_HEIGHT == y && jeu->players[j]->vie > 0)
                     {
                         jeu->players[j]->vie--;
                     }
@@ -371,7 +373,9 @@ int main(int agrc, char** argv)
             if(en_vie <= 1)
             {
                 stop = 1;
-                printf("Joueur %d gagne!\n", joueur);
+                char *nom_joueur[256];
+                sprintf(nom_joueur, "Joueur %d gagne!", joueur);
+                SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Fin de partie", nom_joueur, fenetre);
             }
             previous_time = current_time;
         }

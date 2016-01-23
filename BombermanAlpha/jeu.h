@@ -60,7 +60,7 @@ Game* init_jeu(int type, int nb_joueurs, int temps);
 
 int update_jeu(Game *jeu, int tick);
 
-void init_tile(Tile* t,int type, int etat, int sprite_index,int sprite_no);
+void init_tile(Tile* t,int type, int etat);
 Bomb* init_bomb(int type, int id_player);
 Player* init_player(char *name, int id_player);
 void affiche_jeu();
