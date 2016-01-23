@@ -20,6 +20,7 @@
 /* Autres */
 #define ACTIVER_COLLISIONS 1
 #define KEYS_PER_PLAYER 5    /* nombres de touches à assigner par joueur */
+#define NB_BOMBES_MAX 100
 
 enum{UP, DOWN, LEFT, RIGHT};
 

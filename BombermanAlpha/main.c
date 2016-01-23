@@ -22,7 +22,9 @@ void affiche_carte(Tile ***carte)
     }
 }
 
-/* Verification collisions rectangle-rectangle avec le décor */
+/* Verification collisions rectangle-rectangle avec le décor
+ * Renvoie 1 si la collision est totale, 2 si elle est partielle
+ */
 int collision_joueur_decor(Game *jeu, int joueur)
 {
     if(!ACTIVER_COLLISIONS)
@@ -33,6 +35,7 @@ int collision_joueur_decor(Game *jeu, int joueur)
 
     x1 = pos.x/TILE_WIDTH;
     y1 = pos.y/TILE_HEIGHT;
+
     x2 = (pos.x + pos.w - 1)/TILE_WIDTH;
     y2 = (pos.y + pos.h - 1)/TILE_HEIGHT;
 
@@ -44,17 +47,44 @@ int collision_joueur_decor(Game *jeu, int joueur)
             if(jeu->carte[y][x]->type != 0)
             {
                 return 1;
-            }
 
+            }
+        }
+    }
+
+    return 0;
+}
+
+int collision_joueur_objets(Game *jeu, int joueur)
+{
+    if(!ACTIVER_COLLISIONS)
+        return 0;
+
+    int i=0, x=0, y=0, x1=0, x2=0, y1=0, y2=0;
+    const SDL_Rect pos = jeu->players[joueur]->pos, *pos_bomb;
+
+    x1 = pos.x/TILE_WIDTH;
+    y1 = pos.y/TILE_HEIGHT;
+
+    x2 = (pos.x + pos.w - 1)/TILE_WIDTH;
+    y2 = (pos.y + pos.h - 1)/TILE_HEIGHT;
+
+    for(x = x1; x <= x2; x++)
+    {
+        for(y = y1; y <= y2; y++)
+        {
             /* test collision avec les bombes */
             for(i = 0; i < jeu->nb_bombs; i++)
             {
                 pos_bomb = &jeu->bombs[i]->pos;
-                if(x == pos_bomb->x && y == pos_bomb->y && jeu->bombs[i]->id_proprietaire != jeu->players[joueur]->id_player) /* Collision seulement si la bombe n'est pas au joueur */
-                    return 1;
+                if(x == pos_bomb->x && y == pos_bomb->y)
+                {
+                    return jeu->players[joueur]->id_player;
+                }
             }
         }
     }
+
     return 0;
 }
 
@@ -62,7 +92,7 @@ int poser_bomb(Game *jeu, int joueur)
 {
     Player *p = jeu->players[joueur];
     int i = 0;
-    if (p->nb_bomb_jeu < p->nb_bomb_max)
+    if (p->nb_bomb_jeu < p->nb_bomb_max && jeu->nb_bombs < NB_BOMBES_MAX)
     {
         Bomb *b = malloc(sizeof(Bomb));
         *b = *(p->typebomb);
@@ -88,12 +118,11 @@ int poser_bomb(Game *jeu, int joueur)
 void deplacer_joueur(Game *jeu, int joueur)
 {
     Player *p = jeu->players[joueur];
-    int k = p->keymap_offset, no_clip = 0;
+    int k = p->keymap_offset, collision_decor = 0, collision_objets = 0;
     int move_x = 0, move_y = 0;
 
-    /* On vérifie si le joueur n'est pas déjà en collision
-     * Si c'est le cas, on le laisse bouger */
-    no_clip = collision_joueur_decor(jeu, joueur);
+    collision_decor = collision_joueur_decor(jeu, joueur);
+    collision_objets = collision_joueur_objets(jeu, joueur);
 
     /* On déplace le joueur en fonction des touches appuyées */
     if(jeu->touches.keys_pressed[k])
@@ -106,10 +135,15 @@ void deplacer_joueur(Game *jeu, int joueur)
         move_x += 1;
 
     p->pos.x += move_x*p->vitesse;
-    while(move_x && collision_joueur_decor(jeu, joueur) && !no_clip)
+    while(move_x
+        && (collision_joueur_decor(jeu, joueur) && !collision_decor
+        || collision_joueur_objets(jeu, joueur) && !collision_objets))
         p->pos.x -= move_x;
+
     p->pos.y += move_y*p->vitesse;
-    while(move_y && collision_joueur_decor(jeu, joueur) && !no_clip)
+    while(move_y
+        && (collision_joueur_decor(jeu, joueur) && !collision_decor
+        || collision_joueur_objets(jeu, joueur) && !collision_objets))
         p->pos.y -= move_y;
 
     /* Si le joueur appuie sur la touche pour poser une bombe */

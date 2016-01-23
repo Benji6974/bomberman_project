@@ -33,8 +33,8 @@ Game* init_jeu(int type, int nb_joueurs, int temps)
     /* -------------------------------- */
 
     jeu = malloc(sizeof(Game));
-    jeu->bombs = (Bomb**)malloc(100*sizeof(Bomb*));
-    memset(jeu->bombs, NULL, 100*sizeof(Bomb*));
+    jeu->bombs = (Bomb**)malloc(NB_BOMBES_MAX*sizeof(Bomb*));
+    memset(jeu->bombs, NULL, NB_BOMBES_MAX*sizeof(Bomb*));
 
     jeu->nb_bombs = 0;
 
@@ -144,7 +144,7 @@ Player* init_player(char *name, int id_player)
     p->pos.w = HITBOX_PLAYER;
     Bomb *b = init_bomb(1,id_player);
     p->typebomb = b;
-    p->nb_bomb_max = 99;
+    p->nb_bomb_max = 1;
     p->nb_bomb_jeu = 0;
 
     return p;
