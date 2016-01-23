@@ -119,7 +119,7 @@ int poser_bomb(Game *jeu, int joueur)
 
 int exploser_bombe(Game *jeu, int bombe)
 {
-    int i, x, y;
+    int i, j, x, y;
     Player *p = jeu->players[jeu->bombs[bombe]->id_proprietaire];
     Bomb *b = jeu->bombs[bombe];
 
@@ -128,7 +128,7 @@ int exploser_bombe(Game *jeu, int bombe)
         x = b->pos.x;
         y = b->pos.y;
 
-        /* destruction du décor */
+        /* destruction du décor et des joueurs */
         for(i = 0; i <= b->puissance*2 + 1; i++)
         {
             if(y-b->puissance+i < MAP_HEIGHT && y-b->puissance+i >= 0)
@@ -138,6 +138,14 @@ int exploser_bombe(Game *jeu, int bombe)
                 case 2:
                     jeu->carte[y-b->puissance+i][x]->type = 0;
                     break;
+                }
+
+                for(j = 0; j < jeu->nb_joueurs; j++)
+                {
+                    if(jeu->players[j]->pos.x/TILE_WIDTH == x && jeu->players[j]->pos.y/TILE_HEIGHT == y-b->puissance+i && jeu->players[j]->vie > 0)
+                    {
+                        jeu->players[j]->vie--;
+                    }
                 }
             }
         }
@@ -151,6 +159,14 @@ int exploser_bombe(Game *jeu, int bombe)
                 case 2:
                     jeu->carte[y][x-b->puissance+i]->type = 0;
                     break;
+                }
+
+                for(j = 0; j < jeu->nb_joueurs; j++)
+                {
+                    if(jeu->players[j]->pos.x/TILE_WIDTH == x-b->puissance+i && jeu->players[j]->pos.y/TILE_HEIGHT == y && jeu->players[j]->vie > 0)
+                    {
+                        jeu->players[j]->vie--;
+                    }
                 }
             }
         }
@@ -187,6 +203,7 @@ void maj_bombs(Game *jeu, int dt)
     {
         if(jeu->bombs[i]->delai > 0)
         {
+            /* gestion du delai avant explosion des bombes */
             jeu->bombs[i]->delai -= dt;
             printf("%d\n", jeu->bombs[i]->delai);
             if(jeu->bombs[i]->delai <= 0)
@@ -203,6 +220,9 @@ void maj_joueur(Game *jeu, int joueur)
     Player *p = jeu->players[joueur];
     int i, k = p->keymap_offset, collision_decor = 0, collision_objets = 0;
     int move_x = 0, move_y = 0;
+
+    if(p->vie <= 0)
+        return;
 
     collision_decor = collision_joueur_decor(jeu, joueur);
     collision_objets = collision_joueur_objets(jeu, joueur);
@@ -299,7 +319,7 @@ int main(int agrc, char** argv)
     pos_perso.w = 23;
     pos_perso.h = 38;
 
-    int stop = 0, current_time = 0, previous_time = 0, previous_time2 = 0, frame_compte = 0, i, j;
+    int stop = 0, current_time = 0, previous_time = 0, previous_time2 = 0, frame_compte = 0, i, j, en_vie = 0, joueur = 0;
     int dt = 0;
     SDL_Event event;
 
@@ -336,11 +356,23 @@ int main(int agrc, char** argv)
         dt = current_time - previous_time;
         if(dt >= 16) /* 60 maj/s */
         {
+            en_vie = 0;
             for(i = 0; i < jeu->nb_joueurs; i++)
             {
                 maj_joueur(jeu, i);
+                if(jeu->players[i]->vie > 0)
+                {
+                    en_vie++;
+                    joueur = i+1;
+                }
             }
             maj_bombs(jeu, dt);
+            printf("%d\n", en_vie);
+            if(en_vie <= 1)
+            {
+                stop = 1;
+                printf("Joueur %d gagne!\n", joueur);
+            }
             previous_time = current_time;
         }
 
@@ -415,7 +447,9 @@ int main(int agrc, char** argv)
             }
             pos_perso.x = jeu->players[i]->pos.x;
             pos_perso.y = jeu->players[i]->pos.y - 16;
-            SDL_RenderCopy(renderer, feuille_perso, &clip_perso, &pos_perso);
+
+            if(jeu->players[i]->vie > 0)
+                SDL_RenderCopy(renderer, feuille_perso, &clip_perso, &pos_perso);
         }
 
         SDL_RenderPresent(renderer);
