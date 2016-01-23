@@ -79,7 +79,7 @@ int collision_joueur_objets(Game *jeu, int joueur)
                 pos_bomb = &jeu->bombs[i]->pos;
                 if(x == pos_bomb->x && y == pos_bomb->y)
                 {
-                    return jeu->players[joueur]->id_player;
+                    return 1;
                 }
             }
         }
@@ -100,13 +100,14 @@ int poser_bomb(Game *jeu, int joueur)
         int y1 = p->pos.y/TILE_HEIGHT;
         b->pos.x = x1;
         b->pos.y = y1;
+        b->delai = DELAI_DEFAUT_BOMBE;
 
         for(i = 0; jeu->bombs[i] != NULL; i++)
         {
             if(jeu->bombs[i]->pos.x == b->pos.x && jeu->bombs[i]->pos.y == b->pos.y)
             {
                 free(b);
-                return;
+                return 0;
             }
         }
         jeu->bombs[i] = b;
@@ -115,24 +116,118 @@ int poser_bomb(Game *jeu, int joueur)
     }
 
 }
-void deplacer_joueur(Game *jeu, int joueur)
+
+int exploser_bombe(Game *jeu, int bombe)
+{
+    int i, x, y;
+    Player *p = jeu->players[jeu->bombs[bombe]->id_proprietaire];
+    Bomb *b = jeu->bombs[bombe];
+
+    if(jeu->nb_bombs > 0 && b != NULL)
+    {
+        x = b->pos.x;
+        y = b->pos.y;
+
+        /* destruction du décor */
+        for(i = 0; i <= b->puissance*2 + 1; i++)
+        {
+            if(y-b->puissance+i < MAP_HEIGHT && y-b->puissance+i >= 0)
+            {
+                switch(jeu->carte[y-b->puissance+i][x]->type)
+                {
+                case 2:
+                    jeu->carte[y-b->puissance+i][x]->type = 0;
+                    break;
+                }
+            }
+        }
+
+        for(i = 0; i <= b->puissance*2 + 1; i++)
+        {
+            if(x-b->puissance+i < MAP_WIDTH && x-b->puissance+i >= 0)
+            {
+                switch(jeu->carte[y][x-b->puissance+i]->type)
+                {
+                case 2:
+                    jeu->carte[y][x-b->puissance+i]->type = 0;
+                    break;
+                }
+            }
+        }
+
+        /* destruction de la bombe */
+        free(b);
+        jeu->bombs[bombe] = NULL;
+
+        /* reorganisation du tableau des bombes */
+        for(i = bombe; i < jeu->nb_bombs; i++)
+        {
+            if(jeu->bombs[i+1] != NULL)
+            {
+                jeu->bombs[i] = jeu->bombs[i+1];
+                jeu->bombs[i+1] = NULL;
+            }
+        }
+    }
+    else
+        return -1;
+
+    /* décrémentation nombres de bombes du joueur et jeu */
+    if(jeu->nb_bombs > 0)
+        jeu->nb_bombs--;
+    if(p->nb_bomb_jeu > 0)
+        p->nb_bomb_jeu--;
+    return 0;
+}
+
+void maj_bombs(Game *jeu, int dt)
+{
+    int i;
+    for(i = 0; i < jeu->nb_bombs; i++)
+    {
+        if(jeu->bombs[i]->delai > 0)
+        {
+            jeu->bombs[i]->delai -= dt;
+            printf("%d\n", jeu->bombs[i]->delai);
+            if(jeu->bombs[i]->delai <= 0)
+            {
+                exploser_bombe(jeu, i);
+                printf("BOOM!\n");
+            }
+        }
+    }
+}
+
+void maj_joueur(Game *jeu, int joueur)
 {
     Player *p = jeu->players[joueur];
-    int k = p->keymap_offset, collision_decor = 0, collision_objets = 0;
+    int i, k = p->keymap_offset, collision_decor = 0, collision_objets = 0;
     int move_x = 0, move_y = 0;
 
     collision_decor = collision_joueur_decor(jeu, joueur);
     collision_objets = collision_joueur_objets(jeu, joueur);
 
     /* On déplace le joueur en fonction des touches appuyées */
-    if(jeu->touches.keys_pressed[k])
+    if(jeu->touches.keys_pressed[k+UP])
+    {
         move_y += -1;
-    if(jeu->touches.keys_pressed[k+1])
+        p->direction = UP;
+    }
+    if(jeu->touches.keys_pressed[k+DOWN])
+    {
         move_y += 1;
-    if(jeu->touches.keys_pressed[k+2])
+        p->direction = DOWN;
+    }
+    if(jeu->touches.keys_pressed[k+LEFT])
+    {
         move_x += -1;
-    if(jeu->touches.keys_pressed[k+3])
+        p->direction = LEFT;
+    }
+    if(jeu->touches.keys_pressed[k+RIGHT])
+    {
         move_x += 1;
+        p->direction = RIGHT;
+    }
 
     p->pos.x += move_x*p->vitesse;
     while(move_x
@@ -147,7 +242,7 @@ void deplacer_joueur(Game *jeu, int joueur)
         p->pos.y -= move_y;
 
     /* Si le joueur appuie sur la touche pour poser une bombe */
-    if(jeu->touches.keys_pressed[k+4])
+    if(jeu->touches.keys_pressed[k+BOMB])
         poser_bomb(jeu, joueur);
 }
 
@@ -193,8 +288,8 @@ int main(int agrc, char** argv)
     clip.h = TILE_HEIGHT;
 
     SDL_Rect clip_perso;
-    clip_perso.x = 0;
-    clip_perso.y = 0;
+    clip_perso.x = PLAYER_INDEX_X;
+    clip_perso.y = PLAYER_INDEX_Y;
     clip_perso.w = 23;
     clip_perso.h = 38;
 
@@ -204,7 +299,8 @@ int main(int agrc, char** argv)
     pos_perso.w = 23;
     pos_perso.h = 38;
 
-    int stop = 0, current_time = 0, previous_time = 0, frame_compte = 0, i, j;
+    int stop = 0, current_time = 0, previous_time = 0, previous_time2 = 0, frame_compte = 0, i, j;
+    int dt = 0;
     SDL_Event event;
 
     SDL_Rect pos_pres;
@@ -236,13 +332,17 @@ int main(int agrc, char** argv)
             break;
         }
 
-        for(i = 0; i < jeu->nb_joueurs; i++)
+        current_time = SDL_GetTicks();
+        dt = current_time - previous_time;
+        if(dt >= 16) /* 60 maj/s */
         {
-            deplacer_joueur(jeu, i);
+            for(i = 0; i < jeu->nb_joueurs; i++)
+            {
+                maj_joueur(jeu, i);
+            }
+            maj_bombs(jeu, dt);
+            previous_time = current_time;
         }
-
-        SDL_Delay(4);
-
 
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
@@ -275,6 +375,9 @@ int main(int agrc, char** argv)
                 case 2:
                     clip.x = 0;
                     clip.y = 13;
+                    /* Sprite alternatif si la case juste en dessous est vide */
+                    if(i+1 == MAP_HEIGHT || jeu->carte[i+1][j]->type == 0)
+                        clip.x = 1;
                     break;
                 }
 
@@ -286,8 +389,8 @@ int main(int agrc, char** argv)
 
         for(i = 0; i < jeu->nb_bombs; i++)
         {
-            clip.x = 2*TILE_WIDTH;
-            clip.y = 0*TILE_HEIGHT;
+            clip.x = BOMB_INDEX_X*TILE_WIDTH;
+            clip.y = BOMB_INDEX_Y*TILE_HEIGHT;
             pos.x = jeu->bombs[i]->pos.x*TILE_WIDTH;
             pos.y = jeu->bombs[i]->pos.y*TILE_HEIGHT;
             SDL_RenderCopy(renderer, feuille_objets, &clip, &pos);
@@ -295,6 +398,21 @@ int main(int agrc, char** argv)
 
         for(i = 0; i < jeu->nb_joueurs; i++)
         {
+            switch(jeu->players[i]->direction)
+            {
+            case DOWN:
+                clip_perso.y = 0;
+                break;
+            case RIGHT:
+                clip_perso.y = 38;
+                break;
+            case UP:
+                clip_perso.y = 2*38;
+                break;
+            case LEFT:
+                clip_perso.y = 3*38;
+                break;
+            }
             pos_perso.x = jeu->players[i]->pos.x;
             pos_perso.y = jeu->players[i]->pos.y - 16;
             SDL_RenderCopy(renderer, feuille_perso, &clip_perso, &pos_perso);
@@ -304,11 +422,11 @@ int main(int agrc, char** argv)
 
         current_time = SDL_GetTicks();
         frame_compte++;
-        if(current_time - previous_time >= 1000)
+        if(current_time - previous_time2 >= 1000)
         {
             printf("FPS: %d\n", frame_compte);
             frame_compte = 0;
-            previous_time = current_time;
+            previous_time2 = current_time;
         }
 
     }

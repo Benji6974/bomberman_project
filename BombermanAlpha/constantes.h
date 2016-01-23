@@ -11,17 +11,25 @@
 #define HITBOX_PLAYER 23
 
 /* Index sprites */
+#define PLAYER_INDEX_X 0
+#define PLAYER_INDEX_Y 0
 
-#define PLAYER_INDEX
-#define BOMB_INDEX
+#define BOMB_INDEX_X 2
+#define BOMB_INDEX_Y 0
+
 #define TILE_INDESTRUCTIBLE_INDEX
+
 #define TILE_DESTRUCTIBLE_INDEX
+
+/* Constantes de jeu */
+#define DELAI_DEFAUT_BOMBE 2000
 
 /* Autres */
 #define ACTIVER_COLLISIONS 1
 #define KEYS_PER_PLAYER 5    /* nombres de touches à assigner par joueur */
 #define NB_BOMBES_MAX 100
 
-enum{UP, DOWN, LEFT, RIGHT};
+/* Actions des touches */
+enum{UP, DOWN, LEFT, RIGHT, BOMB};
 
 #endif // CONSTANTES_H

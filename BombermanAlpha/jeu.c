@@ -19,15 +19,15 @@ Game* init_jeu(int type, int nb_joueurs, int temps)
     int carte_data[TILE_HEIGHT][TILE_WIDTH] = {
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 0, 0, 0, 0, 1, 2, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 2, 1, 2, 1, 2, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1},
+        {1, 2, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 0, 1},
+        {1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
         {1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1},
+        {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 2, 1, 0, 1, 0, 1},
         {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
     };
 
     /* -------------------------------- */
@@ -71,7 +71,7 @@ Game* init_jeu(int type, int nb_joueurs, int temps)
     jeu->players = (Player**)malloc(nb_joueurs*sizeof(Player*));
     for(i = 0; i < nb_joueurs; i++)
     {
-        jeu->players[i] = init_player("Joueur", i+1);
+        jeu->players[i] = init_player("Joueur", i);
         jeu->players[i]->keymap_offset = i*KEYS_PER_PLAYER;
         if (i==1)
         {
@@ -136,8 +136,9 @@ Player* init_player(char *name, int id_player)
     p->vie = 1;
     p->score = 0;
     p->bouclier = 0;
-    p->vitesse = 1; /* pixels par seconde */
+    p->vitesse = 3; /* pixels par ticks */
     p->id_player = id_player;
+    p->direction = DOWN;
     p->pos.x = TILE_WIDTH;
     p->pos.y = TILE_HEIGHT;
     p->pos.h = HITBOX_PLAYER;
