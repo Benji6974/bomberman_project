@@ -26,7 +26,7 @@ Game* init_jeu(int type, int nb_joueurs, int temps)
         {1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1},
         {1, 2, 0, 0, 2, 2, 2, 0, 0, 0, 0, 2, 0, 0, 0, 2, 1},
         {1, 0, 1, 2, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1},
-        {1, 0, 2, 2, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, 0, 0, 1},
+        {1, 0, 0, 2, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, 0, 0, 1},
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
     };
 
@@ -103,10 +103,19 @@ void detruire_jeu(Game* jeu)
 
     /* Libération du tableau des joueurs */
     for(i = 0; i < jeu->nb_joueurs; i++)
+    {
+        free(jeu->players[i]->typebomb);
         free(jeu->players[i]);
+    }
 
     free(jeu->touches.key_map);
     free(jeu->touches.keys_pressed);
+
+    /* Libération du tableau des bombes (au cas où) */
+    for(i = 0; i < jeu->nb_bombs; i++)
+    {
+        free(jeu->bombs[i]);
+    }
 
     /* Destruction du jeu */
     free(jeu);

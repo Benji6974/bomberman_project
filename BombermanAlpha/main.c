@@ -22,6 +22,29 @@ void affiche_carte(Tile ***carte)
     }
 }
 
+/* Fonction générale de collision entre une tile quelconque et un rectangle */
+int collision_tile_rect(int x, int y, SDL_Rect rect)
+{
+    int i, j, x1=0, x2=0, y1=0, y2=0;
+
+    x1 = rect.x/TILE_WIDTH;
+    y1 = rect.y/TILE_HEIGHT;
+
+    x2 = (rect.x + rect.w - 1)/TILE_WIDTH;
+    y2 = (rect.y + rect.h - 1)/TILE_HEIGHT;
+
+    for(i = x1; i <= x2; i++)
+    {
+        for(j = y1; j <= y2; j++)
+        {
+            if(x == i && y == j)
+                return 1;
+        }
+    }
+
+    return 0;
+}
+
 /* Verification collisions rectangle-rectangle avec le décor
  * Renvoie 1 si la collision est totale, 2 si elle est partielle
  */
@@ -60,29 +83,13 @@ int collision_joueur_objets(Game *jeu, int joueur)
     if(!ACTIVER_COLLISIONS)
         return 0;
 
-    int i=0, x=0, y=0, x1=0, x2=0, y1=0, y2=0;
-    const SDL_Rect pos = jeu->players[joueur]->pos, *pos_bomb;
+    int i=0;
 
-    x1 = pos.x/TILE_WIDTH;
-    y1 = pos.y/TILE_HEIGHT;
-
-    x2 = (pos.x + pos.w - 1)/TILE_WIDTH;
-    y2 = (pos.y + pos.h - 1)/TILE_HEIGHT;
-
-    for(x = x1; x <= x2; x++)
+    /* test collision avec les bombes */
+    for(i = 0; i < jeu->nb_bombs; i++)
     {
-        for(y = y1; y <= y2; y++)
-        {
-            /* test collision avec les bombes */
-            for(i = 0; i < jeu->nb_bombs; i++)
-            {
-                pos_bomb = &jeu->bombs[i]->pos;
-                if(x == pos_bomb->x && y == pos_bomb->y)
-                {
-                    return 1;
-                }
-            }
-        }
+        if(collision_tile_rect(jeu->bombs[i]->pos.x, jeu->bombs[i]->pos.y, jeu->players[joueur]->pos))
+            return 1;
     }
 
     return 0;
@@ -107,14 +114,14 @@ int poser_bomb(Game *jeu, int joueur)
             if(jeu->bombs[i]->pos.x == b->pos.x && jeu->bombs[i]->pos.y == b->pos.y)
             {
                 free(b);
-                return 0;
+                return -1;
             }
         }
         jeu->bombs[i] = b;
         jeu->nb_bombs++;
         p->nb_bomb_jeu++;
     }
-
+    return 0;
 }
 
 int exploser_bombe(Game *jeu, int bombe)
@@ -129,6 +136,8 @@ int exploser_bombe(Game *jeu, int bombe)
         y = b->pos.y;
 
         /* destruction du décor et des joueurs */
+
+        /* verticalement */
         for(i = 0; i < b->puissance*2 + 1; i++)
         {
             y2 = y-b->puissance+i;
@@ -143,7 +152,7 @@ int exploser_bombe(Game *jeu, int bombe)
 
                 for(j = 0; j < jeu->nb_joueurs; j++)
                 {
-                    if(jeu->players[j]->pos.x/TILE_WIDTH == x && jeu->players[j]->pos.y/TILE_HEIGHT == y2 && jeu->players[j]->vie > 0)
+                    if(collision_tile_rect(x, y2, jeu->players[j]->pos) && jeu->players[j]->vie > 0)
                     {
                         jeu->players[j]->vie--;
                     }
@@ -151,6 +160,7 @@ int exploser_bombe(Game *jeu, int bombe)
             }
         }
 
+        /* horizontalement */
         for(i = 0; i < b->puissance*2 + 1; i++)
         {
             x2 = x-b->puissance+i;
@@ -165,7 +175,7 @@ int exploser_bombe(Game *jeu, int bombe)
 
                 for(j = 0; j < jeu->nb_joueurs; j++)
                 {
-                    if(jeu->players[j]->pos.x/TILE_WIDTH == x2 && jeu->players[j]->pos.y/TILE_HEIGHT == y && jeu->players[j]->vie > 0)
+                    if(collision_tile_rect(x2, y, jeu->players[j]->pos) && jeu->players[j]->vie > 0)
                     {
                         jeu->players[j]->vie--;
                     }
@@ -356,7 +366,7 @@ int main(int agrc, char** argv)
 
         current_time = SDL_GetTicks();
         dt = current_time - previous_time;
-        if(dt >= 16) /* 60 maj/s */
+        if(dt >= 1000/MAJ_PAR_SEC)
         {
             en_vie = 0;
             for(i = 0; i < jeu->nb_joueurs; i++)
@@ -369,13 +379,17 @@ int main(int agrc, char** argv)
                 }
             }
             maj_bombs(jeu, dt);
-            printf("%d\n", en_vie);
-            if(en_vie <= 1)
+            if(en_vie == 1)
             {
                 stop = 1;
                 char *nom_joueur[256];
                 sprintf(nom_joueur, "Joueur %d gagne!", joueur);
                 SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Fin de partie", nom_joueur, fenetre);
+            }
+            else if(en_vie == 0)
+            {
+                stop = 1;
+                SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Fin de partie", "Tout le monde est mort!", fenetre);
             }
             previous_time = current_time;
         }
@@ -409,11 +423,11 @@ int main(int agrc, char** argv)
                     break;
                 /* Mur desctructible */
                 case 2:
-                    clip.x = 0;
+                    clip.x = 1;
                     clip.y = 13;
-                    /* Sprite alternatif si la case juste en dessous est vide */
-                    if(i+1 == MAP_HEIGHT || jeu->carte[i+1][j]->type == 0)
-                        clip.x = 1;
+                    /* Sprite alternatif si la case juste en dessous n'est pas vide */
+                    if(i+1 < MAP_HEIGHT && jeu->carte[i+1][j] != NULL && jeu->carte[i+1][j]->type != 0)
+                        clip.x = 0;
                     break;
                 }
 

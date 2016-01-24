@@ -12,7 +12,6 @@ typedef struct Bomb{
     Sprite sprite;
     SDL_Rect pos;
     int id_proprietaire;
-    int posee;
 }
 Bomb;
 
