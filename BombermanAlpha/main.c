@@ -278,10 +278,27 @@ void maj_joueur(Game *jeu, int joueur)
         poser_bomb(jeu, joueur);
 }
 
+void trier_par_y(Player **tab, int taille)
+{
+    int i, j;
+    Player *tmp;
+    for(i = 1; i < taille; i++)
+    {
+        j = i;
+        while(j > 0 && tab[j-1]->pos.y > tab[j]->pos.y)
+        {
+            tmp = tab[j];
+            tab[j] = tab[j-1];
+            tab[j-1] = tmp;
+            j--;
+        }
+    }
+}
+
 int main(int agrc, char** argv)
 {
 
-    Game *jeu = init_jeu(0, 3, 0);
+    Game *jeu = init_jeu(0, NB_JOUEURS, 0);
 
     affiche_carte(jeu->carte);
 
@@ -292,7 +309,7 @@ int main(int agrc, char** argv)
     SDL_version version;
     SDL_VERSION(&version)
 
-    SDL_Window *fenetre = init_fenetre("Bomberman Alpha", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN, 0);
+    SDL_Window *fenetre = init_fenetre("Bomberman Beta", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN, 0);
     SDL_Renderer *renderer = SDL_GetRenderer(fenetre);
 
     SDL_RendererInfo info;
@@ -336,6 +353,8 @@ int main(int agrc, char** argv)
     SDL_Event event;
 
     SDL_Rect pos_pres;
+
+    Player **blit_order = malloc(jeu->nb_joueurs*sizeof(int));
 
     while(!stop)
     {
@@ -410,6 +429,10 @@ int main(int agrc, char** argv)
 
                 switch(jeu->carte[i][j]->type)
                 {
+                case -1:
+                    clip.x = 6;
+                    clip.y = 12;
+                    break;
                 /* Herbe */
                 default:
                 case 0:
@@ -446,9 +469,12 @@ int main(int agrc, char** argv)
             SDL_RenderCopy(renderer, feuille_objets, &clip, &pos);
         }
 
+        memcpy(blit_order, jeu->players, jeu->nb_joueurs*sizeof(int));
+        trier_par_y(blit_order, jeu->nb_joueurs);
+
         for(i = 0; i < jeu->nb_joueurs; i++)
         {
-            switch(jeu->players[i]->direction)
+            switch(blit_order[i]->direction)
             {
             case DOWN:
                 clip_perso.y = 0;
@@ -463,10 +489,10 @@ int main(int agrc, char** argv)
                 clip_perso.y = 3*38;
                 break;
             }
-            pos_perso.x = jeu->players[i]->pos.x;
-            pos_perso.y = jeu->players[i]->pos.y - 16;
+            pos_perso.x = blit_order[i]->pos.x;
+            pos_perso.y = blit_order[i]->pos.y - 16;
 
-            if(jeu->players[i]->vie > 0)
+            if(blit_order[i]->vie > 0)
                 SDL_RenderCopy(renderer, feuille_perso, &clip_perso, &pos_perso);
         }
 
@@ -489,5 +515,6 @@ int main(int agrc, char** argv)
 #endif // graphismes
 
     detruire_jeu(jeu);
+    free(blit_order);
     return 0;
 }

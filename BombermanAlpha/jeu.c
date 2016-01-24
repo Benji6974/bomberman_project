@@ -5,7 +5,10 @@
 #include "constantes.h"
 #include "jeu.h"
 
-int gKeys[KEYS_PER_PLAYER*3] = {SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_RCTRL, SDLK_z, SDLK_s, SDLK_q, SDLK_d, SDLK_LCTRL, SDLK_t, SDLK_g, SDLK_f, SDLK_h, SDLK_SPACE};
+int gKeys[KEYS_PER_PLAYER*NB_JOUEURS] = {SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_RCTRL,      /* Joueur 1 */
+                                SDLK_z, SDLK_s, SDLK_q, SDLK_d, SDLK_LCTRL,                 /* Joueur 2 */
+                                SDLK_y, SDLK_h, SDLK_g, SDLK_j, SDLK_SPACE,                 /* Joueur 3 */
+                                SDLK_KP_8, SDLK_KP_5, SDLK_KP_4, SDLK_KP_6, SDLK_KP_ENTER}; /* Joueur 4 */
 
 Game* init_jeu(int type, int nb_joueurs, int temps)
 {
@@ -17,17 +20,17 @@ Game* init_jeu(int type, int nb_joueurs, int temps)
 
 
     int carte_data[TILE_HEIGHT][TILE_WIDTH] = {
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 0, 0, 2, 0, 2, 0, 2, 2, 0, 0, 2, 0, 2, 0, 0, 1},
-        {1, 0, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1},
-        {1, 2, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 2, 1},
-        {1, 2, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 0, 1},
-        {1, 0, 2, 0, 0, 2, 2, 2, 0, 2, 0, 0, 0, 2, 0, 0, 1},
-        {1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1},
-        {1, 2, 0, 0, 2, 2, 2, 0, 0, 0, 0, 2, 0, 0, 0, 2, 1},
-        {1, 0, 1, 2, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1},
-        {1, 0, 0, 2, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, 0, 0, 1},
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+        {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+        {-1, 0, 0, 2, 0, 2, 0, 2, 2, 0, 0, 2, 0, 2, 0, 0, -1},
+        {-1, 0, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, -1},
+        {-1, 2, 2, 0, 2, 0, 0, 2, 0, 0, 0, 2, 2, 2, 0, 2, -1},
+        {-1, 2, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, -1},
+        {-1, 0, 2, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2, 2, 0, 0, -1},
+        {-1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 2, 1, 2, -1},
+        {-1, 2, 0, 0, 2, 2, 2, 0, 0, 0, 0, 2, 0, 0, 0, 2, -1},
+        {-1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 0, -1},
+        {-1, 0, 0, 2, 0, 0, 2, 2, 0, 2, 2, 0, 0, 2, 0, 0, -1},
+        {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
     };
 
     /* -------------------------------- */
@@ -80,6 +83,11 @@ Game* init_jeu(int type, int nb_joueurs, int temps)
         if(i==2)
         {
             jeu->players[i]->pos.y = TILE_HEIGHT*9;
+        }
+        if(i==3)
+        {
+            jeu->players[i]->pos.y = TILE_HEIGHT*9;
+            jeu->players[i]->pos.x = TILE_WIDTH*(MAP_WIDTH-2);
         }
     }
 

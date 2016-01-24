@@ -25,6 +25,7 @@
 #define DELAI_DEFAUT_BOMBE 2000
 
 /* Autres */
+#define NB_JOUEURS 4
 #define MAJ_PAR_SEC 60
 #define ACTIVER_COLLISIONS 1
 #define KEYS_PER_PLAYER 5    /* nombres de touches à assigner par joueur */
