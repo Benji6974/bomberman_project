@@ -8,7 +8,8 @@
 #define MAP_HEIGHT    11
 #define WINDOW_WIDTH  TILE_WIDTH*MAP_WIDTH
 #define WINDOW_HEIGHT TILE_HEIGHT*MAP_HEIGHT
-#define HITBOX_PLAYER 23
+#define HITBOX_PLAYER_W 23
+#define HITBOX_PLAYER_H 15
 
 /* Index sprites */
 #define PLAYER_INDEX_X 0
@@ -31,7 +32,10 @@
 #define KEYS_PER_PLAYER 5    /* nombres de touches à assigner par joueur */
 #define NB_BOMBES_MAX 100
 
+/* Types de murs */
+enum TYPE_MUR {MUR_METAL = -1, HERBE, MUR_INDESTRUCTIBLE, MUR_BRIQUES, MUR_SOLIDE};
+
 /* Actions des touches */
-enum{UP, DOWN, LEFT, RIGHT, BOMB};
+enum TOUCHES {UP, DOWN, LEFT, RIGHT, BOMB};
 
 #endif // CONSTANTES_H
