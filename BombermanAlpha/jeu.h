@@ -70,7 +70,7 @@ int update_jeu(Game *jeu, int dt);
 
 /* fonctions de collisions avec carte et entre entités */
 int collision_tile_rect(int x, int y, SDL_Rect rect);
-int collision_joueur_objets(Game *jeu, int joueur);
+int collision_joueur_objets(Game *jeu, int joueur, int last_col);
 int collision_joueur_decor(Game *jeu, int joueur);
 
 /* Fonctions sur les bombes */

@@ -181,7 +181,7 @@ int collision_joueur_decor(Game *jeu, int joueur)
     return 0;
 }
 
-int collision_joueur_objets(Game *jeu, int joueur)
+int collision_joueur_objets(Game *jeu, int joueur, int last_col)
 {
     if(!ACTIVER_COLLISIONS)
         return 0;
@@ -191,8 +191,9 @@ int collision_joueur_objets(Game *jeu, int joueur)
     /* test collision avec les bombes */
     for(i = 0; i < jeu->nb_bombs; i++)
     {
-        if(collision_tile_rect(jeu->bombs[i]->pos.x, jeu->bombs[i]->pos.y, jeu->players[joueur]->pos))
-            return 1;
+        if(collision_tile_rect(jeu->bombs[i]->pos.x, jeu->bombs[i]->pos.y, jeu->players[joueur]->pos)
+        &&(jeu->bombs[i]->id_proprietaire+1 != last_col || last_col == 0))
+            return jeu->bombs[i]->id_proprietaire+1; /* permet d'eviter que les joueurs utilisent leurs propres bombes pour traverser une bombe adverse */
     }
 
     return 0;
@@ -346,12 +347,8 @@ void maj_bombs(Game *jeu, int dt)
         {
             /* gestion du delai avant explosion des bombes */
             jeu->bombs[i]->delai -= dt;
-            printf("%d\n", jeu->bombs[i]->delai);
             if(jeu->bombs[i]->delai <= 0)
-            {
                 exploser_bombe(jeu, i);
-                printf("BOOM!\n");
-            }
         }
     }
 }
@@ -365,8 +362,9 @@ void maj_joueur(Game *jeu, int joueur)
     if(p->est_mort)
         return;
 
+    /* collision avant deplacement */
     collision_decor = collision_joueur_decor(jeu, joueur);
-    collision_objets = collision_joueur_objets(jeu, joueur);
+    collision_objets = collision_joueur_objets(jeu, joueur, 0);
 
     /* On déplace le joueur en fonction des touches appuyées */
     if(jeu->touches.keys_pressed[k+UP])
@@ -392,14 +390,14 @@ void maj_joueur(Game *jeu, int joueur)
 
     p->pos.x += move_x*p->vitesse;
     while(move_x
-        && (collision_joueur_decor(jeu, joueur) && !collision_decor
-        || collision_joueur_objets(jeu, joueur) && !collision_objets))
+      && ((collision_joueur_decor(jeu, joueur) && !collision_decor)
+      || (collision_joueur_objets(jeu, joueur, collision_objets) ) ) )
         p->pos.x -= move_x;
 
     p->pos.y += move_y*p->vitesse;
     while(move_y
-        && (collision_joueur_decor(jeu, joueur) && !collision_decor
-        || collision_joueur_objets(jeu, joueur) && !collision_objets))
+      && ((collision_joueur_decor(jeu, joueur) && !collision_decor)
+      || (collision_joueur_objets(jeu, joueur, collision_objets) ) ) )
         p->pos.y -= move_y;
 
     /* Si le joueur appuie sur la touche pour poser une bombe */
