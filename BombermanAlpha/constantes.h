@@ -11,17 +11,6 @@
 #define HITBOX_PLAYER_W 23
 #define HITBOX_PLAYER_H 15
 
-/* Index sprites */
-#define PLAYER_INDEX_X 0
-#define PLAYER_INDEX_Y 0
-
-#define BOMB_INDEX_X 2
-#define BOMB_INDEX_Y 0
-
-#define TILE_INDESTRUCTIBLE_INDEX
-
-#define TILE_DESTRUCTIBLE_INDEX
-
 /* Constantes de jeu */
 #define DELAI_DEFAUT_BOMBE 2000
 

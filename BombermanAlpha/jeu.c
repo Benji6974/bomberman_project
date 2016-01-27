@@ -94,7 +94,7 @@ Game* init_jeu(int type, int nb_joueurs, int temps)
     return jeu;
 }
 
-int update_jeu(Game *jeu, int dt)
+int maj_jeu(Game *jeu, int dt)
 {
     int i, joueur = 0, en_vie = 0;
 
@@ -278,6 +278,13 @@ int degats_case(Game *jeu, int x, int y)
                     p->est_mort = 1;
             }
         }
+    }
+
+    /* reaction en chaine bombes */
+    for(i = 0; i < jeu->nb_bombs; i++)
+    {
+        if(jeu->bombs[i]->delai > 100)
+            jeu->bombs[i]->delai = 100;
     }
 
     /* Renvoie 1 si un mur a été détruit pour que si c'est une bombe qui a détruit le mur, on arrete de verifier les cases plus loin */

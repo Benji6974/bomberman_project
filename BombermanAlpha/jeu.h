@@ -4,9 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
-#include "graphismes.h"
-
+#include <SDL.h>
 
 /* Structures du jeu */
 
@@ -14,7 +12,6 @@ typedef struct Bomb{
     int type;
     int puissance;        /* Nombre de cases que peut atteindre la bombe dans chaque directions */
     int delai;            /* Temps en millisecondes avant explosion */
-    Sprite sprite;
     SDL_Rect pos;
     int id_proprietaire;
 }
@@ -66,7 +63,7 @@ typedef struct Game{
 /* Initialiser le jeu: carte, joueurs, etc */
 Game* init_jeu(int type, int nb_joueurs, int temps);
 /* mettre à jour le jeu de dt millisecondes */
-int update_jeu(Game *jeu, int dt);
+int maj_jeu(Game *jeu, int dt);
 
 /* fonctions de collisions avec carte et entre entités */
 int collision_tile_rect(int x, int y, SDL_Rect rect);
