@@ -17,7 +17,7 @@
 #define CLIP_BOMBE_X 2
 #define CLIP_BOMBE_Y 0
 
-#define CLIP_HERBE_X       0
+#define CLIP_HERBE_X       1
 #define CLIP_HERBE_Y       0
 #define CLIP_MUR_METAL_X   6
 #define CLIP_MUR_METAL_Y   12

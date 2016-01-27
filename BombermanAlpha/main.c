@@ -24,15 +24,20 @@ void affiche_carte(Tile ***carte)
 
 int main(int agrc, char** argv)
 {
-
-    Game *jeu = init_jeu(0, NB_JOUEURS, 0);
+    int i, stop = 0, current_time = 0, previous_time = 0, previous_time2 = 0, frame_compte = 0;
+    int dt = 0;
+    SDL_Event event;
+    Game *jeu = NULL;
+    Graphismes *g = NULL;
+    char message[50];
 
     SDL_Init(SDL_INIT_VIDEO);
 
     SDL_version version;
     SDL_VERSION(&version)
 
-    Graphismes *g = init_graphismes("Bomberman Beta",
+    jeu = init_jeu(0, NB_JOUEURS, 0);
+    g   = init_graphismes("Bomberman Beta",
                                     SDL_WINDOWPOS_CENTERED,
                                     SDL_WINDOWPOS_CENTERED,
                                     MAP_WIDTH*TILE_WIDTH,
@@ -43,14 +48,9 @@ int main(int agrc, char** argv)
     SDL_RendererInfo info;
     SDL_GetRenderDriverInfo(0, &info);
 
-    char message[50];
     sprintf(message, "Version SDL: %d.%d.%d\nMoteur de rendu: %s\nTaille de la fenetre: %d*%d\n", version.major, version.minor, version.patch, info.name, WINDOW_WIDTH, WINDOW_HEIGHT);
     SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "SDL initialisee", message, g->fenetre);
 
-
-    int stop = 0, current_time = 0, previous_time = 0, previous_time2 = 0, frame_compte = 0, i;
-    int dt = 0;
-    SDL_Event event;
     while(!stop)
     {
         SDL_PollEvent(&event);

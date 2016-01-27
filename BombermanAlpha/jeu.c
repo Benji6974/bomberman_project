@@ -9,9 +9,10 @@ int gKeys[KEYS_PER_PLAYER*NB_JOUEURS] = {SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIG
 
 Game* init_jeu(int type, int nb_joueurs, int temps)
 {
-    Game *jeu;
-    Tile ***carte;
     int i, j;
+    Game *jeu = NULL;
+    Tile ***carte = NULL;
+    Player *p = NULL;
 
     /* - Tableau pour tester la carte - */
 
@@ -74,21 +75,35 @@ Game* init_jeu(int type, int nb_joueurs, int temps)
     jeu->players = (Player**)malloc(nb_joueurs*sizeof(Player*));
     for(i = 0; i < nb_joueurs; i++)
     {
-        jeu->players[i] = init_player("Joueur", i);
-        jeu->players[i]->keymap_offset = i*KEYS_PER_PLAYER;
-        if (i==1)
+        p = init_player("Joueur", i);
+        p->keymap_offset = i*KEYS_PER_PLAYER;
+
+        /* Positionne les joueurs aux 4 coins de la carte au centre de la case */
+
+        p->pos.x = MAP_WIDTH-2;
+        p->pos.y = MAP_HEIGHT-2;
+
+        if(i==0)
         {
-            jeu->players[i]->pos.x = TILE_WIDTH*(MAP_WIDTH-2);
+            p->pos.x = 1;
+            p->pos.y = 1;
+        }
+        if(i==1)
+        {
+            p->pos.y = 1;
         }
         if(i==2)
         {
-            jeu->players[i]->pos.y = TILE_HEIGHT*9;
+            p->pos.x = 1;
         }
-        if(i==3)
-        {
-            jeu->players[i]->pos.y = TILE_HEIGHT*9;
-            jeu->players[i]->pos.x = TILE_WIDTH*(MAP_WIDTH-2);
-        }
+
+        p->pos.x *= TILE_WIDTH;
+        p->pos.y *= TILE_HEIGHT;
+
+        p->pos.x += (TILE_WIDTH - p->pos.w)/2;
+        p->pos.y += (TILE_HEIGHT - p->pos.h)/2;
+
+        jeu->players[i] = p;
     }
 
     return jeu;
@@ -236,28 +251,29 @@ int poser_bomb(Game *jeu, int joueur)
 int degats_case(Game *jeu, int x, int y)
 {
     int i, detruit_mur = 1;
-    Tile *tile = NULL;
+    Tile   *t = NULL;
     Player *p = NULL;
+    Bomb   *b = NULL;
 
     /* si la case est hors de la map, on arrête tout et on renvoie 1 */
     if(x < 0 || y < 0 || x > MAP_WIDTH || y > MAP_HEIGHT)
         return 1;
 
-    tile = jeu->carte[y][x];
+    t = jeu->carte[y][x];
 
     /* dommages aux murs */
-    switch(tile->type)
+    switch(t->type)
     {
     case HERBE:
         detruit_mur = 0;
         break;
     case MUR_BRIQUES:
-        tile->type = 0;
+        t->type = 0;
         break;
     case MUR_SOLIDE:
-        tile->etat--;
-        if(tile->etat <= 0)
-           tile->type = 0;
+        t->etat--;
+        if(t->etat <= 0)
+           t->type = 0;
         break;
     }
 
@@ -283,8 +299,9 @@ int degats_case(Game *jeu, int x, int y)
     /* reaction en chaine bombes */
     for(i = 0; i < jeu->nb_bombs; i++)
     {
-        if(jeu->bombs[i]->delai > 100)
-            jeu->bombs[i]->delai = 100;
+        b = jeu->bombs[i];
+        if(b->pos.x == x && b->pos.y == y && b->delai > 100)
+            b->delai = 100;
     }
 
     /* Renvoie 1 si un mur a été détruit pour que si c'est une bombe qui a détruit le mur, on arrete de verifier les cases plus loin */
@@ -468,7 +485,7 @@ Player* init_player(char *name, int id_player)
 {
     Player *p = malloc(sizeof(Player));
     //strcpy(name, p->nom);
-    p->vie = 1;
+    p->vie = 666;
     p->est_mort = 0;
     p->score = 0;
     p->bouclier = 0;

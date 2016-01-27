@@ -132,7 +132,7 @@ int maj_graph_carte(Game *jeu, Graphismes *g)
 
 int maj_graph_entites(Game *jeu, Graphismes *g)
 {
-    int i, j, erreur = 0;
+    int i, erreur = 0;
     SDL_Rect clip, pos;
     Player **blit_order = malloc(jeu->nb_joueurs*sizeof(int));
 
