@@ -44,7 +44,7 @@ Game* init_jeu(int type, int nb_joueurs, int temps)
     jeu->time = temps;
     jeu->nb_joueurs = nb_joueurs;
 
-    /* Génération de la carte */
+    /* GÃ©nÃ©ration de la carte */
     carte = (Tile***)malloc(MAP_HEIGHT*sizeof(Tile**)); /* tableau 2D de pointeurs sur Tiles */
     for(i = 0; i < MAP_HEIGHT; i++)
     {
@@ -115,7 +115,7 @@ int maj_jeu(Game *jeu, int dt)
 
     maj_bombs(jeu, dt);
 
-    /* Détermination du gagnant */
+    /* DÃ©termination du gagnant */
     for(i = 0; i < jeu->nb_joueurs; i++)
     {
         maj_joueur(jeu, i);
@@ -140,7 +140,7 @@ int maj_jeu(Game *jeu, int dt)
     return 0;
 }
 
-/* Fonction générale de collision entre une tile quelconque et un rectangle */
+/* Fonction gÃ©nÃ©rale de collision entre une tile quelconque et un rectangle */
 int collision_tile_rect(int x, int y, SDL_Rect rect)
 {
     int i, j, x1=0, x2=0, y1=0, y2=0;
@@ -163,7 +163,7 @@ int collision_tile_rect(int x, int y, SDL_Rect rect)
     return 0;
 }
 
-/* Verification collisions rectangle-rectangle avec le décor
+/* Verification collisions rectangle-rectangle avec le dÃ©cor
  * Renvoie 1 si la collision est totale, 2 si elle est partielle
  */
 int collision_joueur_decor(Game *jeu, int joueur)
@@ -247,7 +247,7 @@ int poser_bomb(Game *jeu, int joueur)
     return 0;
 }
 
-/* A faire: prendre en compte les murs a plusieurs états */
+/* A faire: prendre en compte les murs a plusieurs Ã©tats */
 int degats_case(Game *jeu, int x, int y)
 {
     int i, detruit_mur = 1;
@@ -255,7 +255,7 @@ int degats_case(Game *jeu, int x, int y)
     Player *p = NULL;
     Bomb   *b = NULL;
 
-    /* si la case est hors de la map, on arrête tout et on renvoie 1 */
+    /* si la case est hors de la map, on arrÃªte tout et on renvoie 1 */
     if(x < 0 || y < 0 || x > MAP_WIDTH || y > MAP_HEIGHT)
         return 1;
 
@@ -304,7 +304,7 @@ int degats_case(Game *jeu, int x, int y)
             b->delai = 100;
     }
 
-    /* Renvoie 1 si un mur a été détruit pour que si c'est une bombe qui a détruit le mur, on arrete de verifier les cases plus loin */
+    /* Renvoie 1 si un mur a Ã©tÃ© dÃ©truit pour que si c'est une bombe qui a dÃ©truit le mur, on arrete de verifier les cases plus loin */
     return detruit_mur;
 }
 
@@ -319,9 +319,9 @@ int exploser_bombe(Game *jeu, int bombe)
         x = b->pos.x;
         y = b->pos.y;
 
-        /* destruction du décor et des joueurs */
+        /* destruction du dÃ©cor et des joueurs */
 
-        /* à la position de la bombe */
+        /* Ã  la position de la bombe */
         degats_case(jeu, x, y);
 
         /* vers le haut */
@@ -354,7 +354,7 @@ int exploser_bombe(Game *jeu, int bombe)
     else
         return -1;
 
-    /* décrémentation nombres de bombes du joueur et jeu */
+    /* dÃ©crÃ©mentation nombres de bombes du joueur et jeu */
     if(jeu->nb_bombs > 0)
         jeu->nb_bombs--;
     if(p->nb_bomb_jeu > 0)
@@ -390,7 +390,7 @@ void maj_joueur(Game *jeu, int joueur)
     collision_decor = collision_joueur_decor(jeu, joueur);
     collision_objets = collision_joueur_objets(jeu, joueur, 0);
 
-    /* On déplace le joueur en fonction des touches appuyées */
+    /* On dÃ©place le joueur en fonction des touches appuyÃ©es */
     if(jeu->touches.keys_pressed[k+UP])
     {
         move_y += -1;
@@ -444,7 +444,7 @@ void detruire_jeu(Game* jeu)
     }
     free(jeu->carte);
 
-    /* Libération du tableau des joueurs */
+    /* LibÃ©ration du tableau des joueurs */
     for(i = 0; i < jeu->nb_joueurs; i++)
     {
         free(jeu->players[i]);
@@ -453,7 +453,7 @@ void detruire_jeu(Game* jeu)
     free(jeu->touches.key_map);
     free(jeu->touches.keys_pressed);
 
-    /* Libération du tableau des bombes (au cas où) */
+    /* LibÃ©ration du tableau des bombes (au cas oÃ¹) */
     for(i = 0; i < jeu->nb_bombs; i++)
     {
         free(jeu->bombs[i]);
@@ -485,7 +485,7 @@ Player* init_player(char *name, int id_player)
 {
     Player *p = malloc(sizeof(Player));
     //strcpy(name, p->nom);
-    p->vie = 666;
+    p->vie = 1;
     p->est_mort = 0;
     p->score = 0;
     p->bouclier = 0;
