@@ -40,8 +40,8 @@ int main(int agrc, char** argv)
     g   = init_graphismes("Bomberman Beta",
                                     SDL_WINDOWPOS_CENTERED,
                                     SDL_WINDOWPOS_CENTERED,
-                                    MAP_WIDTH*TILE_WIDTH,
-                                    MAP_HEIGHT*TILE_HEIGHT,
+                                    WINDOW_WIDTH,
+                                    WINDOW_HEIGHT,
                                     SDL_WINDOW_SHOWN,
                                     SDL_RENDERER_PRESENTVSYNC);
 
@@ -66,6 +66,8 @@ int main(int agrc, char** argv)
                 if(event.key.keysym.sym == jeu->touches.key_map[i])
                     jeu->touches.keys_pressed[i] = (event.type == SDL_KEYDOWN) ? 1 : 0;
             }
+            if(event.key.keysym.sym == SDLK_ESCAPE)
+                stop = 1;
             break;
         }
 

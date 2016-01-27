@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "graphismes.h"
 
+
+
 SDL_Texture* charger_sprite(SDL_Renderer *renderer, char *chemin)
 {
     SDL_Texture *finale = NULL;
@@ -123,7 +125,8 @@ int maj_graph_carte(Game *jeu, Graphismes *g)
 
             clip.x *= TILE_WIDTH;
             clip.y *= TILE_HEIGHT;
-            if(SDL_RenderCopy(g->renderer, g->feuilles_sprites[0], &clip, &pos) != 0)
+
+            if(afficher(g, 0, &clip, &pos) != 0)
                 erreur = 1;
         }
     }
@@ -150,7 +153,7 @@ int maj_graph_entites(Game *jeu, Graphismes *g)
         pos.x = jeu->bombs[i]->pos.x*TILE_WIDTH;
         pos.y = jeu->bombs[i]->pos.y*TILE_HEIGHT;
 
-        if(SDL_RenderCopy(g->renderer, g->feuilles_sprites[2], &clip, &pos) != 0)
+        if(afficher(g, 2, &clip, &pos) != 0)
             erreur = 1;
     }
 
@@ -188,13 +191,25 @@ int maj_graph_entites(Game *jeu, Graphismes *g)
 
         if(!blit_order[i]->est_mort)
         {
-            if(SDL_RenderCopy(g->renderer, g->feuilles_sprites[1], &clip, &pos) != 0)
+            if(afficher(g, 1, &clip, &pos) != 0)
                 erreur = 1;
         }
     }
 
     free(blit_order);
     return erreur;
+}
+
+int afficher(Graphismes *g, int feuille_sprite, SDL_Rect *clip, SDL_Rect *dest)
+{
+    SDL_Rect blit;
+
+    blit.x = RENDER_SCALE*dest->x;
+    blit.y = RENDER_SCALE*dest->y;
+    blit.w = RENDER_SCALE*dest->w;
+    blit.h = RENDER_SCALE*dest->h;
+
+    return SDL_RenderCopy(g->renderer, g->feuilles_sprites[feuille_sprite], clip, &blit);
 }
 
 /* Fonction utilisée pour trier le tableau des joueurs en fonction de leur position verticale

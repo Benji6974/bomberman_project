@@ -44,6 +44,8 @@ int maj_graphismes(Game *jeu, Graphismes *g);
 int maj_graph_carte(Game *jeu, Graphismes *g);
 int maj_graph_entites(Game *jeu, Graphismes *g);
 
+int afficher(Graphismes *g, int feuille_sprite, SDL_Rect *clip, SDL_Rect *dest);
+
 void trier_par_y(Player **tab, int taille);
 
 void free_graphismes(Graphismes *g);
