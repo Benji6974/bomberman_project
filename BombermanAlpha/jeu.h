@@ -70,7 +70,7 @@ typedef struct Game{
 /* Prototypes des fonctions */
 
 /* Initialiser le jeu: carte, joueurs, etc */
-Game* init_jeu(int type, int nb_joueurs, int temps);
+Game* init_jeu(int type, int nb_joueurs, int temps,int typemap);
 /* mettre à jour le jeu de dt millisecondes */
 int maj_jeu(Game *jeu, int dt);
 
@@ -98,6 +98,7 @@ Player* init_player(char *name, int id_player);
 void maj_joueur(Game *jeu, int joueur);
 
 void init_tile(Tile* t,int type, int etat);
+int*** genere_map(int ***carte_data, int nb_joueurs);
 
 void detruire_jeu(Game *jeu);
 

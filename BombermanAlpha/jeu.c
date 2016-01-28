@@ -7,7 +7,7 @@ int gKeys[KEYS_PER_PLAYER*NB_JOUEURS] = {SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIG
                                          SDLK_KP_8, SDLK_KP_5, SDLK_KP_4, SDLK_KP_6, SDLK_KP_ENTER}; /* Joueur 4 */
 
 
-Game* init_jeu(int type, int nb_joueurs, int temps)
+Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
 {
     int i, j;
     Game *jeu = NULL;
@@ -17,7 +17,14 @@ Game* init_jeu(int type, int nb_joueurs, int temps)
     /* - Tableau pour tester la carte - */
     srand(time(NULL));
 
-    int carte_data[TILE_HEIGHT][TILE_WIDTH] = {
+    int ***carte_data;
+    if (typemap == -1)
+    {
+      carte_data =  genere_map(carte_data,nb_joueurs);
+    }
+    else if (typemap == 0)
+    {
+       /* carte_data = {
         {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
         {-1, 0, 0, 2, 0, 2, 0, 2, 2, 0, 0, 2, 0, 2, 0, 0, -1},
         {-1, 0, 1, 3, 1, 0, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, -1},
@@ -29,7 +36,9 @@ Game* init_jeu(int type, int nb_joueurs, int temps)
         {-1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 0, -1},
         {-1, 0, 0, 2, 0, 0, 2, 2, 0, 2, 2, 0, 0, 2, 0, 0, -1},
         {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
-    };
+        };*/
+    }
+
 
     /* -------------------------------- */
 
@@ -111,6 +120,49 @@ Game* init_jeu(int type, int nb_joueurs, int temps)
     }
 
     return jeu;
+}
+
+int*** genere_map(int ***carte_data, int nb_joueurs)
+{
+    carte_data = (int**)malloc(MAP_HEIGHT*sizeof(int*));
+    int z;
+    for (z=0;z<MAP_HEIGHT;z++)
+    {
+        carte_data[z] = (int*)malloc(MAP_WIDTH*sizeof(int));
+    }
+    int proba;
+    int x,y;
+    for (y=0;y<MAP_HEIGHT;y++)
+    {
+         for (x=0;x<MAP_WIDTH;x++)
+         {
+            proba = rand()%100;
+            if (x==0 || y == 0 || x == MAP_WIDTH-1 || y == MAP_HEIGHT-1 )
+                carte_data[y][x] = -1;
+            else if(nb_joueurs >= 1 && ((x == 1 && y == 1) || (x == 2 && y == 1) || (x == 1 && y == 2)))
+                carte_data[y][x] = HERBE;
+            else if(nb_joueurs >= 2 && ((x == MAP_WIDTH-2 && y == 1) || (x == MAP_WIDTH-3 && y == 1) || (x == MAP_WIDTH-2 && y == 2)))
+                carte_data[y][x] = HERBE;
+            else if(nb_joueurs >= 3 && ((x == 1 && y == MAP_HEIGHT-2) || (x == 2 && y == MAP_HEIGHT-2) || (x == 1 && y == MAP_HEIGHT-3)))
+                carte_data[y][x] = HERBE;
+            else if(nb_joueurs >= 4 && ((x == MAP_WIDTH-2 && y == MAP_HEIGHT-2) || (x == MAP_WIDTH-3 && y == MAP_HEIGHT-2) || (x == MAP_WIDTH-2 && y == MAP_HEIGHT-3)))
+                carte_data[y][x] = HERBE;
+            else
+            {
+                if (proba <P_HERBE)
+                    carte_data[y][x] = HERBE;
+                else if(proba < P_HERBE+P_MUR_INDESTRUCTIBLE)
+                    carte_data[y][x] = MUR_INDESTRUCTIBLE;
+                else if(proba <P_HERBE+P_MUR_INDESTRUCTIBLE+P_MUR_BRIQUES)
+                    carte_data[y][x] = MUR_BRIQUES;
+                else if(proba <P_HERBE+P_MUR_INDESTRUCTIBLE+P_MUR_BRIQUES+P_MUR_SOLIDE)
+                    carte_data[y][x] = MUR_SOLIDE;
+
+            }
+
+         }
+    }
+    return carte_data;
 }
 
 int maj_jeu(Game *jeu, int dt)
