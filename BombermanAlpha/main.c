@@ -9,22 +9,22 @@
 
 #define GRAPHISMES 1
 
-void affiche_carte(Tile ***carte)
+void maj_controles(Controls *controles, SDL_Event *event)
 {
-    int i, j;
-    for(i = 0; i < MAP_HEIGHT; i++)
+    if(event->type != SDL_KEYDOWN && event->type != SDL_KEYUP)
+        return;
+
+    int i;
+    for(i = 0; i < controles->num_keys; i++)
     {
-        for(j = 0; j < MAP_WIDTH; j++)
-        {
-            printf("%d ", carte[i][j]->type);
-        }
-        printf("\n");
+        if(event->key.keysym.sym == controles->key_map[i])
+            controles->keys_pressed[i] = event->type == SDL_KEYDOWN;
     }
 }
 
 int main(int agrc, char** argv)
 {
-    int i, stop = 0, current_time = 0, previous_time = 0, previous_time2 = 0, frame_compte = 0;
+    int pause = 0, stop = 0, pause_b = 0, current_time = 0, previous_time = 0, previous_time2 = 0, frame_compte = 0;
     int dt = 0;
     SDL_Event event;
     Game *jeu = NULL;
@@ -57,17 +57,34 @@ int main(int agrc, char** argv)
         if(event.window.event == SDL_WINDOWEVENT_CLOSE)
             stop = 1;
 
+        maj_controles(&jeu->touches, &event);
+
         switch(event.type)
         {
         case SDL_KEYUP:
-        case SDL_KEYDOWN:
-            for(i = 0; i < jeu->touches.num_keys; i++)
+            switch(event.key.keysym.sym)
             {
-                if(event.key.keysym.sym == jeu->touches.key_map[i])
-                    jeu->touches.keys_pressed[i] = (event.type == SDL_KEYDOWN) ? 1 : 0;
+            case SDLK_p:
+                pause_b = 0;
+                break;
+            default:;
             }
-            if(event.key.keysym.sym == SDLK_ESCAPE)
+            break;
+        case SDL_KEYDOWN:
+            switch(event.key.keysym.sym)
+            {
+            case SDLK_ESCAPE:
                 stop = 1;
+                break;
+            case SDLK_p:
+                if(!pause_b)
+                {
+                    pause ^= 1;
+                    pause_b = 1;
+                }
+            break;
+            default:;
+            }
             break;
         }
 
@@ -75,9 +92,9 @@ int main(int agrc, char** argv)
 
         current_time = SDL_GetTicks();
         dt = current_time - previous_time;
-        if(dt >= 1000/MAJ_PAR_SEC)
+        if(dt >= 1000/MAJ_PAR_SEC && !pause)
         {
-            stop |= maj_jeu(jeu, dt);
+            stop |= maj_jeu(jeu, 1000/MAJ_PAR_SEC);
             previous_time = current_time;
         }
 
