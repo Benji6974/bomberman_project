@@ -52,6 +52,8 @@ Graphismes* init_graphismes(char *titre, int x, int y, int w, int h, Uint32 flag
     g->feuilles_sprites[0] = charger_sprite(renderer, FEUILLE_TILES);
     g->feuilles_sprites[1] = charger_sprite(renderer, FEUILLE_PERSO);
     g->feuilles_sprites[2] = charger_sprite(renderer, FEUILLE_OBJETS);
+    g->feuilles_sprites[3] = charger_sprite(renderer, FEUILLE_BONUS);
+
 
     return g; // pour avoir le renderer, suffit d'utiliser SDL_GetRenderer
 }
@@ -139,6 +141,43 @@ int maj_graph_entites(Game *jeu, Graphismes *g)
     SDL_Rect clip, pos;
     Player **blit_order = malloc(jeu->nb_joueurs*sizeof(int));
 
+    /* ----- AFFICHAGE DES OBJETS ------ */
+
+    for(i = 0; i < jeu->nb_objets; i++)
+    {
+        if(jeu->objets[i] == NULL)
+            continue;
+
+        pos.x = jeu->objets[i]->pos.x - (TILE_WIDTH - jeu->objets[i]->pos.w)/2;
+        pos.y = jeu->objets[i]->pos.y - (TILE_HEIGHT - jeu->objets[i]->pos.h)/2;
+
+        switch(jeu->objets[i]->type)
+        {
+        case 0:
+            clip.x = 0;
+            clip.y = 3;
+            break;
+        case 1:
+            clip.x = 0;
+            clip.y = 1;
+            break;
+        case 2:
+            clip.x = 0;
+            clip.y = 0;
+            break;
+        case 3:
+            clip.x = 0;
+            clip.y = 2;
+            break;
+        }
+
+        clip.x *= TILE_WIDTH;
+        clip.y *= TILE_HEIGHT;
+
+        if(afficher(g, 3, &clip, &pos) != 0)
+            erreur = 1;
+    }
+
     /* ----- AFFICHAGE DES BOMBES ----- */
 
     clip.x = 2*TILE_WIDTH;
@@ -205,7 +244,7 @@ int afficher(Graphismes *g, int feuille_sprite, SDL_Rect *clip, SDL_Rect *dest)
     SDL_Rect blit;
 
     blit.x = RENDER_SCALE*dest->x;
-    blit.y = RENDER_SCALE*dest->y;
+    blit.y = RENDER_SCALE*(dest->y + HUD_HEIGHT);
     blit.w = RENDER_SCALE*dest->w;
     blit.h = RENDER_SCALE*dest->h;
 

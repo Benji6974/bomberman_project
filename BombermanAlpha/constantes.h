@@ -2,13 +2,14 @@
 #define CONSTANTES_H
 
 /* Taille de la carte et de la fenêtre */
+#define HUD_HEIGHT    48
 #define TILE_WIDTH    32
 #define TILE_HEIGHT   32
 #define MAP_WIDTH     17
 #define MAP_HEIGHT    11
 #define RENDER_SCALE  2
 #define WINDOW_WIDTH  RENDER_SCALE*TILE_WIDTH*MAP_WIDTH
-#define WINDOW_HEIGHT RENDER_SCALE*TILE_HEIGHT*MAP_HEIGHT
+#define WINDOW_HEIGHT RENDER_SCALE*(TILE_HEIGHT*MAP_HEIGHT + HUD_HEIGHT)
 #define HITBOX_PLAYER_W 23
 #define HITBOX_PLAYER_H 15
 
@@ -21,11 +22,13 @@
 #define ACTIVER_COLLISIONS 1
 #define KEYS_PER_PLAYER 5    /* nombres de touches à assigner par joueur */
 #define NB_BOMBES_MAX 100
+#define NB_OBJETS_MAX 100
 
 /* Types de murs */
 enum TYPE_MUR {MUR_METAL = -1, HERBE, MUR_INDESTRUCTIBLE, MUR_BRIQUES, MUR_SOLIDE};
 
 /* Actions des touches */
 enum TOUCHES {UP, DOWN, LEFT, RIGHT, BOMB};
+enum {P_SHIELD = 10, P_RANGE = 30, P_BOMB = 30, P_SPEED = 30};
 
 #endif // CONSTANTES_H

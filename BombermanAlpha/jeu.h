@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include <SDL.h>
 
 /* Structures du jeu */
@@ -47,6 +48,11 @@ typedef struct Controls{
     int *key_map;      /* ID de chaque touches (ex. SDLK_UP); correspond avec keys_pressed (même taille) */
 }Controls;
 
+typedef struct Objet{
+    int type;
+    SDL_Rect pos;
+}Objet;
+
 typedef struct Game{
     int type;
     Player** players;
@@ -56,7 +62,10 @@ typedef struct Game{
     Controls touches;
     Bomb** bombs;
     int nb_bombs;
+    Objet** objets;
+    int nb_objets;
 }Game;
+
 
 /* Prototypes des fonctions */
 
@@ -67,6 +76,7 @@ int maj_jeu(Game *jeu, int dt);
 
 /* fonctions de collisions avec carte et entre entités */
 int collision_tile_rect(int x, int y, SDL_Rect rect);
+int collision_rect_rect(SDL_Rect a, SDL_Rect b);
 int collision_joueur_objets(Game *jeu, int joueur, int last_col);
 int collision_joueur_decor(Game *jeu, int joueur);
 
@@ -76,6 +86,9 @@ int degats_case(Game *jeu, int x, int y);
 int exploser_bombe(Game *jeu, int bombe);
 int poser_bomb(Game *jeu, int joueur);
 void maj_bombs(Game *jeu, int dt);
+
+/* Fnctions sur les objets*/
+Objet* init_objet(int type);
 
 /* Fonctions sur les joueurs */
 Player* init_player(char *name, int id_player);

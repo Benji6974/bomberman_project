@@ -10,6 +10,7 @@
 #define FEUILLE_TILES       "img/tileset.bmp"
 #define FEUILLE_PERSO       "img/character_silver.bmp"
 #define FEUILLE_OBJETS      "img/atlas5_32.bmp"
+#define FEUILLE_BONUS       "img/items.bmp"
 
 #define CLIP_PERSO_X 0
 #define CLIP_PERSO_Y 0
