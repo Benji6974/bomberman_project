@@ -315,8 +315,11 @@ int donner_bonus(Game *jeu, int joueur, int type)
     switch(type)
     {
     case ITEM_SHIELD:
-        p->bouclier = 1;
-        succes = 1;
+        if(p->bouclier < 1)
+        {
+            p->bouclier = 1;
+            succes = 1;
+        }
         break;
     case ITEM_RANGE:
         if(p->typebomb.puissance < BONUS_MAX_RANGE)
