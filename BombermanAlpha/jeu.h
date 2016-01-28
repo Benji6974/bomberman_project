@@ -79,16 +79,19 @@ int collision_tile_rect(int x, int y, SDL_Rect rect);
 int collision_rect_rect(SDL_Rect a, SDL_Rect b);
 int collision_joueur_objets(Game *jeu, int joueur, int last_col);
 int collision_joueur_decor(Game *jeu, int joueur);
+int collision_joueur_items(Game*, int);
 
 /* Fonctions sur les bombes */
 Bomb* init_bomb(int type, int id_player);
-int degats_case(Game *jeu, int x, int y);
+int degats_case(Game *jeu, Bomb *origine, int x, int y);
 int exploser_bombe(Game *jeu, int bombe);
 int poser_bomb(Game *jeu, int joueur);
 void maj_bombs(Game *jeu, int dt);
 
 /* Fnctions sur les objets*/
 Objet* init_objet(int type);
+void generer_bonus(Game*, int, int, int);
+int donner_bonus(Game*, int, int);
 
 /* Fonctions sur les joueurs */
 Player* init_player(char *name, int id_player);

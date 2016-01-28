@@ -6,7 +6,7 @@
 #include "constantes.h"
 #include "jeu.h"
 
-#define NB_FEUILLES_SPRITES 3
+#define NB_FEUILLES_SPRITES 4
 #define FEUILLE_TILES       "img/tileset.bmp"
 #define FEUILLE_PERSO       "img/character_silver.bmp"
 #define FEUILLE_OBJETS      "img/atlas5_32.bmp"
@@ -28,6 +28,15 @@
 #define CLIP_MUR_BRIQUES_Y 13
 #define CLIP_MUR_SOLIDE_X  0
 #define CLIP_MUR_SOLIDE_Y  12
+
+#define CLIP_ITEM_SHIELD_X 0
+#define CLIP_ITEM_SHIELD_Y 3
+#define CLIP_ITEM_RANGE_X  0
+#define CLIP_ITEM_RANGE_Y  1
+#define CLIP_ITEM_BOMB_X   0
+#define CLIP_ITEM_BOMB_Y   0
+#define CLIP_ITEM_SPEED_X  0
+#define CLIP_ITEM_SPEED_Y  2
 
 #define SPRITE_PERSO_W 23
 #define SPRITE_PERSO_H 38

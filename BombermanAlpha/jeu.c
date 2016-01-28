@@ -45,7 +45,7 @@ Game* init_jeu(int type, int nb_joueurs, int temps)
     jeu->nb_objets = 0;
 
     jeu->type = type;
-    jeu->time = temps;
+    jeu->time = temps*1000;
     jeu->nb_joueurs = nb_joueurs;
 
     /* Génération de la carte */
@@ -141,6 +141,15 @@ int maj_jeu(Game *jeu, int dt)
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Fin de partie", "Tout le monde est mort!", NULL);
         return 1;
     }
+
+    printf("Temps restant: %d\n", jeu->time/1000);
+    jeu->time -= dt;
+    if(jeu->time <= 0)
+    {
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Fin de partie", "Temps ecoule!", NULL);
+        return 1;
+    }
+
     return 0;
 }
 
@@ -175,9 +184,6 @@ int collision_rect_rect(SDL_Rect a, SDL_Rect b)
           || a.y+a.h < b.y);
 }
 
-/* Verification collisions rectangle-rectangle avec le décor
- * Renvoie 1 si la collision est totale, 2 si elle est partielle
- */
 int collision_joueur_decor(Game *jeu, int joueur)
 {
     if(!ACTIVER_COLLISIONS)
@@ -200,7 +206,6 @@ int collision_joueur_decor(Game *jeu, int joueur)
             if(jeu->carte[y][x]->type != 0)
             {
                 return 1;
-
             }
         }
     }
@@ -235,47 +240,56 @@ int collision_joueur_items(Game *jeu, int joueur)
         {
             if(collision_rect_rect(jeu->objets[i]->pos, jeu->players[joueur]->pos))
             {
-                int utilise = 0;
-                if(jeu->objets[i]->type == 0)
-                {
-                    jeu->players[joueur]->bouclier = 1;
-                    utilise = 1;
-                }else if (jeu->objets[i]->type == 1)
-                {
-                    if (jeu->players[joueur]->typebomb.puissance <5)
-                    {
-                        jeu->players[joueur]->typebomb.puissance++;
-                        utilise = 1;
-                    }
-
-                }
-                else if (jeu->objets[i]->type == 2)
-                {
-                    if (jeu->players[joueur]->nb_bomb_max <5)
-                    {
-                        jeu->players[joueur]->nb_bomb_max++;
-                        utilise = 1;
-                    }
-
-                }else if (jeu->objets[i]->type == 3)
-                {
-                    if (jeu->players[joueur]->vitesse <5)
-                    {
-                        jeu->players[joueur]->vitesse++;
-                        utilise = 1;
-                    }
-
-                }
-                if (utilise)
+                if(donner_bonus(jeu, joueur, jeu->objets[i]->type))
                 {
                     free(jeu->objets[i]);
                     jeu->objets[i] = NULL;
+                    jeu->nb_objets--;
+                    jeu->players[i]->score += SCORE_ITEM_GET;
+                    return 1;
                 }
-
             }
         }
 
     }
+    return 0;
+}
+
+int donner_bonus(Game *jeu, int joueur, int type)
+{
+    int succes = 0;
+    Player *p = jeu->players[joueur];
+
+    switch(type)
+    {
+    case ITEM_SHIELD:
+        p->bouclier = 1;
+        succes = 1;
+        break;
+    case ITEM_RANGE:
+        if(p->typebomb.puissance < BONUS_MAX_RANGE)
+        {
+            p->typebomb.puissance++;
+            succes = 1;
+        }
+        break;
+    case ITEM_BOMB:
+        if(p->nb_bomb_max < BONUS_MAX_BOMB)
+        {
+            p->nb_bomb_max++;
+            succes = 1;
+        }
+        break;
+    case ITEM_SPEED:
+        if(p->vitesse < BONUS_MAX_SPEED)
+        {
+            p->vitesse++;
+            succes = 1;
+        }
+        break;
+    }
+
+    return succes;
 }
 
 int poser_bomb(Game *jeu, int joueur)
@@ -311,10 +325,9 @@ int poser_bomb(Game *jeu, int joueur)
     return 0;
 }
 
-/* A faire: prendre en compte les murs a plusieurs états */
-int degats_case(Game *jeu, int x, int y)
+int degats_case(Game *jeu, Bomb *origine, int x, int y)
 {
-    int i, detruit_mur = 1;
+    int i, obstacle = 1;
     Tile   *t = NULL;
     Player *p = NULL;
     Bomb   *b = NULL;
@@ -329,17 +342,19 @@ int degats_case(Game *jeu, int x, int y)
     switch(t->type)
     {
     case HERBE:
-        detruit_mur = 0;
+        obstacle = 0;
         break;
     case MUR_BRIQUES:
-        generer_bonnus(jeu, x, y, t->type);
+        jeu->players[origine->id_proprietaire]->score += SCORE_MUR_BRIQUES;
+        generer_bonus(jeu, x, y, t->type);
         t->type = 0;
         break;
     case MUR_SOLIDE:
         t->etat--;
         if(t->etat <= 0)
         {
-            generer_bonnus(jeu, x, y, t->type);
+            jeu->players[origine->id_proprietaire]->score += SCORE_MUR_SOLIDE;
+            generer_bonus(jeu, x, y, t->type);
             t->type = 0;
         }
         break;
@@ -359,7 +374,12 @@ int degats_case(Game *jeu, int x, int y)
             {
                 p->vie--;
                 if(p->vie <= 0)
+                {
                     p->est_mort = 1;
+                    jeu->players[origine->id_proprietaire]->score += SCORE_JOUEUR_KILL;
+                }
+                else
+                    jeu->players[origine->id_proprietaire]->score += SCORE_JOUEUR_HIT;
             }
         }
     }
@@ -373,15 +393,15 @@ int degats_case(Game *jeu, int x, int y)
     }
 
     /* Renvoie 1 si un mur a été détruit pour que si c'est une bombe qui a détruit le mur, on arrete de verifier les cases plus loin */
-    return detruit_mur;
+    return obstacle;
 }
 
-int generer_bonnus(Game *jeu, int x, int y,int t)
+void generer_bonus(Game *jeu, int x, int y, int t)
 {
-    Objet* o = NULL;
-    int type;
+    int i, type;
     int chanceMur = rand()%100;
     int chanceItem = rand()%100;
+    Objet* o = NULL;
 
     int proba_mur = 0;
 
@@ -398,43 +418,26 @@ int generer_bonnus(Game *jeu, int x, int y,int t)
     if(chanceMur < proba_mur)
     {
         if(chanceItem < P_SHIELD)
-        {
             type = 0;
-        }
-        else if(chanceItem  < P_RANGE+ P_SHIELD)
-        {
-           type = 1;
-        }
-        else if(chanceItem < P_RANGE+ P_SHIELD +P_BOMB)
-        {
+        else if(chanceItem  < P_RANGE+P_SHIELD)
+            type = 1;
+        else if(chanceItem < P_RANGE+P_SHIELD+P_BOMB)
             type = 2;
-        }
         else
-        {
             type = 3;
-        }
+
         o = init_objet(type);
         o->pos.x = x*TILE_WIDTH + (TILE_WIDTH - o->pos.w)/2;
         o->pos.y = y*TILE_HEIGHT + (TILE_HEIGHT - o->pos.h)/2;
-        int i;
-        printf("Objet type: %d\n", type);
-        for(i = 0; jeu->objets[i] != NULL; i++);
 
+        printf("Objet cree de type %d aux coordonnees %d,%d\n", type, x, y);
+        for(i = 0; jeu->objets[i] != NULL; i++);
 
         jeu->objets[i] = o;
         jeu->nb_objets++;
     }
 }
 
-Objet* init_objet(int type)
-{
-    Objet* o = malloc(sizeof(Objet));
-    o->type= type;
-    o->pos.h = TILE_WIDTH/4;
-    o->pos.w = TILE_HEIGHT/4;
-
-    return o;
-}
 int exploser_bombe(Game *jeu, int bombe)
 {
     int i, x, y;
@@ -449,19 +452,19 @@ int exploser_bombe(Game *jeu, int bombe)
         /* destruction du décor et des joueurs */
 
         /* à la position de la bombe */
-        degats_case(jeu, x, y);
+        degats_case(jeu, b, x, y);
 
         /* vers le haut */
-        for(i = 1; i <= b->puissance && !degats_case(jeu, x, y-i); i++);
+        for(i = 1; i <= b->puissance && !degats_case(jeu, b, x, y-i); i++);
 
         /* vers le bas */
-        for(i = 1; i <= b->puissance && !degats_case(jeu, x, y+i); i++);
+        for(i = 1; i <= b->puissance && !degats_case(jeu, b, x, y+i); i++);
 
         /* vers la gauche */
-        for(i = 1; i <= b->puissance && !degats_case(jeu, x-i, y); i++);
+        for(i = 1; i <= b->puissance && !degats_case(jeu, b, x-i, y); i++);
 
         /* vers la droite */
-        for(i = 1; i <= b->puissance && !degats_case(jeu, x+i, y); i++);
+        for(i = 1; i <= b->puissance && !degats_case(jeu, b, x+i, y); i++);
 
 
         /* destruction de la bombe */
@@ -586,6 +589,15 @@ void detruire_jeu(Game* jeu)
     {
         free(jeu->bombs[i]);
     }
+    /* Libération du tableau des objets */
+    for(i = 0; i < jeu->nb_objets; i++)
+    {
+        free(jeu->objets[i]);
+    }
+
+    free(jeu->players);
+    free(jeu->bombs);
+    free(jeu->objets);
 
     /* Destruction du jeu */
     free(jeu);
@@ -601,6 +613,16 @@ Bomb* init_bomb(int type, int id_proprietaire)
     b->delai = DELAI_DEFAUT_BOMBE;
     b->id_proprietaire = id_proprietaire;
     return b;
+}
+
+Objet* init_objet(int type)
+{
+    Objet* o = malloc(sizeof(Objet));
+    o->type= type;
+    o->pos.h = HITBOX_ITEM_W;
+    o->pos.w = HITBOX_ITEM_H;
+
+    return o;
 }
 
 void init_tile(Tile* t,int type, int etat)

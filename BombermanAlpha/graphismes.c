@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include "graphismes.h"
 
-
-
 SDL_Texture* charger_sprite(SDL_Renderer *renderer, char *chemin)
 {
     SDL_Texture *finale = NULL;
@@ -149,25 +147,25 @@ int maj_graph_entites(Game *jeu, Graphismes *g)
             continue;
 
         pos.x = jeu->objets[i]->pos.x - (TILE_WIDTH - jeu->objets[i]->pos.w)/2;
-        pos.y = jeu->objets[i]->pos.y - (TILE_HEIGHT - jeu->objets[i]->pos.h)/2;
+        pos.y = jeu->objets[i]->pos.y - (TILE_HEIGHT - jeu->objets[i]->pos.h)/2 - 4;
 
         switch(jeu->objets[i]->type)
         {
-        case 0:
-            clip.x = 0;
-            clip.y = 3;
+        case ITEM_SHIELD:
+            clip.x = CLIP_ITEM_SHIELD_X;
+            clip.y = CLIP_ITEM_SHIELD_Y;
             break;
-        case 1:
-            clip.x = 0;
-            clip.y = 1;
+        case ITEM_RANGE:
+            clip.x = CLIP_ITEM_RANGE_X;
+            clip.y = CLIP_ITEM_RANGE_Y;
             break;
-        case 2:
-            clip.x = 0;
-            clip.y = 0;
+        case ITEM_BOMB:
+            clip.x = CLIP_ITEM_BOMB_X;
+            clip.y = CLIP_ITEM_BOMB_Y;
             break;
-        case 3:
-            clip.x = 0;
-            clip.y = 2;
+        case ITEM_SPEED:
+            clip.x = CLIP_ITEM_SPEED_X;
+            clip.y = CLIP_ITEM_SPEED_Y;
             break;
         }
 
@@ -216,15 +214,18 @@ int maj_graph_entites(Game *jeu, Graphismes *g)
             clip.y = 0;
             break;
         case RIGHT:
-            clip.y = SPRITE_PERSO_H;
+            clip.y = 1;
             break;
         case UP:
-            clip.y = 2*SPRITE_PERSO_H;
+            clip.y = 2;
             break;
         case LEFT:
-            clip.y = 3*SPRITE_PERSO_H;
+            clip.y = 3;
             break;
         }
+
+        clip.y *= SPRITE_PERSO_H;
+
         pos.x = blit_order[i]->pos.x;
         pos.y = blit_order[i]->pos.y - (SPRITE_PERSO_H - HITBOX_PLAYER_H);
 
