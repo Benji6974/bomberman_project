@@ -7,7 +7,7 @@
 #define TILE_HEIGHT   32
 #define MAP_WIDTH     17
 #define MAP_HEIGHT    11
-#define RENDER_SCALE  2 /* Taille des pixels  */
+#define RENDER_SCALE  1 /* Taille des pixels  */
 #define WINDOW_WIDTH  RENDER_SCALE*TILE_WIDTH*MAP_WIDTH
 #define WINDOW_HEIGHT RENDER_SCALE*(TILE_HEIGHT*MAP_HEIGHT + HUD_HEIGHT)
 
@@ -29,6 +29,8 @@
 #define BONUS_MAX_RANGE     5
 #define BONUS_MAX_BOMB      5
 #define BONUS_MAX_SPEED     5
+#define PROBA_MUR_BRIQUES   20
+#define PROBA_MUR_SOLIDE    30
 
 #define SCORE_MUR_BRIQUES 10
 #define SCORE_MUR_SOLIDE  3*SCORE_MUR_BRIQUES

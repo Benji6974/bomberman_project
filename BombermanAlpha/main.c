@@ -9,19 +9,6 @@
 
 #define GRAPHISMES 1
 
-void maj_controles(Controls *controles, SDL_Event *event)
-{
-    if(event->type != SDL_KEYDOWN && event->type != SDL_KEYUP)
-        return;
-
-    int i;
-    for(i = 0; i < controles->num_keys; i++)
-    {
-        if(event->key.keysym.sym == controles->key_map[i])
-            controles->keys_pressed[i] = event->type == SDL_KEYDOWN;
-    }
-}
-
 int main(int agrc, char** argv)
 {
     int pause = 0, stop = 0, pause_b = 0, current_time = 0, previous_time = 0, previous_time2 = 0, frame_compte = 0;
@@ -57,8 +44,6 @@ int main(int agrc, char** argv)
         if(event.window.event == SDL_WINDOWEVENT_CLOSE)
             stop = 1;
 
-        maj_controles(&jeu->touches, &event);
-
         switch(event.type)
         {
         case SDL_KEYUP:
@@ -88,6 +73,10 @@ int main(int agrc, char** argv)
             break;
         }
 
+        /* MISE A JOUR DES CONTROLES */
+
+        maj_controles(&jeu->touches, &event);
+
         /* MISE A JOUR DE L'ETAT DU JEU */
 
         current_time = SDL_GetTicks();
@@ -99,9 +88,9 @@ int main(int agrc, char** argv)
         }
 
         /* MISE A JOUR DES GRAPHISMES */
-    #if GRAPHISMES
+        #if GRAPHISMES
         maj_graphismes(jeu, g);
-    #endif // GRAPHISMES
+        #endif // GRAPHISMES
 
         /* Compteur de FPS */
         current_time = SDL_GetTicks();

@@ -51,6 +51,7 @@ Graphismes* init_graphismes(char *titre, int x, int y, int w, int h, Uint32 flag
     g->feuilles_sprites[1] = charger_sprite(renderer, FEUILLE_PERSO);
     g->feuilles_sprites[2] = charger_sprite(renderer, FEUILLE_OBJETS);
     g->feuilles_sprites[3] = charger_sprite(renderer, FEUILLE_BONUS);
+    g->feuilles_sprites[4] = charger_sprite(renderer, FEUILLE_TEXTE);
 
 
     return g; // pour avoir le renderer, suffit d'utiliser SDL_GetRenderer
@@ -63,7 +64,7 @@ int maj_graphismes(Game *jeu, Graphismes *g)
     SDL_SetRenderDrawColor(g->renderer, 0, 0, 0, 255);
     SDL_RenderClear(g->renderer);
 
-    if(maj_graph_carte(jeu, g) == -1 || maj_graph_entites(jeu,g) == -1)
+    if(maj_graph_carte(jeu, g) == -1 || maj_graph_entites(jeu,g) == -1 || maj_HUD(jeu, g) == -1)
         erreur = 1;
 
     SDL_RenderPresent(g->renderer);
@@ -250,6 +251,97 @@ int afficher(Graphismes *g, int feuille_sprite, SDL_Rect *clip, SDL_Rect *dest)
     blit.h = RENDER_SCALE*dest->h;
 
     return SDL_RenderCopy(g->renderer, g->feuilles_sprites[feuille_sprite], clip, &blit);
+}
+
+int maj_HUD(Game *jeu, Graphismes *g)
+{
+    SDL_Rect blit;
+    int temps = jeu->time/1000;
+    int minutes  = temps/60;
+    int secondes = temps%60;
+
+    blit.w = SPRITE_CHAR_W;
+    blit.h = SPRITE_CHAR_H;
+
+    blit.x = (WINDOW_WIDTH/RENDER_SCALE - 5*SPRITE_CHAR_W)/2;
+    blit.y = (HUD_HEIGHT - SPRITE_CHAR_W)/2;
+    afficher_char(g, minutes/10 + 48, blit);
+    blit.x += SPRITE_CHAR_W;
+    afficher_char(g, minutes%10 + 48, blit);
+    blit.x += SPRITE_CHAR_W;
+    afficher_char(g, ':', blit);
+    blit.x += SPRITE_CHAR_W;
+    afficher_char(g, secondes/10 + 48, blit);
+    blit.x += SPRITE_CHAR_W;
+    return afficher_char(g, secondes%10 + 48, blit);
+}
+
+int afficher_char(Graphismes *g, char c, SDL_Rect pos)
+{
+    SDL_Rect clip;
+
+    clip.w = SPRITE_CHAR_W;
+    clip.h = SPRITE_CHAR_H;
+
+    switch(c)
+    {
+    case '0':
+        clip.x = 0;
+        clip.y = 1;
+        break;
+    case '1':
+        clip.x = 1;
+        clip.y = 1;
+        break;
+    case '2':
+        clip.x = 2;
+        clip.y = 1;
+        break;
+    case '3':
+        clip.x = 3;
+        clip.y = 1;
+        break;
+    case '4':
+        clip.x = 4;
+        clip.y = 1;
+        break;
+    case '5':
+        clip.x = 5;
+        clip.y = 1;
+        break;
+    case '6':
+        clip.x = 6;
+        clip.y = 1;
+        break;
+    case '7':
+        clip.x = 7;
+        clip.y = 1;
+        break;
+    case '8':
+        clip.x = 8;
+        clip.y = 1;
+        break;
+    case '9':
+        clip.x = 9;
+        clip.y = 1;
+        break;
+    case ':':
+        clip.x = 10;
+        clip.y = 1;
+        break;
+    default:
+        clip.x = 0;
+        clip.y = 0;
+    }
+
+    clip.x *= SPRITE_CHAR_W;
+    clip.y *= SPRITE_CHAR_H;
+
+    pos.x *= RENDER_SCALE;
+    pos.y *= RENDER_SCALE;
+    pos.w *= RENDER_SCALE;
+    pos.h *= RENDER_SCALE;
+    return SDL_RenderCopy(g->renderer, g->feuilles_sprites[4], &clip, &pos);
 }
 
 /* Fonction utilisée pour trier le tableau des joueurs en fonction de leur position verticale

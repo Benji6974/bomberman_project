@@ -96,6 +96,7 @@ int donner_bonus(Game*, int, int);
 /* Fonctions sur les joueurs */
 Player* init_player(char *name, int id_player);
 void maj_joueur(Game *jeu, int joueur);
+void maj_controles(Controls*, SDL_Event*);
 
 void init_tile(Tile* t,int type, int etat);
 int*** genere_map(int ***carte_data, int nb_joueurs);

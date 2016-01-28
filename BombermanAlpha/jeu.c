@@ -194,7 +194,6 @@ int maj_jeu(Game *jeu, int dt)
         return 1;
     }
 
-    printf("Temps restant: %d\n", jeu->time/1000);
     jeu->time -= dt;
     if(jeu->time <= 0)
     {
@@ -285,7 +284,7 @@ int collision_joueur_objets(Game *jeu, int joueur, int last_col)
 
 int collision_joueur_items(Game *jeu, int joueur)
 {
-    int i;
+    int i, j;
     for(i = 0; i < jeu->nb_objets; i++)
     {
         if (jeu->objets[i] != NULL)
@@ -296,8 +295,18 @@ int collision_joueur_items(Game *jeu, int joueur)
                 {
                     free(jeu->objets[i]);
                     jeu->objets[i] = NULL;
+
+                    for(j = i; j < jeu->nb_objets; j++)
+                    {
+                        if(jeu->objets[j+1] != NULL)
+                        {
+                            jeu->objets[j] = jeu->objets[j+1];
+                            jeu->objets[j+1] = NULL;
+                        }
+                    }
+
                     jeu->nb_objets--;
-                    jeu->players[i]->score += SCORE_ITEM_GET;
+                    jeu->players[joueur]->score += SCORE_ITEM_GET;
                     return 1;
                 }
             }
@@ -463,10 +472,10 @@ void generer_bonus(Game *jeu, int x, int y, int t)
     switch(t)
     {
     case MUR_BRIQUES:
-        proba_mur = 20;
+        proba_mur = PROBA_MUR_BRIQUES;
         break;
     case MUR_SOLIDE:
-        proba_mur = 30;
+        proba_mur = PROBA_MUR_SOLIDE;
         break;
     }
 
@@ -474,7 +483,7 @@ void generer_bonus(Game *jeu, int x, int y, int t)
     {
         if(chanceItem < P_SHIELD)
             type = 0;
-        else if(chanceItem  < P_RANGE+P_SHIELD)
+        else if(chanceItem < P_RANGE+P_SHIELD)
             type = 1;
         else if(chanceItem < P_RANGE+P_SHIELD+P_BOMB)
             type = 2;
@@ -485,8 +494,7 @@ void generer_bonus(Game *jeu, int x, int y, int t)
         o->pos.x = x*TILE_WIDTH + (TILE_WIDTH - o->pos.w)/2;
         o->pos.y = y*TILE_HEIGHT + (TILE_HEIGHT - o->pos.h)/2;
 
-        printf("Objet cree de type %d aux coordonnees %d,%d\n", type, x, y);
-        for(i = 0; jeu->objets[i] != NULL; i++);
+        i = jeu->nb_objets;
 
         jeu->objets[i] = o;
         jeu->nb_objets++;
@@ -613,6 +621,19 @@ void maj_joueur(Game *jeu, int joueur)
     /* Si le joueur appuie sur la touche pour poser une bombe */
     if(jeu->touches.keys_pressed[k+BOMB])
         poser_bomb(jeu, joueur);
+}
+
+void maj_controles(Controls *controles, SDL_Event *event)
+{
+    if(event->type != SDL_KEYDOWN && event->type != SDL_KEYUP)
+        return;
+
+    int i;
+    for(i = 0; i < controles->num_keys; i++)
+    {
+        if(event->key.keysym.sym == controles->key_map[i])
+            controles->keys_pressed[i] = event->type == SDL_KEYDOWN;
+    }
 }
 
 void detruire_jeu(Game* jeu)

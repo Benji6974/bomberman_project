@@ -6,11 +6,12 @@
 #include "constantes.h"
 #include "jeu.h"
 
-#define NB_FEUILLES_SPRITES 4
+#define NB_FEUILLES_SPRITES 5
 #define FEUILLE_TILES       "img/tileset.bmp"
 #define FEUILLE_PERSO       "img/character_silver.bmp"
 #define FEUILLE_OBJETS      "img/atlas5_32.bmp"
 #define FEUILLE_BONUS       "img/items.bmp"
+#define FEUILLE_TEXTE       "img/text.bmp"
 
 #define CLIP_PERSO_X 0
 #define CLIP_PERSO_Y 0
@@ -41,8 +42,8 @@
 #define SPRITE_PERSO_W 23
 #define SPRITE_PERSO_H 38
 
-#define SPRITE_TEXT_W 16
-#define SPRITE_TEST_H 16
+#define SPRITE_CHAR_W 16
+#define SPRITE_CHAR_H 16
 
 typedef struct Graphismes{
     SDL_Window *fenetre;
@@ -58,6 +59,7 @@ int maj_graph_carte(Game *jeu, Graphismes *g);
 int maj_graph_entites(Game *jeu, Graphismes *g);
 
 int afficher(Graphismes *g, int feuille_sprite, SDL_Rect *clip, SDL_Rect *dest);
+int afficher_char(Graphismes *g, char c, SDL_Rect pos);
 
 void trier_par_y(Player **tab, int taille);
 
