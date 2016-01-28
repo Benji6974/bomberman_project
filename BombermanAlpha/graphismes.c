@@ -282,3 +282,260 @@ void free_graphismes(Graphismes *g)
     for(i = 0; i < NB_FEUILLES_SPRITES; i++)
         SDL_DestroyTexture(g->feuilles_sprites[i]);
 }
+/*
+void switch_lettre()
+{
+
+int lettre;
+    switch(lettre)
+    {
+    case 0:
+        clip.x = 0*SPRITE_TEXT_W;
+        clip.y = 1*SPRITE_TEST_H;
+        break;
+    case 1:
+        clip.x = 1*SPRITE_TEXT_W;
+        clip.y = 1*SPRITE_TEST_H;
+        break;
+    case 2:
+        clip.x = 2*SPRITE_TEXT_W;
+        clip.y = 1*SPRITE_TEST_H;
+        break;
+    case 3:
+        clip.x = 3*SPRITE_TEXT_W;
+        clip.y = 1*SPRITE_TEST_H;
+        break;
+    case 4:
+        clip.x = 4*SPRITE_TEXT_W;
+        clip.y = 1*SPRITE_TEST_H;
+        break;
+    case 5:
+        clip.x = 5*SPRITE_TEXT_W;
+        clip.y = 1*SPRITE_TEST_H;
+        break;
+    case 6:
+        clip.x = 6*SPRITE_TEXT_W;
+        clip.y = 1*SPRITE_TEST_H;
+        break;
+    case 7:
+        clip.x = 7*SPRITE_TEXT_W;
+        clip.y = 1*SPRITE_TEST_H;
+        break;
+    case 8:
+        clip.x = 8*SPRITE_TEXT_W;
+        clip.y = 1*SPRITE_TEST_H;
+        break;
+    case 9:
+        clip.x = 9*SPRITE_TEXT_W;
+        clip.y = 1*SPRITE_TEST_H;
+        break;
+    case A:
+        clip.x = 1*SPRITE_TEXT_W;
+        clip.y = 2*SPRITE_TEST_H;
+        break;
+    case B:
+        clip.x = 2*SPRITE_TEXT_W;
+        clip.y = 2*SPRITE_TEST_H;
+        break;
+    case C:
+        clip.x = 3*SPRITE_TEXT_W;
+        clip.y = 2*SPRITE_TEST_H;
+        break;
+    case D:
+        clip.x = 4*SPRITE_TEXT_W;
+        clip.y = 2*SPRITE_TEST_H;
+        break;
+    case E:
+        clip.x = 5*SPRITE_TEXT_W;
+        clip.y = 2*SPRITE_TEST_H;
+        break;
+    case F:
+        clip.x = 6*SPRITE_TEXT_W;
+        clip.y = 2*SPRITE_TEST_H;
+        break;
+    case G:
+        clip.x = 7*SPRITE_TEXT_W;
+        clip.y = 2*SPRITE_TEST_H;
+        break;
+    case H:
+        clip.x = 8*SPRITE_TEXT_W;
+        clip.y = 2*SPRITE_TEST_H;
+        break;
+    case I:
+        clip.x = 9*SPRITE_TEXT_W;
+        clip.y = 2*SPRITE_TEST_H;
+        break;
+    case J:
+        clip.x = 10*SPRITE_TEXT_W;
+        clip.y = 2*SPRITE_TEST_H;
+        break;
+    case K:
+        clip.x = 11*SPRITE_TEXT_W;
+        clip.y = 2*SPRITE_TEST_H;
+        break;
+    case L:
+        clip.x = 12*SPRITE_TEXT_W;
+        clip.y = 2*SPRITE_TEST_H;
+        break;
+    case M:
+        clip.x = 13*SPRITE_TEXT_W;
+        clip.y = 2*SPRITE_TEST_H;
+        break;
+    case N:
+        clip.x = 14*SPRITE_TEXT_W;
+        clip.y = 2*SPRITE_TEST_H;
+        break;
+    case O:
+        clip.x = 15*SPRITE_TEXT_W;
+        clip.y = 2*SPRITE_TEST_H;
+        break;
+    case P:
+        clip.x = 0*SPRITE_TEXT_W;
+        clip.y = 3*SPRITE_TEST_H;
+        break;
+    case Q:
+        clip.x = 1*SPRITE_TEXT_W;
+        clip.y = 3*SPRITE_TEST_H;
+        break;
+    case R:
+        clip.x = 2*SPRITE_TEXT_W;
+        clip.y = 3*SPRITE_TEST_H;
+        break;
+    case S:
+        clip.x = 3*SPRITE_TEXT_W;
+        clip.y = 3*SPRITE_TEST_H;
+        break;
+    case T:
+        clip.x = 4*SPRITE_TEXT_W;
+        clip.y = 3*SPRITE_TEST_H;
+        break;
+    case U:
+        clip.x = 5*SPRITE_TEXT_W;
+        clip.y = 3*SPRITE_TEST_H;
+        break;
+    case V:
+        clip.x = 6*SPRITE_TEXT_W;
+        clip.y = 3*SPRITE_TEST_H;
+        break;
+    case W:
+        clip.x = 7*SPRITE_TEXT_W;
+        clip.y = 3*SPRITE_TEST_H;
+        break;
+    case X:
+        clip.x = 8*SPRITE_TEXT_W;
+        clip.y = 3*SPRITE_TEST_H;
+        break;
+    case Y:
+        clip.x = 9*SPRITE_TEXT_W;
+        clip.y = 3*SPRITE_TEST_H;
+        break;
+    case Z:
+        clip.x = 10*SPRITE_TEXT_W;
+        clip.y = 3*SPRITE_TEST_H;
+        break;
+    case a:
+        clip.x = 1*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case b:
+        clip.x = 2*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case c:
+        clip.x = 3*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case d:
+        clip.x = 4*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case e:
+        clip.x = 5*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case f:
+        clip.x = 6*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case g:
+        clip.x = 7*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case h:
+        clip.x = 8*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case i:
+        clip.x = 9*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case j:
+        clip.x = 10*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case k:
+        clip.x = 11*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case l:
+        clip.x = 12*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case m:
+        clip.x = 13*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case n:
+        clip.x = 14*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case o:
+        clip.x = 15*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case p:
+        clip.x = 0*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case q:
+        clip.x = 1*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case r:
+        clip.x = 2*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case s:
+        clip.x = 3*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case t:
+        clip.x = 4*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case u:
+        clip.x = 5*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case v:
+        clip.x = 6*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case w:
+        clip.x = 7*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case x:
+        clip.x = 8*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case y:
+        clip.x = 9*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    case z:
+        clip.x = 10*SPRITE_TEXT_W;
+        clip.y = 4*SPRITE_TEST_H;
+        break;
+    }
+}*/

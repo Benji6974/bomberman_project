@@ -41,6 +41,9 @@
 #define SPRITE_PERSO_W 23
 #define SPRITE_PERSO_H 38
 
+#define SPRITE_TEXT_W 16
+#define SPRITE_TEST_H 16
+
 typedef struct Graphismes{
     SDL_Window *fenetre;
     SDL_Renderer *renderer;
