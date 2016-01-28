@@ -42,7 +42,7 @@ int main(int agrc, char** argv)
                                     SDL_WINDOWPOS_CENTERED,
                                     WINDOW_WIDTH,
                                     WINDOW_HEIGHT,
-                                    SDL_WINDOW_SHOWN,
+                                    SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE,
                                     SDL_RENDERER_PRESENTVSYNC);
 
     SDL_RendererInfo info;
