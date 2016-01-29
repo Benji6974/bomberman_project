@@ -7,7 +7,7 @@
 #define TILE_HEIGHT   32
 #define MAP_WIDTH     17
 #define MAP_HEIGHT    11
-#define RENDER_SCALE  1 /* Taille des pixels  */
+#define RENDER_SCALE  2 /* Taille des pixels  */
 #define WINDOW_WIDTH  RENDER_SCALE*TILE_WIDTH*MAP_WIDTH
 #define WINDOW_HEIGHT RENDER_SCALE*(TILE_HEIGHT*MAP_HEIGHT + HUD_HEIGHT)
 
@@ -18,8 +18,8 @@
 
 #define HITBOX_PLAYER_W 23
 #define HITBOX_PLAYER_H 15
-#define HITBOX_ITEM_W TILE_WIDTH/4
-#define HITBOX_ITEM_H TILE_HEIGHT/4
+#define HITBOX_ITEM_W TILE_WIDTH/8
+#define HITBOX_ITEM_H TILE_HEIGHT/8
 
 #define NB_JOUEURS          4
 #define NB_BOMBES_MAX       100

@@ -256,6 +256,7 @@ int afficher(Graphismes *g, int feuille_sprite, SDL_Rect *clip, SDL_Rect *dest)
 int maj_HUD(Game *jeu, Graphismes *g)
 {
     SDL_Rect blit;
+    int i, j;
     int temps = jeu->time/1000;
     int minutes  = temps/60;
     int secondes = temps%60;
@@ -263,6 +264,7 @@ int maj_HUD(Game *jeu, Graphismes *g)
     blit.w = SPRITE_CHAR_W;
     blit.h = SPRITE_CHAR_H;
 
+    /* Horloge */
     blit.x = (WINDOW_WIDTH/RENDER_SCALE - 5*SPRITE_CHAR_W)/2;
     blit.y = (HUD_HEIGHT - SPRITE_CHAR_W)/2;
     afficher_char(g, minutes/10 + 48, blit);
@@ -273,7 +275,25 @@ int maj_HUD(Game *jeu, Graphismes *g)
     blit.x += SPRITE_CHAR_W;
     afficher_char(g, secondes/10 + 48, blit);
     blit.x += SPRITE_CHAR_W;
-    return afficher_char(g, secondes%10 + 48, blit);
+    afficher_char(g, secondes%10 + 48, blit);
+
+    /* Scores */
+    blit.y = (HUD_HEIGHT - SPRITE_CHAR_W)/2;
+    for(i = 0; i < jeu->nb_joueurs; i++)
+    {
+        if(i < 2)
+            blit.x = HUD_HEIGHT/2 + (SCORE_NB_CHIFFRES-1)*SPRITE_CHAR_W*(1+2*i);
+        else
+            blit.x = MAP_WIDTH*TILE_WIDTH - HUD_HEIGHT/2 - (1+2*(jeu->nb_joueurs-1-i)*(SCORE_NB_CHIFFRES-1)*SPRITE_CHAR_W) - SPRITE_CHAR_W*(SCORE_NB_CHIFFRES-1)/2.;
+
+        for(j = 0; j < SCORE_NB_CHIFFRES; j++)
+        {
+            afficher_char(g, (jeu->players[i]->score/(int)pow(10, j))%10 + 48, blit);
+            blit.x -= SPRITE_CHAR_W;
+        }
+    }
+
+    return 0;
 }
 
 int afficher_char(Graphismes *g, char c, SDL_Rect pos)

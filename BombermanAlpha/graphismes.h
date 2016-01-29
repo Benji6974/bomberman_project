@@ -2,6 +2,7 @@
 #define GRAPHISMES_H
 
 #include <SDL.h>
+#include <math.h>
 
 #include "constantes.h"
 #include "jeu.h"
@@ -44,6 +45,8 @@
 
 #define SPRITE_CHAR_W 16
 #define SPRITE_CHAR_H 16
+
+#define SCORE_NB_CHIFFRES 4
 
 typedef struct Graphismes{
     SDL_Window *fenetre;
