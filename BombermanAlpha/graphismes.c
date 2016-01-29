@@ -52,6 +52,7 @@ Graphismes* init_graphismes(char *titre, int x, int y, int w, int h, Uint32 flag
     g->feuilles_sprites[2] = charger_sprite(renderer, FEUILLE_OBJETS);
     g->feuilles_sprites[3] = charger_sprite(renderer, FEUILLE_BONUS);
     g->feuilles_sprites[4] = charger_sprite(renderer, FEUILLE_TEXTE);
+    g->feuilles_sprites[5] = charger_sprite(renderer, FEUILLE_EXPLOSIONS);
 
 
     return g; // pour avoir le renderer, suffit d'utiliser SDL_GetRenderer
@@ -194,6 +195,24 @@ int maj_graph_entites(Game *jeu, Graphismes *g)
 
         if(afficher(g, 2, &clip, &pos) != 0)
             erreur = 1;
+    }
+
+    /* --- AFFICHAGE DES EXPLOSIONS --- */
+
+    clip.x = 0;
+    clip.y = 0;
+    clip.w = TILE_WIDTH;
+    clip.h = TILE_HEIGHT;
+
+    pos = clip;
+
+    for(i = 0; i < jeu->nb_explosions; i++)
+    {
+        if(jeu->explosions[i] == NULL)
+            continue;
+        pos.x = jeu->explosions[i]->pos.x;
+        pos.y = jeu->explosions[i]->pos.y;
+        afficher(g, 5, &clip, &pos);
     }
 
     /* ----- AFFICHAGE DES JOUEURS ----- */

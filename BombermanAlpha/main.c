@@ -27,12 +27,12 @@ int main(int agrc, char** argv)
     jeu = init_jeu(0, NB_JOUEURS, DUREE_DEFAUT_PARTIE,-1);
     init_audio(16);
     g   = init_graphismes("Bomberman Beta",
-                                    SDL_WINDOWPOS_CENTERED,
-                                    SDL_WINDOWPOS_CENTERED,
-                                    WINDOW_WIDTH,
-                                    WINDOW_HEIGHT,
-                                    SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE,
-                                    SDL_RENDERER_PRESENTVSYNC);
+                          SDL_WINDOWPOS_CENTERED,
+                          SDL_WINDOWPOS_CENTERED,
+                          WINDOW_WIDTH,
+                          WINDOW_HEIGHT,
+                          SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE,
+                          SDL_RENDERER_PRESENTVSYNC);
 
     SDL_RendererInfo info;
     SDL_GetRenderDriverInfo(0, &info);
@@ -56,7 +56,8 @@ int main(int agrc, char** argv)
             case SDLK_p:
                 pause_b = 0;
                 break;
-            default:;
+            default:
+                ;
             }
             break;
         case SDL_KEYDOWN:
@@ -71,8 +72,9 @@ int main(int agrc, char** argv)
                     pause ^= 1;
                     pause_b = 1;
                 }
-            break;
-            default:;
+                break;
+            default:
+                ;
             }
             break;
         }
@@ -91,10 +93,20 @@ int main(int agrc, char** argv)
             previous_time = current_time;
         }
 
+//        system("cls");
+//        for(i = 0; i < jeu->nb_explosions; i++)
+//        {
+//            if(jeu->explosions[i] == 0)
+//                printf("NULL, ");
+//            else
+//                printf("%d, ", jeu->explosions[i]->aspect);
+//        }
+//        printf("\n");
+
         /* MISE A JOUR DES GRAPHISMES */
-        #if GRAPHISMES
+#if GRAPHISMES
         maj_graphismes(jeu, g);
-        #endif // GRAPHISMES
+#endif // GRAPHISMES
 
         /* Compteur de FPS */
         current_time = SDL_GetTicks();

@@ -7,12 +7,13 @@
 #include "constantes.h"
 #include "jeu.h"
 
-#define NB_FEUILLES_SPRITES 5
+#define NB_FEUILLES_SPRITES 6
 #define FEUILLE_TILES       "img/tileset.bmp"
 #define FEUILLE_PERSO       "img/character_silver.bmp"
 #define FEUILLE_OBJETS      "img/atlas5_32.bmp"
 #define FEUILLE_BONUS       "img/items.bmp"
 #define FEUILLE_TEXTE       "img/text.bmp"
+#define FEUILLE_EXPLOSIONS  "img/explosion.bmp"
 
 #define CLIP_PERSO_X 0
 #define CLIP_PERSO_Y 0
@@ -48,7 +49,8 @@
 
 #define SCORE_NB_CHIFFRES 4
 
-typedef struct Graphismes{
+typedef struct Graphismes
+{
     SDL_Window *fenetre;
     SDL_Renderer *renderer;
     SDL_Texture *feuilles_sprites[NB_FEUILLES_SPRITES];

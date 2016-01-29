@@ -20,11 +20,14 @@
 
 #define HITBOX_PLAYER_W 23
 #define HITBOX_PLAYER_H 15
-#define HITBOX_ITEM_W TILE_WIDTH/8
-#define HITBOX_ITEM_H TILE_HEIGHT/8
+#define HITBOX_ITEM_W TILE_WIDTH/4
+#define HITBOX_ITEM_H TILE_HEIGHT/4
+
+#define DUREE_DEFAUT_EXPLOSION 400
 
 #define NB_JOUEURS          4
 #define NB_BOMBES_MAX       100
+#define NB_EXPLOSIONS_MAX   500
 #define NB_OBJETS_MAX       100
 #define DUREE_DEFAUT_PARTIE 180  /* secondes */
 #define DELAI_DEFAUT_BOMBE  2000 /* secondes */

@@ -11,7 +11,8 @@
 
 /* Structures du jeu */
 
-typedef struct Bomb{
+typedef struct Bomb
+{
     int type;
     int puissance;        /* Nombre de cases que peut atteindre la bombe dans chaque directions */
     int delai;            /* Temps en millisecondes avant explosion */
@@ -20,7 +21,18 @@ typedef struct Bomb{
 }
 Bomb;
 
-typedef struct Player{
+typedef struct Explosion
+{
+    Bomb* origine;
+    SDL_Rect pos;
+    int duree_de_vie;
+    int temps_restant;
+    int aspect;
+}
+Explosion;
+
+typedef struct Player
+{
     int id_player;
     char nom[256];
     int vie;
@@ -37,37 +49,49 @@ typedef struct Player{
 }
 Player;
 
-typedef struct Tile{
+typedef struct Tile
+{
     int type; // faire enumeration
     int etat; /* pour les murs à plusieurs états de destruction */
 }
 Tile;
 
 /* Structure gérant les touches claviers */
-typedef struct Controls{
+typedef struct Controls
+{
     int num_keys;      /* nombre de touches à gérer */
     int *keys_pressed; /* touches actuellement pressées */
     int *key_map;      /* ID de chaque touches (ex. SDLK_UP); correspond avec keys_pressed (même taille) */
-}Controls;
+} Controls;
 
-typedef struct Objet{
+typedef struct Objet
+{
     int type;
     SDL_Rect pos;
-}Objet;
+} Objet;
 
-typedef struct Game{
+typedef struct Game
+{
+    /* Variables de jeu */
     int type;
-    Player** players;
-    int nb_joueurs;
     int time;
+
     Tile*** carte;
+
+    /* Entités*/
+    Player**    players;
+    int         nb_joueurs;
+    Bomb**      bombs;
+    int         nb_bombs;
+    Explosion** explosions;
+    int         nb_explosions;
+    Objet**     objets;
+    int         nb_objets;
+
+    /* Gestion des évènements */
     Controls touches;
-    Bomb** bombs;
-    int nb_bombs;
-    Objet** objets;
-    int nb_objets;
     SDL_Event **events;
-}Game;
+} Game;
 
 
 /* Prototypes des fonctions */
@@ -87,10 +111,12 @@ int collision_joueur_items(Game*, int);
 
 /* Fonctions sur les bombes */
 Bomb* init_bomb(int type, int id_player);
-int degats_case(Game *jeu, Bomb *origine, int x, int y);
+int degats_case(Game*, Bomb*, int, int, int);
 int exploser_bombe(Game *jeu, int bombe);
 int poser_bomb(Game *jeu, int joueur);
 void maj_bombs(Game *jeu, int dt);
+
+Explosion* init_explosion(Game*, Bomb*, int, int, int, int);
 
 /* Fnctions sur les objets*/
 Objet* init_objet(int type);
