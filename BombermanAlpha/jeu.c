@@ -17,14 +17,14 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
     /* - Tableau pour tester la carte - */
     srand(time(NULL));
 
-    int ***carte_data;
+    int **carte_data;
     if (typemap == -1)
     {
       carte_data =  genere_map(carte_data,nb_joueurs);
     }
     else if (typemap == 0)
     {
-       /* carte_data = {
+       /*carte_data = {
         {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
         {-1, 0, 0, 2, 0, 2, 0, 2, 2, 0, 0, 2, 0, 2, 0, 0, -1},
         {-1, 0, 1, 3, 1, 0, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, -1},
@@ -43,6 +43,8 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
     /* -------------------------------- */
 
     jeu = malloc(sizeof(Game));
+
+    jeu->events = init_events(NB_EVENTS);
 
     /* Tableau des bombes en jeu */
     jeu->bombs = (Bomb**)malloc(NB_BOMBES_MAX*sizeof(Bomb*));
@@ -122,7 +124,7 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
     return jeu;
 }
 
-int*** genere_map(int ***carte_data, int nb_joueurs)
+int** genere_map(int **carte_data, int nb_joueurs)
 {
     carte_data = (int**)malloc(MAP_HEIGHT*sizeof(int*));
     int z;
@@ -307,6 +309,9 @@ int collision_joueur_items(Game *jeu, int joueur)
 
                     jeu->nb_objets--;
                     jeu->players[joueur]->score += SCORE_ITEM_GET;
+
+                    SDL_PushEvent(jeu->events[BONUS_OBTENU]);
+
                     return 1;
                 }
             }
@@ -383,6 +388,8 @@ int poser_bomb(Game *jeu, int joueur)
         jeu->bombs[i] = b;
         jeu->nb_bombs++;
         p->nb_bomb_jeu++;
+
+        SDL_PushEvent(jeu->events[BOMBE_POSEE]);
     }
     else
         return -1;
@@ -513,6 +520,8 @@ int exploser_bombe(Game *jeu, int bombe)
         x = b->pos.x;
         y = b->pos.y;
 
+        SDL_PushEvent(jeu->events[BOMBE_EXPLOSE]);
+
         /* destruction du décor et des joueurs */
 
         /* à la position de la bombe */
@@ -637,49 +646,6 @@ void maj_controles(Controls *controles, SDL_Event *event)
     }
 }
 
-void detruire_jeu(Game* jeu)
-{
-    int i, j;
-
-    /* Vidage de la carte */
-    for(i = 0; i < MAP_HEIGHT; i++)
-    {
-        for(j = 0; j < MAP_WIDTH; j++)
-        {
-            free(jeu->carte[i][j]);
-        }
-        free(jeu->carte[i]);
-    }
-    free(jeu->carte);
-
-    /* Libération du tableau des joueurs */
-    for(i = 0; i < jeu->nb_joueurs; i++)
-    {
-        free(jeu->players[i]);
-    }
-
-    free(jeu->touches.key_map);
-    free(jeu->touches.keys_pressed);
-
-    /* Libération du tableau des bombes (au cas où) */
-    for(i = 0; i < jeu->nb_bombs; i++)
-    {
-        free(jeu->bombs[i]);
-    }
-    /* Libération du tableau des objets */
-    for(i = 0; i < jeu->nb_objets; i++)
-    {
-        free(jeu->objets[i]);
-    }
-
-    free(jeu->players);
-    free(jeu->bombs);
-    free(jeu->objets);
-
-    /* Destruction du jeu */
-    free(jeu);
-}
-
 Bomb* init_bomb(int type, int id_proprietaire)
 {
     Bomb *b = malloc(sizeof(Bomb));
@@ -728,4 +694,74 @@ Player* init_player(char *name, int id_player)
     p->nb_bomb_jeu = 0;
 
     return p;
+}
+
+SDL_Event** init_events(int num)
+{
+    int i, event_num;
+    SDL_Event **events;
+
+    events = (SDL_Event**)malloc(num*sizeof(SDL_Event*));
+    event_num = SDL_RegisterEvents(num);
+
+    for(i = 0; i < num; i++)
+    {
+        events[i] = (SDL_Event*)malloc(sizeof(SDL_Event));
+        events[i]->user.type = (Uint32)(event_num + i);
+        events[i]->user.code = i;
+        events[i]->user.data1 = NULL;
+        events[i]->user.data2 = NULL;
+    }
+
+    return events;
+}
+
+void detruire_jeu(Game* jeu)
+{
+    int i, j;
+
+    /* Vidage de la carte */
+    for(i = 0; i < MAP_HEIGHT; i++)
+    {
+        for(j = 0; j < MAP_WIDTH; j++)
+        {
+            free(jeu->carte[i][j]);
+        }
+        free(jeu->carte[i]);
+    }
+    free(jeu->carte);
+
+    /* Libération du tableau des joueurs */
+    for(i = 0; i < jeu->nb_joueurs; i++)
+    {
+        free(jeu->players[i]);
+    }
+
+    free(jeu->touches.key_map);
+    free(jeu->touches.keys_pressed);
+
+    /* Libération du tableau des bombes (au cas où) */
+    for(i = 0; i < jeu->nb_bombs; i++)
+    {
+        free(jeu->bombs[i]);
+    }
+    /* Libération du tableau des objets */
+    for(i = 0; i < jeu->nb_objets; i++)
+    {
+        free(jeu->objets[i]);
+    }
+
+    for(i = 0; i < NB_EVENTS; i++)
+    {
+        free(jeu->events[i]);
+    }
+
+    free(jeu->players);
+    free(jeu->bombs);
+    free(jeu->objets);
+
+    free(jeu->events);
+
+    /* Destruction du jeu */
+    free(jeu);
 }

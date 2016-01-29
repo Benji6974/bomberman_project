@@ -64,6 +64,7 @@ typedef struct Game{
     int nb_bombs;
     Objet** objets;
     int nb_objets;
+    SDL_Event **events;
 }Game;
 
 
@@ -71,6 +72,7 @@ typedef struct Game{
 
 /* Initialiser le jeu: carte, joueurs, etc */
 Game* init_jeu(int type, int nb_joueurs, int temps,int typemap);
+SDL_Event** init_events(int);
 /* mettre à jour le jeu de dt millisecondes */
 int maj_jeu(Game *jeu, int dt);
 
@@ -99,7 +101,7 @@ void maj_joueur(Game *jeu, int joueur);
 void maj_controles(Controls*, SDL_Event*);
 
 void init_tile(Tile* t,int type, int etat);
-int*** genere_map(int ***carte_data, int nb_joueurs);
+int** genere_map(int **carte_data, int nb_joueurs);
 
 void detruire_jeu(Game *jeu);
 

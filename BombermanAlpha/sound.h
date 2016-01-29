@@ -3,6 +3,10 @@
 
 #include <SDL.h>
 
-test();
+int init_audio(int);
+
+int maj_audio(void*, SDL_Event*);
+
+void detruire_audio();
 
 #endif // SOUND_H

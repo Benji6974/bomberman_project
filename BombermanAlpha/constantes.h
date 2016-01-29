@@ -16,6 +16,8 @@
 #define ACTIVER_COLLISIONS 1
 #define KEYS_PER_PLAYER    5    /* nombres de touches à assigner par joueur */
 
+#define NB_EVENTS 3
+
 #define HITBOX_PLAYER_W 23
 #define HITBOX_PLAYER_H 15
 #define HITBOX_ITEM_W TILE_WIDTH/8
@@ -38,6 +40,9 @@
 #define SCORE_JOUEUR_KILL 100
 #define SCORE_ITEM_GET    20
 
+/* Evenements */
+enum {BOMBE_EXPLOSE, BOMBE_POSEE, BONUS_OBTENU};
+
 /* Types de murs */
 enum TYPE_MUR {MUR_METAL = -1, HERBE, MUR_INDESTRUCTIBLE, MUR_BRIQUES, MUR_SOLIDE};
 
@@ -45,6 +50,7 @@ enum TYPE_MUR {MUR_METAL = -1, HERBE, MUR_INDESTRUCTIBLE, MUR_BRIQUES, MUR_SOLID
 enum {ITEM_SHIELD, ITEM_RANGE, ITEM_BOMB, ITEM_SPEED};
 enum {P_SHIELD = 10, P_RANGE = 30, P_BOMB = 30, P_SPEED = 30};
 enum {P_HERBE = 10,P_MUR_INDESTRUCTIBLE =  20,P_MUR_BRIQUES = 50,P_MUR_SOLIDE = 20};
+
 /* Actions des touches */
 enum TOUCHES {UP, DOWN, LEFT, RIGHT, BOMB};
 

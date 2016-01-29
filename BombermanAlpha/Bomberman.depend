@@ -348,11 +348,11 @@
 1452677563 c:\users\benji\documents\bomberman\trunk\bombermanalpha\jeu.h
 	"graphismes.h"
 
-1454026037 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\graphismes.c
+1454068558 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\graphismes.c
 	<stdio.h>
 	"graphismes.h"
 
-1454026048 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\graphismes.h
+1454079928 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\graphismes.h
 	<SDL.h>
 	<math.h>
 	"constantes.h"
@@ -677,31 +677,32 @@
 	"begin_code.h"
 	"close_code.h"
 
-1454020308 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\jeu.c
+1454080020 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\jeu.c
 	"constantes.h"
 	"jeu.h"
 
-1454019771 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\jeu.h
+1454079901 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\jeu.h
 	<stdlib.h>
 	<stdio.h>
 	<string.h>
 	<time.h>
 	<SDL.h>
 
-1454019771 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\main.c
+1454080029 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\main.c
 	<stdlib.h>
 	<stdio.h>
 	<SDL.h>
 	"constantes.h"
 	"jeu.h"
 	"graphismes.h"
+	"sound.h"
 
 1452677563 c:\users\benji\documents\bomberman\trunk\bombermanalpha\graphismes.h
 	<SDL.h>
 
 1452679375 c:\users\benji\documents\bomberman\trunk\bombermanalpha\constantes.h
 
-1454022076 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\constantes.h
+1454079143 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\constantes.h
 
 1454026931 source:j:\cours\polytech paris\bomberman\trunk\bombermanalpha\graphismes.c
 	<stdio.h>
@@ -746,6 +747,26 @@
 	"sound.h"
 
 1451801792 c:\program files (x86)\codeblocks\sdl2-2.0.4\i686-w64-mingw32\include\sdl2\sdl_mixer.h
+	"SDL_stdinc.h"
+	"SDL_rwops.h"
+	"SDL_audio.h"
+	"SDL_endian.h"
+	"SDL_version.h"
+	"begin_code.h"
+	"close_code.h"
+
+1454077817 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\sound.h
+	<SDL.h>
+
+1454079716 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\sound.c
+	<SDL.h>
+	<SDL_mixer.h>
+	<stdio.h>
+	<stdlib.h>
+	"sound.h"
+	"constantes.h"
+
+1451801791 g:\program files (x86)\codeblocks\sdl2-2.0.4\i686-w64-mingw32\include\sdl2\sdl_mixer.h
 	"SDL_stdinc.h"
 	"SDL_rwops.h"
 	"SDL_audio.h"

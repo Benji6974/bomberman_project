@@ -60,6 +60,7 @@ Graphismes* init_graphismes(char *titre, int x, int y, int l, int h, Uint32 flag
 int maj_graphismes(Game *jeu, Graphismes *g);
 int maj_graph_carte(Game *jeu, Graphismes *g);
 int maj_graph_entites(Game *jeu, Graphismes *g);
+int maj_HUD(Game*, Graphismes*);
 
 int afficher(Graphismes *g, int feuille_sprite, SDL_Rect *clip, SDL_Rect *dest);
 int afficher_char(Graphismes *g, char c, SDL_Rect pos);

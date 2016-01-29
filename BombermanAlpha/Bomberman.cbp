@@ -37,7 +37,7 @@
 			<Add option="-lmingw32" />
 			<Add option="-lSDL2main" />
 			<Add option="-lSDL2" />
-			<Add library="C:\Program Files (x86)\CodeBlocks\SDL2-2.0.4\x86_64-w64-mingw32\lib\libSDL2_mixer.a" />
+			<Add option="-lSDL2_mixer" />
 			<Add directory="%HOMEDRIVE%/Program Files (x86)/CodeBlocks/SDL2-2.0.4/i686-w64-mingw32/lib" />
 		</Linker>
 		<Unit filename="cb.bmp" />
