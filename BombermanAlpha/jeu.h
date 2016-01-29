@@ -5,7 +5,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <math.h>
 #include <SDL.h>
+
 
 /* Structures du jeu */
 
@@ -75,11 +77,11 @@ Game* init_jeu(int type, int nb_joueurs, int temps,int typemap);
 SDL_Event** init_events(int);
 /* mettre à jour le jeu de dt millisecondes */
 int maj_jeu(Game *jeu, int dt);
+int verif_fin_de_jeu(Game *jeu);
 
 /* fonctions de collisions avec carte et entre entités */
-int collision_tile_rect(int x, int y, SDL_Rect rect);
 int collision_rect_rect(SDL_Rect a, SDL_Rect b);
-int collision_joueur_objets(Game *jeu, int joueur, int last_col);
+int collision_joueur_bombes(Game *jeu, int joueur, int last_col);
 int collision_joueur_decor(Game *jeu, int joueur);
 int collision_joueur_items(Game*, int);
 

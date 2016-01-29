@@ -2,7 +2,7 @@
 #define CONSTANTES_H
 
 /* Taille de la carte et de la fenêtre */
-#define HUD_HEIGHT    48
+#define HUD_HEIGHT    32
 #define TILE_WIDTH    32
 #define TILE_HEIGHT   32
 #define MAP_WIDTH     17

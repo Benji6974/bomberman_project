@@ -169,74 +169,72 @@ int** genere_map(int **carte_data, int nb_joueurs)
 
 int maj_jeu(Game *jeu, int dt)
 {
-    int i, joueur = 0, en_vie = 0;
+    int i;
 
     maj_bombs(jeu, dt);
-
-    /* Détermination du gagnant */
     for(i = 0; i < jeu->nb_joueurs; i++)
     {
         maj_joueur(jeu, i);
+    }
+
+    jeu->time -= dt;
+
+    return verif_fin_de_jeu(jeu);
+}
+
+int verif_fin_de_jeu(Game *jeu)
+{
+    int i, joueur, egalite = 0, en_vie = 0;
+    char message_fin[256];
+    Player *meilleur_score = NULL;
+
+    for(i = 0; i < jeu->nb_joueurs; i++)
+    {
         if(!jeu->players[i]->est_mort)
         {
             en_vie++;
             joueur = i+1;
+            if(meilleur_score == NULL || jeu->players[i]->score > meilleur_score->score)
+            {
+                meilleur_score = jeu->players[i];
+            }
+            egalite = meilleur_score == NULL || jeu->players[i]->score == meilleur_score->score;
         }
     }
     if(en_vie == 1)
     {
-        char nom_joueur[256];
-        sprintf(nom_joueur, "Joueur %d gagne!", joueur);
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Fin de partie", nom_joueur, NULL);
+        sprintf(message_fin, "Joueur %d gagne!", joueur);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Game Over", message_fin, NULL);
         return 1;
     }
     else if(en_vie == 0)
     {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Fin de partie", "Tout le monde est mort!", NULL);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Game Over", "Tout le monde est mort!", NULL);
         return 1;
     }
 
-    jeu->time -= dt;
     if(jeu->time <= 0)
     {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Fin de partie", "Temps ecoule!", NULL);
+        if(!egalite)
+            sprintf(message_fin, "Temps ecoule!\nGagnant: Joueur %d avec %d points", meilleur_score->id_player+1, meilleur_score->score);
+        else
+            sprintf(message_fin, "Temps ecoule!\nIl y a egalite!");
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Game Over", message_fin, NULL);
         return 1;
     }
-
     return 0;
 }
 
-/* Fonction générale de collision entre une tile quelconque et un rectangle */
-int collision_tile_rect(int x, int y, SDL_Rect rect)
-{
-    int i, j, x1=0, x2=0, y1=0, y2=0;
-
-    x1 = rect.x/TILE_WIDTH;
-    y1 = rect.y/TILE_HEIGHT;
-
-    x2 = (rect.x + rect.w - 1)/TILE_WIDTH;
-    y2 = (rect.y + rect.h - 1)/TILE_HEIGHT;
-
-    for(i = x1; i <= x2; i++)
-    {
-        for(j = y1; j <= y2; j++)
-        {
-            if(x == i && y == j)
-                return 1;
-        }
-    }
-
-    return 0;
-}
-
+/* Fonction qui renvoie 1 si les deux rectangles a et b se superposent d'au moins un pixel, 0 sinon */
 int collision_rect_rect(SDL_Rect a, SDL_Rect b)
 {
-    return !(a.x > b.x+b.w
-          || a.x+a.w < b.x
-          || a.y > b.y+b.h
-          || a.y+a.h < b.y);
+    return !(a.x > b.x+b.w-1
+          || a.x+a.w-1 < b.x
+          || a.y > b.y+b.h-1
+          || a.y+a.h-1 < b.y);
 }
 
+/* Fonction qui renvoie 1 si le rectangle du joueur se superpose avec une des cases de la carte, 0 sinon */
 int collision_joueur_decor(Game *jeu, int joueur)
 {
     if(!ACTIVER_COLLISIONS)
@@ -255,28 +253,35 @@ int collision_joueur_decor(Game *jeu, int joueur)
     {
         for(y = y1; y <= y2; y++)
         {
-            /* test collision avec les blocs de la carte */
             if(jeu->carte[y][x]->type != 0)
-            {
                 return 1;
-            }
         }
     }
 
     return 0;
 }
 
-int collision_joueur_objets(Game *jeu, int joueur, int last_col)
+/* Fonction qui renvoie 1 si le rectangle du joueur se superpose avec celui d'une bombe, 0 sinon
+ * Si le joueur était déjà sur une bombe avant (comme au moment de la poser), elle ne prend pas en compte la superposition
+ */
+int collision_joueur_bombes(Game *jeu, int joueur, int last_col)
 {
     if(!ACTIVER_COLLISIONS)
         return 0;
 
-    int i=0;
+    int i;
+    SDL_Rect pos_pixel;
+
+    pos_pixel.w = TILE_WIDTH;
+    pos_pixel.h = TILE_HEIGHT;
 
     /* test collision avec les bombes */
     for(i = 0; i < jeu->nb_bombs; i++)
     {
-        if(collision_tile_rect(jeu->bombs[i]->pos.x, jeu->bombs[i]->pos.y, jeu->players[joueur]->pos)
+        pos_pixel.x = jeu->bombs[i]->pos.x*TILE_WIDTH;
+        pos_pixel.y = jeu->bombs[i]->pos.y*TILE_HEIGHT;
+
+        if(collision_rect_rect(pos_pixel, jeu->players[joueur]->pos)
         &&(jeu->bombs[i]->id_proprietaire+1 != last_col || last_col == 0))
             return jeu->bombs[i]->id_proprietaire+1; /* permet d'eviter que les joueurs utilisent leurs propres bombes pour traverser une bombe adverse */
     }
@@ -284,6 +289,7 @@ int collision_joueur_objets(Game *jeu, int joueur, int last_col)
     return 0;
 }
 
+/* Fonction qui vérifie la superposition du rectangle du joueur avec celui d'un objet bonus, pour éventuellement appeller donner_bonus */
 int collision_joueur_items(Game *jeu, int joueur)
 {
     int i, j;
@@ -321,6 +327,7 @@ int collision_joueur_items(Game *jeu, int joueur)
     return 0;
 }
 
+/* Fonction qui modifie les stats du joueur en fonction de l'objet bonus ramassé */
 int donner_bonus(Game *jeu, int joueur, int type)
 {
     int succes = 0;
@@ -361,6 +368,7 @@ int donner_bonus(Game *jeu, int joueur, int type)
     return succes;
 }
 
+/* Fonction qui copie la structure Bomb du joueur pour ensuite la poser sur la case ou il se trouve */
 int poser_bomb(Game *jeu, int joueur)
 {
     Player *p = jeu->players[joueur];
@@ -396,12 +404,19 @@ int poser_bomb(Game *jeu, int joueur)
     return 0;
 }
 
+/* Fonction qui applique des effets sur une case, tel que détruire un mur ou blesser un joueur */
 int degats_case(Game *jeu, Bomb *origine, int x, int y)
 {
     int i, obstacle = 1;
     Tile   *t = NULL;
     Player *p = NULL;
     Bomb   *b = NULL;
+    SDL_Rect rect_case;
+
+    rect_case.x = x*TILE_WIDTH;
+    rect_case.y = y*TILE_HEIGHT;
+    rect_case.w = TILE_WIDTH;
+    rect_case.h = TILE_HEIGHT;
 
     /* si la case est hors de la map, on arrête tout et on renvoie 1 */
     if(x < 0 || y < 0 || x > MAP_WIDTH || y > MAP_HEIGHT)
@@ -435,7 +450,7 @@ int degats_case(Game *jeu, Bomb *origine, int x, int y)
     for(i = 0; i < jeu->nb_joueurs; i++)
     {
         p = jeu->players[i];
-        if(collision_tile_rect(x, y, p->pos) && !p->est_mort)
+        if(collision_rect_rect(rect_case, p->pos) && !p->est_mort)
         {
             if(p->bouclier)
             {
@@ -467,6 +482,7 @@ int degats_case(Game *jeu, Bomb *origine, int x, int y)
     return obstacle;
 }
 
+/* Fonction qui fait apparaître un objet bonus sur une case avec une cartaine probabilité */
 void generer_bonus(Game *jeu, int x, int y, int t)
 {
     int i, type;
@@ -508,6 +524,7 @@ void generer_bonus(Game *jeu, int x, int y, int t)
     }
 }
 
+/* Fonction qui détruit une bombe et appelle degats_case sur les cases adjacentes (plus si le joueur possède un bonus portée) */
 int exploser_bombe(Game *jeu, int bombe)
 {
     int i, x, y;
@@ -565,6 +582,7 @@ int exploser_bombe(Game *jeu, int bombe)
     return 0;
 }
 
+/* Fonction qui met à jour l'attribut delai des bombes en jeu, puis les fait exploser si il atteint 0 */
 void maj_bombs(Game *jeu, int dt)
 {
     int i;
@@ -580,18 +598,24 @@ void maj_bombs(Game *jeu, int dt)
     }
 }
 
+/* Fonction qui met à jour la position et direction du joueur en fonction des touches pressées
+ * Appelle poser_bomb si la touche correspondante est pressée
+ */
 void maj_joueur(Game *jeu, int joueur)
 {
     Player *p = jeu->players[joueur];
-    int k = p->keymap_offset, collision_decor = 0, collision_objets = 0;
-    int move_x = 0, move_y = 0;
+    int k = p->keymap_offset, collision_decor = 0, collision_bombes = 0;
+    int move_x = 0, move_y = 0, dx, dy;
+
+    dx = p->pos.x;
+    dy = p->pos.y;
 
     if(p->est_mort)
         return;
 
     /* collision avant deplacement */
     collision_decor = collision_joueur_decor(jeu, joueur);
-    collision_objets = collision_joueur_objets(jeu, joueur, 0);
+    collision_bombes = collision_joueur_bombes(jeu, joueur, 0);
     collision_joueur_items(jeu, joueur);
 
     /* On déplace le joueur en fonction des touches appuyées */
@@ -619,20 +643,34 @@ void maj_joueur(Game *jeu, int joueur)
     p->pos.x += move_x*p->vitesse;
     while(move_x
       && ((collision_joueur_decor(jeu, joueur) && !collision_decor)
-      || (collision_joueur_objets(jeu, joueur, collision_objets) ) ) )
+      || (collision_joueur_bombes(jeu, joueur, collision_bombes) ) ) )
         p->pos.x -= move_x;
 
     p->pos.y += move_y*p->vitesse;
     while(move_y
       && ((collision_joueur_decor(jeu, joueur) && !collision_decor)
-      || (collision_joueur_objets(jeu, joueur, collision_objets) ) ) )
+      || (collision_joueur_bombes(jeu, joueur, collision_bombes) ) ) )
         p->pos.y -= move_y;
+
+    /* Correction direction si le joueur longe un mur */
+    dx = p->pos.x - dx;
+    dy = p->pos.y - dy;
+
+    if(dx == 0 && dy > 0)
+        p->direction = DOWN;
+    else if(dx == 0 && dy < 0)
+        p->direction = UP;
+    else if(dx < 0 && dy == 0)
+        p->direction = LEFT;
+    else if(dx > 0 && dy == 0)
+        p->direction = RIGHT;
 
     /* Si le joueur appuie sur la touche pour poser une bombe */
     if(jeu->touches.keys_pressed[k+BOMB])
         poser_bomb(jeu, joueur);
 }
 
+/* Fonction qui met à jour la carte des touches pressées en fonction de l'évènement SDL reçus */
 void maj_controles(Controls *controles, SDL_Event *event)
 {
     if(event->type != SDL_KEYDOWN && event->type != SDL_KEYUP)
@@ -645,6 +683,7 @@ void maj_controles(Controls *controles, SDL_Event *event)
             controles->keys_pressed[i] = event->type == SDL_KEYDOWN;
     }
 }
+
 
 Bomb* init_bomb(int type, int id_proprietaire)
 {
