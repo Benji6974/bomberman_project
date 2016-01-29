@@ -188,6 +188,7 @@ int maj_graph_entites(Game *jeu, Graphismes *g)
 
     for(i = 0; i < jeu->nb_bombs; i++)
     {
+
         pos.x = jeu->bombs[i]->pos.x*TILE_WIDTH;
         pos.y = jeu->bombs[i]->pos.y*TILE_HEIGHT;
 

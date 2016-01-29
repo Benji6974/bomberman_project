@@ -509,6 +509,7 @@ int exploser_bombe(Game *jeu, int bombe)
 
     if(jeu->nb_bombs > 0 && b != NULL)
     {
+
         x = b->pos.x;
         y = b->pos.y;
 

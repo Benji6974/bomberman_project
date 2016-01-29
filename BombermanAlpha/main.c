@@ -6,6 +6,7 @@
 #include "constantes.h"
 #include "jeu.h"
 #include "graphismes.h"
+#include "sound.h"
 
 #define GRAPHISMES 1
 
@@ -37,7 +38,7 @@ int main(int agrc, char** argv)
 
     sprintf(message, "Version SDL: %d.%d.%d\nMoteur de rendu: %s\nTaille de la fenetre: %d*%d\n", version.major, version.minor, version.patch, info.name, WINDOW_WIDTH, WINDOW_HEIGHT);
     SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "SDL initialisee", message, g->fenetre);
-
+    test();
     while(!stop)
     {
         SDL_PollEvent(&event);
