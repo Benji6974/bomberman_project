@@ -52,6 +52,7 @@ void detruire_audio()
 {
    Mix_FreeChunk(explosion);//Libération du son 1
    Mix_FreeChunk(bombe_posee);
+   Mix_FreeChunk(bonus_obtenu);
    Mix_CloseAudio(); //Fermeture de l'API
    Mix_Quit();
 }

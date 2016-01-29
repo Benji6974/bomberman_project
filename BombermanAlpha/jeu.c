@@ -447,10 +447,10 @@ int degats_case(Game *jeu, Bomb *origine, int x, int y)
                 if(p->vie <= 0)
                 {
                     p->est_mort = 1;
-                    jeu->players[origine->id_proprietaire]->score += SCORE_JOUEUR_KILL;
+                    jeu->players[origine->id_proprietaire]->score += (origine->id_proprietaire != p->id_player) ? SCORE_JOUEUR_KILL : 0;
                 }
                 else
-                    jeu->players[origine->id_proprietaire]->score += SCORE_JOUEUR_HIT;
+                    jeu->players[origine->id_proprietaire]->score += (origine->id_proprietaire != p->id_player) ? SCORE_JOUEUR_HIT : 0;
             }
         }
     }
