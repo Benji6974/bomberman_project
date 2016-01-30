@@ -161,11 +161,11 @@ int maj_menu(Graphismes *g,int nb_joueurs,int temps,int map_jeu, int volume)
                 erreur = 1;
 
 
-        blit.y = (8*TILE_HEIGHT + HUD_HEIGHT);
-        blit.x = (MAP_WIDTH*TILE_WIDTH - 8*SPRITE_CHAR_W);
-        blit.h = SPRITE_SON_W;
-        blit.w = SPRITE_SON_H;
-        clip.y = SPRITE_SON_W;
+        blit.y = (7*TILE_HEIGHT + HUD_HEIGHT);
+        blit.x = (MAP_WIDTH*TILE_WIDTH - 6*SPRITE_CHAR_W);
+        blit.h = 3*SPRITE_CHAR_W;
+        blit.w = 3*SPRITE_CHAR_H;
+        clip.y = 0;
         clip.x = volume*SPRITE_SON_H;
         clip.h = SPRITE_SON_W;
         clip.w = SPRITE_SON_H;

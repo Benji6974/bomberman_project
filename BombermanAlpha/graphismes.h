@@ -50,8 +50,8 @@
 #define SPRITE_CHAR_W 16
 #define SPRITE_CHAR_H 16
 
-#define SPRITE_SON_W 439
-#define SPRITE_SON_H 386
+#define SPRITE_SON_H 439
+#define SPRITE_SON_W 386
 
 #define SCORE_NB_CHIFFRES 4
 
