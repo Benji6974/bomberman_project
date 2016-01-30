@@ -304,7 +304,7 @@ int maj_HUD(Game *jeu, Graphismes *g)
         if(i < 2)
             blit.x = HUD_HEIGHT/2 + (SCORE_NB_CHIFFRES-1)*SPRITE_CHAR_W*(1+2*i);
         else
-            blit.x = MAP_WIDTH*TILE_WIDTH - HUD_HEIGHT/2 - (1+2*(jeu->nb_joueurs-1-i)*(SCORE_NB_CHIFFRES-1)*SPRITE_CHAR_W) - SPRITE_CHAR_W*(SCORE_NB_CHIFFRES-1)/2.;
+            blit.x = SPRITE_CHAR_W/2+MAP_WIDTH*TILE_WIDTH - HUD_HEIGHT/2 - (1+2*(jeu->nb_joueurs-1-i)*(SCORE_NB_CHIFFRES-1)*SPRITE_CHAR_W) - SPRITE_CHAR_W*(SCORE_NB_CHIFFRES-1)/2.;
 
         for(j = 0; j < SCORE_NB_CHIFFRES; j++)
         {
