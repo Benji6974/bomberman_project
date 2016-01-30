@@ -19,25 +19,11 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
     srand(time(NULL));
 
     int **carte_data;
-
-    /*int carte_data2[MAP_HEIGHT][MAP_WIDTH] = {
-       {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-       {-1, 0, 0, 2, 0, 2, 0, 2, 2, 0, 0, 2, 0, 2, 0, 0, -1},
-       {-1, 0, 1, 3, 1, 0, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, -1},
-       {-1, 3, 2, 0, 2, 0, 0, 2, 0, 0, 0, 2, 2, 2, 0, 3, -1},
-       {-1, 2, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 0, -1},
-       {-1, 0, 2, 0, 0, 2, 2, 2, 3, 2, 2, 2, 2, 2, 0, 0, -1},
-       {-1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, -1},
-       {-1, 3, 0, 0, 2, 2, 2, 0, 0, 0, 0, 2, 0, 0, 0, 3, -1},
-       {-1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 0, -1},
-       {-1, 0, 0, 2, 0, 0, 2, 2, 0, 2, 2, 0, 0, 2, 0, 0, -1},
-       {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
-       };*/
     if (typemap == -1)
     {
         carte_data =  genere_map(carte_data,nb_joueurs);
     }
-    else if (typemap == 0)
+    else
     {
         carte_data = lire_map_fichier(carte_data,nb_joueurs,typemap);
 
@@ -80,7 +66,7 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
                 carte[i][j]->etat = 3;
         }
     }
-
+    detruire_map(carte_data);
     jeu->carte = carte;
 
     /* Initialisation controles */
@@ -888,6 +874,20 @@ SDL_Event** init_events(int num)
     }
 
     return events;
+}
+
+void detruire_map(int **carte_data)
+{
+    int i,j;
+    for(i = 0; i < MAP_HEIGHT; i++)
+    {
+        for(j = 0; j < MAP_WIDTH; j++)
+        {
+            free(carte_data[i][j]);
+        }
+        free(carte_data[i]);
+    }
+    free(carte_data);
 }
 
 void detruire_jeu(Game* jeu)
