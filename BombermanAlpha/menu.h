@@ -12,7 +12,7 @@ typedef struct Menu
     int temps;
     int map_jeu;
     int lancer_jeu;
-    int volume;
+    int volume_son;
 }Menu;
 
 void maj_control_menu(SDL_Event *event,Menu *m);

@@ -8,6 +8,7 @@ Menu* init_menu()
     m->temps = DUREE_DEFAUT_PARTIE;
     m->map_jeu = -1;
     m->lancer_jeu = 0;
+    m->volume_son = 1;
     return m;
 }
 
@@ -25,11 +26,14 @@ void maj_control_menu(SDL_Event *event,Menu *m)
 	  case SDL_MOUSEMOTION:
 	       spritepos.x += event->motion.xrel;
 	       spritepos.y += event->motion.yrel;
+	       printf("Position souris: %d %d\n", event->motion.x,
+		      event->motion.y);
 	       break;
           /* Enfoncement bouton souris */
 	  case SDL_MOUSEBUTTONDOWN:
 	      if (!m->clic)
           {
+               printf("Click bouton souris %d\n", event->button.button);
                m->clic = 1;
                maj_menu_clic(event->motion.x,event->motion.y,m);
           }
@@ -39,6 +43,7 @@ void maj_control_menu(SDL_Event *event,Menu *m)
 	  case SDL_MOUSEBUTTONUP:
 	      if (m->clic)
           {
+              printf("Relâchement bouton souris %d\n", event->button.button);
               m->clic =0;
           }
 
@@ -96,9 +101,18 @@ void maj_menu_clic(int x, int y,Menu *m)
             }
         }
 
-                 if (y> MAP_HEIGHT*TILE_HEIGHT*RENDER_SCALE - TILE_HEIGHT*RENDER_SCALE + HUD_HEIGHT*RENDER_SCALE && MAP_HEIGHT*TILE_HEIGHT*RENDER_SCALE - TILE_HEIGHT*RENDER_SCALE + HUD_HEIGHT*RENDER_SCALE +TAILLE_CHAR_H*RENDER_SCALE &&
-        x> MAP_WIDTH*TILE_WIDTH*RENDER_SCALE - 10*TAILLE_CHAR_W*RENDER_SCALE && MAP_WIDTH*TILE_WIDTH*RENDER_SCALE - 2*TAILLE_CHAR_W*RENDER_SCALE)
+                 if (y> MAP_HEIGHT*TILE_HEIGHT*RENDER_SCALE - TILE_HEIGHT*RENDER_SCALE + HUD_HEIGHT*RENDER_SCALE && y<MAP_HEIGHT*TILE_HEIGHT*RENDER_SCALE - TILE_HEIGHT*RENDER_SCALE + HUD_HEIGHT*RENDER_SCALE +TAILLE_CHAR_H*RENDER_SCALE &&
+        x> MAP_WIDTH*TILE_WIDTH*RENDER_SCALE - 10*TAILLE_CHAR_W*RENDER_SCALE && x<MAP_WIDTH*TILE_WIDTH*RENDER_SCALE - 2*TAILLE_CHAR_W*RENDER_SCALE)
         {
             m->lancer_jeu = 1;
         }
+
+         if (y> 8*TILE_HEIGHT*RENDER_SCALE  && y < (8*TILE_HEIGHT*RENDER_SCALE +6*TAILLE_CHAR_H*RENDER_SCALE) &&
+        x> (MAP_WIDTH*TILE_WIDTH*RENDER_SCALE - 6*TAILLE_CHAR_W*RENDER_SCALE) && x<(MAP_WIDTH*TILE_WIDTH*RENDER_SCALE - 3*TAILLE_CHAR_W*RENDER_SCALE))
+        {
+            m->volume_son++;
+            if (m->volume_son ==4)
+                m->volume_son =0;
+        }
+
 }
