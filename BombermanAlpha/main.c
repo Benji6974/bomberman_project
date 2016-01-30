@@ -24,8 +24,12 @@ int main(int agrc, char** argv)
     SDL_version version;
     SDL_VERSION(&version)
 
-    jeu = init_jeu(0, NB_JOUEURS, DUREE_DEFAUT_PARTIE,-1);
+
+
+
+
     init_audio(16);
+
     g   = init_graphismes("Bomberman Beta",
                           SDL_WINDOWPOS_CENTERED,
                           SDL_WINDOWPOS_CENTERED,
@@ -39,6 +43,16 @@ int main(int agrc, char** argv)
 
     sprintf(message, "Version SDL: %d.%d.%d\nMoteur de rendu: %s\nTaille de la fenetre: %d*%d\n", version.major, version.minor, version.patch, info.name, WINDOW_WIDTH, WINDOW_HEIGHT);
     //SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "SDL initialisee", message, g->fenetre);
+
+      while(!stop)
+    {
+        SDL_PollEvent(&event);
+        if(event.window.event == SDL_WINDOWEVENT_CLOSE)
+            stop = 1;
+        maj_menu(g);
+    }
+
+    jeu = init_jeu(0, NB_JOUEURS, DUREE_DEFAUT_PARTIE,-1);
 
     while(!stop)
     {
@@ -85,9 +99,8 @@ int main(int agrc, char** argv)
 
         maj_controles(&jeu->touches, &event);
 
-#if DEMARRER_JEU == 0
-        maj_menu(g);
-#endif // DEMARRER_JEU
+
+
 
         /* MISE A JOUR DE L'ETAT DU JEU */
 

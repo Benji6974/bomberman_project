@@ -53,6 +53,7 @@ Graphismes* init_graphismes(char *titre, int x, int y, int w, int h, Uint32 flag
     g->feuilles_sprites[3] = charger_sprite(renderer, FEUILLE_BONUS);
     g->feuilles_sprites[4] = charger_sprite(renderer, FEUILLE_TEXTE);
     g->feuilles_sprites[5] = charger_sprite(renderer, FEUILLE_EXPLOSIONS);
+    g->feuilles_sprites[6] = charger_sprite(renderer, FEUILLE_COMMANDES);
 
 
     return g; // pour avoir le renderer, suffit d'utiliser SDL_GetRenderer
@@ -62,12 +63,78 @@ int maj_menu(Graphismes *g)
 {
     SDL_SetRenderDrawColor(g->renderer, 0, 0, 0, 255);
     SDL_RenderClear(g->renderer);
-
+    int erreur;
     /* Mettre ici les fonction de mise à jour du menu */
+    SDL_Rect blit;
+        blit.y = (HUD_HEIGHT - SPRITE_CHAR_H)/2;
+        blit.x = (MAP_WIDTH*TILE_WIDTH - 8*SPRITE_CHAR_W*2)/2;
+        blit.h = SPRITE_CHAR_H*2;
+        blit.w = SPRITE_CHAR_W*2;
+        char txt_pause[50] = {"BOMBERMAN"};
+        ecrire_mot(g,txt_pause,blit);
+
+        blit.h = SPRITE_CHAR_H;
+        blit.w = SPRITE_CHAR_W;
+        blit.y = (MAP_HEIGHT*TILE_HEIGHT - TILE_HEIGHT + HUD_HEIGHT);
+        blit.x = (MAP_WIDTH*TILE_WIDTH - 10*SPRITE_CHAR_W);
+        char jouer[50] = {"Jouer =>"};
+        ecrire_mot(g,jouer,blit);
+
+        blit.y = (2*TILE_HEIGHT + HUD_HEIGHT);
+        blit.x = 0;
+        char type_map[50] = {"Type de map : "};
+        ecrire_mot(g,type_map,blit);
+
+        blit.y = (2*TILE_HEIGHT + HUD_HEIGHT);
+        blit.x = 14*SPRITE_CHAR_W;
+        char type_map2[50] = {"< Aleatoire >"};
+        ecrire_mot(g,type_map2,blit);
+
+        blit.y = (4*TILE_HEIGHT + HUD_HEIGHT);
+        blit.x = 0;
+        char nombrejoueurs[50] = {"Nombre de Joueurs : "};
+        ecrire_mot(g,nombrejoueurs,blit);
+
+        blit.y = (4*TILE_HEIGHT + HUD_HEIGHT);
+        blit.x = 20*SPRITE_CHAR_W;
+        char nombrejoueurs_int[50];
+        sprintf(nombrejoueurs_int, "- %d +", NB_JOUEURS);
+        ecrire_mot(g,nombrejoueurs_int,blit);
+
+        blit.y = (8*TILE_HEIGHT + HUD_HEIGHT);
+        blit.x = 0;
+        char controls[50] = {"Controles : "};
+        ecrire_mot(g,controls,blit);
+
+        blit.y = (6*TILE_HEIGHT + HUD_HEIGHT);
+        blit.x = 0;
+        char temps_partie[50] = {"Temps de jeu : "};
+        ecrire_mot(g,temps_partie,blit);
+
+        blit.y = (6*TILE_HEIGHT + HUD_HEIGHT);
+        blit.x = 15*SPRITE_CHAR_W;
+        char char_heure[50];
+        copie_heure(char_heure,DUREE_DEFAUT_PARTIE);
+        ecrire_mot(g,char_heure,blit);
+
+
+        blit.y = (8*TILE_HEIGHT + HUD_HEIGHT);
+        blit.x = 0;
+        blit.h = 4*SPRITE_CHAR_H;
+        blit.w = 20*SPRITE_CHAR_W;
+         if(afficher(g, 6, NULL, &blit) != 0)
+                erreur = 1;
+        /*1632*414*/
+
 
     SDL_RenderPresent(g->renderer);
 
     return 0;
+}
+
+void copie_heure(char* char_heure,int heure)
+{
+    sprintf(char_heure, "- %02d:%02d +", heure/60,heure%60);
 }
 
 int maj_graphismes(Game *jeu, Graphismes *g)
@@ -738,6 +805,22 @@ int afficher_char(Graphismes *g, char c, SDL_Rect pos)
         clip.x = 7;
         clip.y = 12;
         break;
+        case '=':
+        clip.x = 13;
+        clip.y = 1;
+        break;
+        case '>':
+        clip.x = 14;
+        clip.y = 1;
+        break;
+        case '<':
+        clip.x = 12;
+        clip.y = 1;
+        break;
+         case '+':
+        clip.x = 11;
+        clip.y = 0;
+        break;
 
 
     default:
@@ -785,260 +868,3 @@ void free_graphismes(Graphismes *g)
     for(i = 0; i < NB_FEUILLES_SPRITES; i++)
         SDL_DestroyTexture(g->feuilles_sprites[i]);
 }
-/*
-void switch_lettre()
-{
-
-int lettre;
-    switch(lettre)
-    {
-    case 0:
-        clip.x = 0*SPRITE_TEXT_W;
-        clip.y = 1*SPRITE_TEST_H;
-        break;
-    case 1:
-        clip.x = 1*SPRITE_TEXT_W;
-        clip.y = 1*SPRITE_TEST_H;
-        break;
-    case 2:
-        clip.x = 2*SPRITE_TEXT_W;
-        clip.y = 1*SPRITE_TEST_H;
-        break;
-    case 3:
-        clip.x = 3*SPRITE_TEXT_W;
-        clip.y = 1*SPRITE_TEST_H;
-        break;
-    case 4:
-        clip.x = 4*SPRITE_TEXT_W;
-        clip.y = 1*SPRITE_TEST_H;
-        break;
-    case 5:
-        clip.x = 5*SPRITE_TEXT_W;
-        clip.y = 1*SPRITE_TEST_H;
-        break;
-    case 6:
-        clip.x = 6*SPRITE_TEXT_W;
-        clip.y = 1*SPRITE_TEST_H;
-        break;
-    case 7:
-        clip.x = 7*SPRITE_TEXT_W;
-        clip.y = 1*SPRITE_TEST_H;
-        break;
-    case 8:
-        clip.x = 8*SPRITE_TEXT_W;
-        clip.y = 1*SPRITE_TEST_H;
-        break;
-    case 9:
-        clip.x = 9*SPRITE_TEXT_W;
-        clip.y = 1*SPRITE_TEST_H;
-        break;
-    case A:
-        clip.x = 1*SPRITE_TEXT_W;
-        clip.y = 2*SPRITE_TEST_H;
-        break;
-    case B:
-        clip.x = 2*SPRITE_TEXT_W;
-        clip.y = 2*SPRITE_TEST_H;
-        break;
-    case C:
-        clip.x = 3*SPRITE_TEXT_W;
-        clip.y = 2*SPRITE_TEST_H;
-        break;
-    case D:
-        clip.x = 4*SPRITE_TEXT_W;
-        clip.y = 2*SPRITE_TEST_H;
-        break;
-    case E:
-        clip.x = 5*SPRITE_TEXT_W;
-        clip.y = 2*SPRITE_TEST_H;
-        break;
-    case F:
-        clip.x = 6*SPRITE_TEXT_W;
-        clip.y = 2*SPRITE_TEST_H;
-        break;
-    case G:
-        clip.x = 7*SPRITE_TEXT_W;
-        clip.y = 2*SPRITE_TEST_H;
-        break;
-    case H:
-        clip.x = 8*SPRITE_TEXT_W;
-        clip.y = 2*SPRITE_TEST_H;
-        break;
-    case I:
-        clip.x = 9*SPRITE_TEXT_W;
-        clip.y = 2*SPRITE_TEST_H;
-        break;
-    case J:
-        clip.x = 10*SPRITE_TEXT_W;
-        clip.y = 2*SPRITE_TEST_H;
-        break;
-    case K:
-        clip.x = 11*SPRITE_TEXT_W;
-        clip.y = 2*SPRITE_TEST_H;
-        break;
-    case L:
-        clip.x = 12*SPRITE_TEXT_W;
-        clip.y = 2*SPRITE_TEST_H;
-        break;
-    case M:
-        clip.x = 13*SPRITE_TEXT_W;
-        clip.y = 2*SPRITE_TEST_H;
-        break;
-    case N:
-        clip.x = 14*SPRITE_TEXT_W;
-        clip.y = 2*SPRITE_TEST_H;
-        break;
-    case O:
-        clip.x = 15*SPRITE_TEXT_W;
-        clip.y = 2*SPRITE_TEST_H;
-        break;
-    case P:
-        clip.x = 0*SPRITE_TEXT_W;
-        clip.y = 3*SPRITE_TEST_H;
-        break;
-    case Q:
-        clip.x = 1*SPRITE_TEXT_W;
-        clip.y = 3*SPRITE_TEST_H;
-        break;
-    case R:
-        clip.x = 2*SPRITE_TEXT_W;
-        clip.y = 3*SPRITE_TEST_H;
-        break;
-    case S:
-        clip.x = 3*SPRITE_TEXT_W;
-        clip.y = 3*SPRITE_TEST_H;
-        break;
-    case T:
-        clip.x = 4*SPRITE_TEXT_W;
-        clip.y = 3*SPRITE_TEST_H;
-        break;
-    case U:
-        clip.x = 5*SPRITE_TEXT_W;
-        clip.y = 3*SPRITE_TEST_H;
-        break;
-    case V:
-        clip.x = 6*SPRITE_TEXT_W;
-        clip.y = 3*SPRITE_TEST_H;
-        break;
-    case W:
-        clip.x = 7*SPRITE_TEXT_W;
-        clip.y = 3*SPRITE_TEST_H;
-        break;
-    case X:
-        clip.x = 8*SPRITE_TEXT_W;
-        clip.y = 3*SPRITE_TEST_H;
-        break;
-    case Y:
-        clip.x = 9*SPRITE_TEXT_W;
-        clip.y = 3*SPRITE_TEST_H;
-        break;
-    case Z:
-        clip.x = 10*SPRITE_TEXT_W;
-        clip.y = 3*SPRITE_TEST_H;
-        break;
-    case a:
-        clip.x = 1*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case b:
-        clip.x = 2*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case c:
-        clip.x = 3*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case d:
-        clip.x = 4*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case e:
-        clip.x = 5*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case f:
-        clip.x = 6*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case g:
-        clip.x = 7*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case h:
-        clip.x = 8*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case i:
-        clip.x = 9*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case j:
-        clip.x = 10*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case k:
-        clip.x = 11*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case l:
-        clip.x = 12*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case m:
-        clip.x = 13*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case n:
-        clip.x = 14*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case o:
-        clip.x = 15*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case p:
-        clip.x = 0*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case q:
-        clip.x = 1*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case r:
-        clip.x = 2*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case s:
-        clip.x = 3*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case t:
-        clip.x = 4*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case u:
-        clip.x = 5*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case v:
-        clip.x = 6*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case w:
-        clip.x = 7*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case x:
-        clip.x = 8*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case y:
-        clip.x = 9*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    case z:
-        clip.x = 10*SPRITE_TEXT_W;
-        clip.y = 4*SPRITE_TEST_H;
-        break;
-    }
-}*/
