@@ -24,7 +24,7 @@ int main(int agrc, char** argv)
     SDL_version version;
     SDL_VERSION(&version)
 
-    jeu = init_jeu(0, NB_JOUEURS, DUREE_DEFAUT_PARTIE,0);
+    jeu = init_jeu(0, NB_JOUEURS, DUREE_DEFAUT_PARTIE,-1);
     init_audio(16);
     g   = init_graphismes("Bomberman Beta",
                           SDL_WINDOWPOS_CENTERED,

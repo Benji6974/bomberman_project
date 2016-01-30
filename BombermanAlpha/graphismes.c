@@ -352,10 +352,10 @@ int maj_HUD(Game *jeu, Graphismes *g)
             blit.w = SPRITE_CHAR_W/2;
             blit.h = SPRITE_CHAR_H/2;
             blit.x -= SPRITE_CHAR_W*0.5;
-            sprintf(nb_bomb, "x%d", jeu->players[i]->nb_bomb_max);
-            sprintf(nb_vie, "x%d", jeu->players[i]->bouclier);
-            sprintf(nb_vitesse, "x%d", jeu->players[i]->vitesse);
-            sprintf(nb_puissance, "x%d", jeu->players[i]->typebomb.puissance);
+            sprintf(nb_bomb, "%d", jeu->players[i]->nb_bomb_max);
+            sprintf(nb_vie, "%d", jeu->players[i]->bouclier);
+            sprintf(nb_vitesse, "%d", jeu->players[i]->vitesse);
+            sprintf(nb_puissance, "%d", jeu->players[i]->typebomb.puissance);
             ecrire_mot(g,nb_bomb,blit);
             blit.x += SPRITE_CHAR_W*1.5;
             ecrire_mot(g,nb_puissance,blit);
@@ -409,8 +409,8 @@ int maj_HUD(Game *jeu, Graphismes *g)
 
     if (jeu->en_pause)
     {
-        blit.y = HUD_HEIGHT;
-        blit.x = 0;
+        blit.y = (HUD_HEIGHT - SPRITE_CHAR_H)/2;
+        blit.x = (MAP_WIDTH*TILE_WIDTH - 8*SPRITE_CHAR_W)/2;
         blit.h = SPRITE_CHAR_H;
         blit.w = SPRITE_CHAR_W;
         char txt_pause[50] = {"EN PAUSE"};
