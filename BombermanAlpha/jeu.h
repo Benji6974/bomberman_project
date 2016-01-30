@@ -113,7 +113,7 @@ int collision_joueur_items(Game*, int);
 
 /* Fonctions sur les bombes */
 Bomb* init_bomb(int type, int id_player);
-int degats_case(Game*, Bomb*, int, int, int);
+int degats_case(Game*, Bomb*, int, int);
 int exploser_bombe(Game *jeu, int bombe);
 int poser_bomb(Game *jeu, int joueur);
 void maj_bombs(Game *jeu, int dt);

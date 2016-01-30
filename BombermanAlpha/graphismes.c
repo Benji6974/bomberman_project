@@ -129,7 +129,7 @@ int maj_menu(Graphismes *g)
 
     SDL_RenderPresent(g->renderer);
 
-    return 0;
+    return erreur;
 }
 
 void copie_heure(char* char_heure,int heure)
@@ -291,7 +291,7 @@ int maj_graph_entites(Game *jeu, Graphismes *g)
             continue;
 
         clip.x = jeu->explosions[i]->aspect*TILE_WIDTH;
-        clip.y = (4 - jeu->explosions[i]->duree_de_vie/jeu->explosions[i]->temps_restant)*TILE_HEIGHT;
+        clip.y = floor(4*jeu->explosions[i]->temps_restant/(float)jeu->explosions[i]->duree_de_vie)*TILE_HEIGHT; /* Anime l'explosion en fonction de son temps restant */
 
         pos.x = jeu->explosions[i]->pos.x;
         pos.y = jeu->explosions[i]->pos.y;
@@ -505,7 +505,7 @@ int maj_HUD(Game *jeu, Graphismes *g)
 void ecrire_mot(Graphismes *g,char *mot,SDL_Rect blit)
 {
     int z;
-    for(z = 0; mot[z] != NULL ; z++)
+    for(z = 0; mot[z] != 0 ; z++)
     {
         afficher_char(g, mot[z], blit);
         blit.x += blit.w;

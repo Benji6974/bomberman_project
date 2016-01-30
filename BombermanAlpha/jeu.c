@@ -34,6 +34,7 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
 
     jeu->events = init_events(NB_EVENTS);
     jeu->en_pause = 0;
+
     /* Initialisation tableaux des entités */
     jeu->bombs = (Bomb**)malloc(NB_BOMBES_MAX*sizeof(Bomb*));
     jeu->nb_bombs = 0;
@@ -269,7 +270,7 @@ int verif_fin_de_jeu(Game *jeu)
     if(jeu->time <= 0)
     {
         if(!egalite)
-            sprintf(message_fin, "Temps ecoule!\nGagnant: Joueur %s avec %d points", meilleur_score->nom, meilleur_score->score);
+            sprintf(message_fin, "Temps ecoule!\nGagnant: %s avec %d points", meilleur_score->nom, meilleur_score->score);
         else
             sprintf(message_fin, "Temps ecoule!\nIl y a egalite!");
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Game Over", message_fin, NULL);
@@ -282,9 +283,9 @@ int verif_fin_de_jeu(Game *jeu)
 int collision_rect_rect(SDL_Rect a, SDL_Rect b)
 {
     return !(a.x > b.x+b.w-1
-             || a.x+a.w-1 < b.x
-             || a.y > b.y+b.h-1
-             || a.y+a.h-1 < b.y);
+            || a.x+a.w-1 < b.x
+            || a.y > b.y+b.h-1
+            || a.y+a.h-1 < b.y);
 }
 
 /* Fonction qui renvoie 1 si le rectangle du joueur se superpose avec une des cases de la carte, 0 sinon */
@@ -460,7 +461,7 @@ int poser_bomb(Game *jeu, int joueur)
 }
 
 /* Fonction qui applique des effets sur une case, tel que détruire un mur ou blesser un joueur */
-int degats_case(Game *jeu, Bomb *origine, int x, int y, int degats_mur)
+int degats_case(Game *jeu, Bomb *origine, int x, int y)
 {
     int i, obstacle = 2;
     Tile   *t = NULL;
@@ -480,30 +481,27 @@ int degats_case(Game *jeu, Bomb *origine, int x, int y, int degats_mur)
     t = jeu->carte[y][x];
 
     /* dommages aux murs */
-    if(degats_mur)
+    switch(t->type)
     {
-        switch(t->type)
+    case HERBE:
+        obstacle = 0;
+        break;
+    case MUR_BRIQUES:
+        jeu->players[origine->id_proprietaire]->score += SCORE_MUR_BRIQUES;
+        generer_bonus(jeu, x, y, t->type);
+        t->type = 0;
+        obstacle = 1;
+        break;
+    case MUR_SOLIDE:
+        t->etat--;
+        if(t->etat <= 0)
         {
-        case HERBE:
-            obstacle = 0;
-            break;
-        case MUR_BRIQUES:
-            jeu->players[origine->id_proprietaire]->score += SCORE_MUR_BRIQUES;
+            jeu->players[origine->id_proprietaire]->score += SCORE_MUR_SOLIDE;
             generer_bonus(jeu, x, y, t->type);
             t->type = 0;
             obstacle = 1;
-            break;
-        case MUR_SOLIDE:
-            t->etat--;
-            if(t->etat <= 0)
-            {
-                jeu->players[origine->id_proprietaire]->score += SCORE_MUR_SOLIDE;
-                generer_bonus(jeu, x, y, t->type);
-                t->type = 0;
-                obstacle = 1;
-            }
-            break;
         }
+        break;
     }
 
     /* dommages aux joueurs */
@@ -608,24 +606,22 @@ int exploser_bombe(Game *jeu, int bombe)
         /* destruction du décor et des joueurs */
 
         /* Explosion à la position de la bombe */
-        degats_case(jeu, b, x, y, 1);
+        degats_case(jeu, b, x, y);
         init_explosion(jeu, b, x, y, 0, DUREE_DEFAUT_EXPLOSION);
 
 
         /* vers le haut */
         for(i = 1; i <= b->puissance; i++)
         {
-            d = degats_case(jeu, b, x, y-i, 1);
+            d = degats_case(jeu, b, x, y-i);
             if(d != 2)
             {
-                e = init_explosion(jeu, b, x, y-i, 0, DUREE_DEFAUT_EXPLOSION);
+                e = init_explosion(jeu, b, x, y-i, 1, DUREE_DEFAUT_EXPLOSION);
                 if(d == 1 || i == b->puissance)
                 {
                     e->aspect = 3;
                     break;
                 }
-                else
-                    e->aspect = 1;
             }
             else
                 break;
@@ -634,36 +630,15 @@ int exploser_bombe(Game *jeu, int bombe)
         /* vers le bas */
         for(i = 1; i <= b->puissance; i++)
         {
-            d = degats_case(jeu, b, x, y+i, 1);
+            d = degats_case(jeu, b, x, y+i);
             if(d != 2)
             {
-                e = init_explosion(jeu, b, x, y+i, 0, DUREE_DEFAUT_EXPLOSION);
+                e = init_explosion(jeu, b, x, y+i, 1, DUREE_DEFAUT_EXPLOSION);
                 if(d == 1 || i == b->puissance)
                 {
                     e->aspect = 4;
                     break;
                 }
-                else
-                    e->aspect = 1;
-            }
-            else
-                break;
-        }
-
-        /* vers la gauche */
-        for(i = 1; i <= b->puissance; i++)
-        {
-            d = degats_case(jeu, b, x-i, y, 1);
-            if(d != 2)
-            {
-                e = init_explosion(jeu, b, x-i, y, 0, DUREE_DEFAUT_EXPLOSION);
-                if(d == 1 || i == b->puissance)
-                {
-                    e->aspect = 6;
-                    break;
-                }
-                else
-                    e->aspect = 2;
             }
             else
                 break;
@@ -672,17 +647,32 @@ int exploser_bombe(Game *jeu, int bombe)
         /* vers la droite */
         for(i = 1; i <= b->puissance; i++)
         {
-            d = degats_case(jeu, b, x+i, y, 1);
+            d = degats_case(jeu, b, x+i, y);
             if(d != 2)
             {
-                e = init_explosion(jeu, b, x+i, y, 0, DUREE_DEFAUT_EXPLOSION);
+                e = init_explosion(jeu, b, x+i, y, 2, DUREE_DEFAUT_EXPLOSION);
                 if(d == 1 || i == b->puissance)
                 {
                     e->aspect = 5;
                     break;
                 }
-                else
-                    e->aspect = 2;
+            }
+            else
+                break;
+        }
+
+        /* vers la gauche */
+        for(i = 1; i <= b->puissance; i++)
+        {
+            d = degats_case(jeu, b, x-i, y);
+            if(d != 2)
+            {
+                e = init_explosion(jeu, b, x-i, y, 2, DUREE_DEFAUT_EXPLOSION);
+                if(d == 1 || i == b->puissance)
+                {
+                    e->aspect = 6;
+                    break;
+                }
             }
             else
                 break;
@@ -738,7 +728,7 @@ void maj_bombs(Game *jeu, int dt)
         if(e != NULL && e->temps_restant > 0)
         {
             e->temps_restant -= dt;
-            degats_case(jeu, e->origine, e->pos.x/TILE_WIDTH, e->pos.y/TILE_HEIGHT, 0); /* degats persistants seulement aux joueurs */
+            degats_case(jeu, e->origine, e->pos.x/TILE_WIDTH, e->pos.y/TILE_HEIGHT); /* degats persistants seulement aux joueurs */
             if(e->temps_restant <= 0)
             {
                 free(e);
@@ -746,10 +736,10 @@ void maj_bombs(Game *jeu, int dt)
 
                 for(j = i; j < jeu->nb_explosions; j++)
                 {
-                    if(jeu->explosions[i+1] != NULL)
+                    if(jeu->explosions[j+1] != NULL)
                     {
-                        e = jeu->explosions[i+1];
-                        jeu->explosions[i+1] = NULL;
+                        jeu->explosions[j] = jeu->explosions[j+1];
+                        jeu->explosions[j+1] = NULL;
                     }
                 }
 

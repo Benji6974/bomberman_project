@@ -18,8 +18,8 @@ int init_audio(int channels)
        printf("%s", Mix_GetError());
        return -1;
    }
-   Mix_AllocateChannels(NB_CANAUX); //Allouer 32 canaux
-   Mix_Volume(1, MIX_MAX_VOLUME); //Mettre à mi-volume le post 1
+   Mix_AllocateChannels(channels);
+   Mix_Volume(1, MIX_MAX_VOLUME);
    explosion    = Mix_LoadWAV("sound/explosion2.wav");
    bombe_posee  = Mix_LoadWAV("sound/woosh.wav");
    bonus_obtenu = Mix_LoadWAV("sound/bonus.wav");
@@ -55,9 +55,9 @@ int maj_audio(void* userdata, SDL_Event *event)
 
 void detruire_audio()
 {
-   Mix_FreeChunk(explosion);//Libération du son 1
+   Mix_FreeChunk(explosion);
    Mix_FreeChunk(bombe_posee);
    Mix_FreeChunk(bonus_obtenu);
-   Mix_CloseAudio(); //Fermeture de l'API
+   Mix_CloseAudio();
    Mix_Quit();
 }
