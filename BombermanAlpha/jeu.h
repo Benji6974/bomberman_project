@@ -130,6 +130,7 @@ void maj_controles(Controls*, SDL_Event*);
 
 void init_tile(Tile* t,int type, int etat);
 int** genere_map(int **carte_data, int nb_joueurs);
+int** lire_map_fichier(int **carte_data, int nb_joueurs, int typemap);
 
 void detruire_jeu(Game *jeu);
 

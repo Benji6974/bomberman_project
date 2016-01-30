@@ -4,7 +4,8 @@
 int gKeys[KEYS_PER_PLAYER*NB_JOUEURS] = {SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_RCTRL,      /* Joueur 1 */
                                          SDLK_z, SDLK_s, SDLK_q, SDLK_d, SDLK_LCTRL,                 /* Joueur 2 */
                                          SDLK_i, SDLK_k, SDLK_j, SDLK_l, SDLK_b,                 /* Joueur 3 */
-                                         SDLK_KP_8, SDLK_KP_5, SDLK_KP_4, SDLK_KP_6, SDLK_KP_ENTER}; /* Joueur 4 */
+                                         SDLK_KP_8, SDLK_KP_5, SDLK_KP_4, SDLK_KP_6, SDLK_KP_ENTER
+                                        }; /* Joueur 4 */
 
 
 Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
@@ -18,25 +19,28 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
     srand(time(NULL));
 
     int **carte_data;
+
+    /*int carte_data2[MAP_HEIGHT][MAP_WIDTH] = {
+       {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+       {-1, 0, 0, 2, 0, 2, 0, 2, 2, 0, 0, 2, 0, 2, 0, 0, -1},
+       {-1, 0, 1, 3, 1, 0, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, -1},
+       {-1, 3, 2, 0, 2, 0, 0, 2, 0, 0, 0, 2, 2, 2, 0, 3, -1},
+       {-1, 2, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 0, -1},
+       {-1, 0, 2, 0, 0, 2, 2, 2, 3, 2, 2, 2, 2, 2, 0, 0, -1},
+       {-1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, -1},
+       {-1, 3, 0, 0, 2, 2, 2, 0, 0, 0, 0, 2, 0, 0, 0, 3, -1},
+       {-1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 0, -1},
+       {-1, 0, 0, 2, 0, 0, 2, 2, 0, 2, 2, 0, 0, 2, 0, 0, -1},
+       {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
+       };*/
     if (typemap == -1)
     {
-      carte_data =  genere_map(carte_data,nb_joueurs);
+        carte_data =  genere_map(carte_data,nb_joueurs);
     }
     else if (typemap == 0)
     {
-       /*carte_data = {
-        {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-        {-1, 0, 0, 2, 0, 2, 0, 2, 2, 0, 0, 2, 0, 2, 0, 0, -1},
-        {-1, 0, 1, 3, 1, 0, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, -1},
-        {-1, 3, 2, 0, 2, 0, 0, 2, 0, 0, 0, 2, 2, 2, 0, 3, -1},
-        {-1, 2, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 0, -1},
-        {-1, 0, 2, 0, 0, 2, 2, 2, 3, 2, 2, 2, 2, 2, 0, 0, -1},
-        {-1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, -1},
-        {-1, 3, 0, 0, 2, 2, 2, 0, 0, 0, 0, 2, 0, 0, 0, 3, -1},
-        {-1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 0, -1},
-        {-1, 0, 0, 2, 0, 0, 2, 2, 0, 2, 2, 0, 0, 2, 0, 0, -1},
-        {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
-        };*/
+        carte_data = lire_map_fichier(carte_data,nb_joueurs,typemap);
+
     }
 
 
@@ -128,20 +132,69 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
     return jeu;
 }
 
+int** lire_map_fichier(int **carte_data, int nb_joueurs, int typemap)
+{
+    carte_data = (int**)malloc(MAP_HEIGHT*sizeof(int*));
+    int z;
+    for (z=0; z<MAP_HEIGHT; z++)
+    {
+        carte_data[z] = (int*)malloc(MAP_WIDTH*sizeof(int));
+    }
+    char fichier[128] = "";
+    snprintf(fichier, sizeof fichier, "map/map%d.txt", typemap);
+    FILE* fi=fopen(fichier,"r");
+    int n,m;
+
+    if(fi==NULL)
+    {
+        fprintf(stderr,("Erreur ouverture fichier\n" ));
+        exit(0);
+    }
+    for(n=0; n<MAP_HEIGHT; n++)
+    {
+        for(m=0; m<MAP_WIDTH; m++)
+        {
+            fscanf(fi,"%d",&carte_data[n][m]);
+        }
+        scanf(fi,"\n");
+    }
+    fclose(fi);
+    int y,x;
+    for (y=0; y<MAP_HEIGHT; y++)
+    {
+        for (x=0; x<MAP_WIDTH; x++)
+        {
+
+            if (x==0 || y == 0 || x == MAP_WIDTH-1 || y == MAP_HEIGHT-1 )
+                carte_data[y][x] = -1;
+            else if(nb_joueurs >= 1 && ((x == 1 && y == 1) || (x == 2 && y == 1) || (x == 1 && y == 2)))
+                carte_data[y][x] = HERBE;
+            else if(nb_joueurs >= 2 && ((x == MAP_WIDTH-2 && y == 1) || (x == MAP_WIDTH-3 && y == 1) || (x == MAP_WIDTH-2 && y == 2)))
+                carte_data[y][x] = HERBE;
+            else if(nb_joueurs >= 3 && ((x == 1 && y == MAP_HEIGHT-2) || (x == 2 && y == MAP_HEIGHT-2) || (x == 1 && y == MAP_HEIGHT-3)))
+                carte_data[y][x] = HERBE;
+            else if(nb_joueurs >= 4 && ((x == MAP_WIDTH-2 && y == MAP_HEIGHT-2) || (x == MAP_WIDTH-3 && y == MAP_HEIGHT-2) || (x == MAP_WIDTH-2 && y == MAP_HEIGHT-3)))
+                carte_data[y][x] = HERBE;
+
+        }
+    }
+    return carte_data;
+}
+
 int** genere_map(int **carte_data, int nb_joueurs)
 {
     carte_data = (int**)malloc(MAP_HEIGHT*sizeof(int*));
     int z;
-    for (z=0;z<MAP_HEIGHT;z++)
+    for (z=0; z<MAP_HEIGHT; z++)
     {
         carte_data[z] = (int*)malloc(MAP_WIDTH*sizeof(int));
     }
     int proba;
     int x,y;
-    for (y=0;y<MAP_HEIGHT;y++)
+    for (y=0; y<MAP_HEIGHT; y++)
     {
-         for (x=0;x<MAP_WIDTH;x++)
-         {
+        for (x=0; x<MAP_WIDTH; x++)
+        {
             proba = rand()%100;
             if (x==0 || y == 0 || x == MAP_WIDTH-1 || y == MAP_HEIGHT-1 )
                 carte_data[y][x] = -1;
@@ -158,7 +211,14 @@ int** genere_map(int **carte_data, int nb_joueurs)
                 if (proba <P_HERBE)
                     carte_data[y][x] = HERBE;
                 else if(proba < P_HERBE+P_MUR_INDESTRUCTIBLE)
+                {
                     carte_data[y][x] = MUR_INDESTRUCTIBLE;
+                    if(carte_data[y-1][x-1] == MUR_INDESTRUCTIBLE
+                            || carte_data[y][x-1] == MUR_INDESTRUCTIBLE
+                            ||  carte_data[y-1][x] == MUR_INDESTRUCTIBLE
+                            || carte_data[y-1][x+1] == MUR_INDESTRUCTIBLE)
+                        carte_data[y][x] = MUR_BRIQUES;
+                }
                 else if(proba <P_HERBE+P_MUR_INDESTRUCTIBLE+P_MUR_BRIQUES)
                     carte_data[y][x] = MUR_BRIQUES;
                 else if(proba <P_HERBE+P_MUR_INDESTRUCTIBLE+P_MUR_BRIQUES+P_MUR_SOLIDE)
@@ -166,7 +226,7 @@ int** genere_map(int **carte_data, int nb_joueurs)
 
             }
 
-         }
+        }
     }
     return carte_data;
 }
@@ -233,9 +293,9 @@ int verif_fin_de_jeu(Game *jeu)
 int collision_rect_rect(SDL_Rect a, SDL_Rect b)
 {
     return !(a.x > b.x+b.w-1
-          || a.x+a.w-1 < b.x
-          || a.y > b.y+b.h-1
-          || a.y+a.h-1 < b.y);
+             || a.x+a.w-1 < b.x
+             || a.y > b.y+b.h-1
+             || a.y+a.h-1 < b.y);
 }
 
 /* Fonction qui renvoie 1 si le rectangle du joueur se superpose avec une des cases de la carte, 0 sinon */
@@ -286,7 +346,7 @@ int collision_joueur_bombes(Game *jeu, int joueur, int last_col)
         pos_pixel.y = jeu->bombs[i]->pos.y*TILE_HEIGHT;
 
         if(collision_rect_rect(pos_pixel, jeu->players[joueur]->pos)
-        &&(jeu->bombs[i]->id_proprietaire+1 != last_col || last_col == 0))
+                &&(jeu->bombs[i]->id_proprietaire+1 != last_col || last_col == 0))
             return jeu->bombs[i]->id_proprietaire+1; /* permet d'eviter que les joueurs utilisent leurs propres bombes pour traverser une bombe adverse */
     }
 
@@ -387,7 +447,7 @@ int poser_bomb(Game *jeu, int joueur)
         for(i = 0; jeu->bombs[i] != NULL; i++)
         {
             if(jeu->bombs[i]->pos.x == x
-            && jeu->bombs[i]->pos.y == y)
+                    && jeu->bombs[i]->pos.y == y)
             {
                 return -1;
             }
@@ -694,14 +754,14 @@ void maj_joueur(Game *jeu, int joueur)
 
     p->pos.x += move_x*p->vitesse;
     while(move_x
-      && ((collision_joueur_decor(jeu, joueur) && !collision_decor)
-      || (collision_joueur_bombes(jeu, joueur, collision_bombes) ) ) )
+            && ((collision_joueur_decor(jeu, joueur) && !collision_decor)
+                || (collision_joueur_bombes(jeu, joueur, collision_bombes) ) ) )
         p->pos.x -= move_x;
 
     p->pos.y += move_y*p->vitesse;
     while(move_y
-      && ((collision_joueur_decor(jeu, joueur) && !collision_decor)
-      || (collision_joueur_bombes(jeu, joueur, collision_bombes) ) ) )
+            && ((collision_joueur_decor(jeu, joueur) && !collision_decor)
+                || (collision_joueur_bombes(jeu, joueur, collision_bombes) ) ) )
         p->pos.y -= move_y;
 
     /* Correction direction si le joueur longe un mur */
