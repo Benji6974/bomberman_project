@@ -59,7 +59,7 @@ int main(int agrc, char** argv)
         if(event.window.event == SDL_WINDOWEVENT_CLOSE)
             stop = 1;
 
-        maj_menu(g,m->nb_joueurs,m->temps,m->map_jeu);
+        maj_menu(g,m->nb_joueurs,m->temps,m->map_jeu, m->volume);
         maj_control_menu(&event,m);
     }
     jeu = init_jeu(0, m->nb_joueurs, m->temps, m->map_jeu);
