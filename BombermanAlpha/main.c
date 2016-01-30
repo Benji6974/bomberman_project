@@ -7,12 +7,13 @@
 #include "jeu.h"
 #include "graphismes.h"
 #include "sound.h"
+#include "menu.h"
 
 #define DEMARRER_JEU 0
 
 int main(int agrc, char** argv)
 {
-    int pause = 0, stop = 0, pause_b = 0, current_time = 0, previous_time = 0, previous_time2 = 0, frame_compte = 0;
+    int pause = 0, stop = 0, partie_terminee = 0, pause_b = 0, current_time = 0, previous_time = 0, previous_time2 = 0, frame_compte = 0;
     int dt = 0;
     SDL_Event event;
     Game *jeu = NULL;
@@ -30,13 +31,13 @@ int main(int agrc, char** argv)
 
     init_audio(NB_CANAUX);
 
-    g   = init_graphismes("Bomberman Beta",
-                          SDL_WINDOWPOS_CENTERED,
-                          SDL_WINDOWPOS_CENTERED,
-                          WINDOW_WIDTH,
-                          WINDOW_HEIGHT,
-                          SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE,
-                          SDL_RENDERER_PRESENTVSYNC);
+    g = init_graphismes("Bomberman Beta",
+                        SDL_WINDOWPOS_CENTERED,
+                        SDL_WINDOWPOS_CENTERED,
+                        WINDOW_WIDTH,
+                        WINDOW_HEIGHT,
+                        SDL_WINDOW_SHOWN,
+                        SDL_RENDERER_PRESENTVSYNC);
 
     SDL_RendererInfo info;
     SDL_GetRenderDriverInfo(0, &info);
@@ -46,29 +47,27 @@ int main(int agrc, char** argv)
 
 
     Menu *m = NULL;
+
+    do
+    {
+
+    partie_terminee = 0;
     m = init_menu();
-
-
-
-    while(!m->lancer_jeu)
-
+    while(!m->lancer_jeu && !stop)
     {
         SDL_PollEvent(&event);
         if(event.window.event == SDL_WINDOWEVENT_CLOSE)
             stop = 1;
-        maj_menu(g,m->nb_joueurs,m->temps,m->map_jeu,m->volume_son);
+
+        maj_menu(g,m->nb_joueurs,m->temps,m->map_jeu);
         maj_control_menu(&event,m);
-        printf("nb_joueur %d",m->nb_joueurs);
     }
+    jeu = init_jeu(0, m->nb_joueurs, m->temps, m->map_jeu);
 
+    free(m);
+    m = NULL;
 
-    jeu = init_jeu(0, m->nb_joueurs, m->temps,m->map_jeu);
-
-    stop = 0;
-
-
-
-    while(!stop)
+    while(!partie_terminee && !stop)
     {
         SDL_PollEvent(&event);
         if(event.window.event == SDL_WINDOWEVENT_CLOSE)
@@ -84,8 +83,7 @@ int main(int agrc, char** argv)
             case SDLK_p:
                 pause_b = 0;
                 break;
-            default:
-                ;
+            default:;
             }
             break;
         case SDL_KEYDOWN:
@@ -100,11 +98,9 @@ int main(int agrc, char** argv)
                     pause ^= 1;
                     jeu->en_pause ^=1;
                     pause_b = 1;
-
                 }
                 break;
-            default:
-                ;
+            default:;
             }
             break;
         }
@@ -119,14 +115,13 @@ int main(int agrc, char** argv)
         dt = current_time - previous_time;
         if(dt >= 1000/MAJ_PAR_SEC && !pause)
         {
-            stop |= maj_jeu(jeu, 1000/MAJ_PAR_SEC);
+            partie_terminee = maj_jeu(jeu, 1000/MAJ_PAR_SEC);
             previous_time = current_time;
         }
 
         /* MISE A JOUR DES GRAPHISMES */
 
         maj_graphismes(jeu, g);
-        printf("%d\n", jeu->players[0]->score);
 
 
         /* Compteur de FPS */
@@ -141,9 +136,14 @@ int main(int agrc, char** argv)
 
     }
 
-    free_graphismes(g);
+    SDL_DelEventWatch(maj_audio, NULL);
     detruire_jeu(jeu);
+    jeu = NULL;
+
+    }while(!stop);
+
     detruire_audio();
+    free_graphismes(g);
 
     SDL_Quit();
     return 0;

@@ -348,11 +348,11 @@
 1452677563 c:\users\benji\documents\bomberman\trunk\bombermanalpha\jeu.h
 	"graphismes.h"
 
-1454178642 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\graphismes.c
+1454191836 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\graphismes.c
 	<stdio.h>
 	"graphismes.h"
 
-1454178398 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\graphismes.h
+1454187388 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\graphismes.h
 	<SDL.h>
 	<math.h>
 	"constantes.h"
@@ -677,11 +677,11 @@
 	"begin_code.h"
 	"close_code.h"
 
-1454182226 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\jeu.c
+1454190448 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\jeu.c
 	"constantes.h"
 	"jeu.h"
 
-1454173462 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\jeu.h
+1454187598 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\jeu.h
 	<stdlib.h>
 	<stdio.h>
 	<string.h>
@@ -689,7 +689,7 @@
 	<math.h>
 	<SDL.h>
 
-1454182694 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\main.c
+1454191817 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\main.c
 	<stdlib.h>
 	<stdio.h>
 	<SDL.h>
@@ -697,13 +697,14 @@
 	"jeu.h"
 	"graphismes.h"
 	"sound.h"
+	"menu.h"
 
 1452677563 c:\users\benji\documents\bomberman\trunk\bombermanalpha\graphismes.h
 	<SDL.h>
 
 1452679375 c:\users\benji\documents\bomberman\trunk\bombermanalpha\constantes.h
 
-1454175392 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\constantes.h
+1454187336 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\constantes.h
 
 1454189035 source:j:\cours\polytech paris\bomberman\trunk\bombermanalpha\graphismes.c
 	<stdio.h>
@@ -779,4 +780,11 @@
 	"SDL_version.h"
 	"begin_code.h"
 	"close_code.h"
+
+1454187723 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\menu.h
+	<SDL.h>
+	"constantes.h"
+
+1454189100 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\menu.c
+	"menu.h"
 

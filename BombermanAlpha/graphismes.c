@@ -58,8 +58,7 @@ Graphismes* init_graphismes(char *titre, int x, int y, int w, int h, Uint32 flag
     g->feuilles_sprites[8] = charger_sprite(renderer, FEUILLE_VOLUME);
 
 
-
-    return g; // pour avoir le renderer, suffit d'utiliser SDL_GetRenderer
+    return g;
 }
 
 int maj_menu(Graphismes *g,int nb_joueurs,int temps,int map_jeu, int volume)
@@ -86,7 +85,7 @@ int maj_menu(Graphismes *g,int nb_joueurs,int temps,int map_jeu, int volume)
         ecrire_mot(g,type_map,blit);
 
 
-
+            printf("?\n");
 
         blit.y = (2*TILE_HEIGHT + HUD_HEIGHT);
         blit.x = 14*SPRITE_CHAR_W;
