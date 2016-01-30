@@ -6,6 +6,8 @@
 #include "constantes.h"
 #include "jeu.h"
 
+#define NB_CANAUX 32
+
 int init_audio(int);
 
 int maj_audio(void*, SDL_Event*);

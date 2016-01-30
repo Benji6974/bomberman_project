@@ -677,7 +677,7 @@
 	"begin_code.h"
 	"close_code.h"
 
-1454165301 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\jeu.c
+1454166597 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\jeu.c
 	"constantes.h"
 	"jeu.h"
 
@@ -758,12 +758,12 @@
 	"begin_code.h"
 	"close_code.h"
 
-1454115348 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\sound.h
+1454168647 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\sound.h
 	<SDL.h>
 	"constantes.h"
 	"jeu.h"
 
-1454116331 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\sound.c
+1454167282 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\sound.c
 	<SDL.h>
 	<SDL_mixer.h>
 	<stdio.h>
