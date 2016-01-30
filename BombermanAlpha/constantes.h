@@ -7,7 +7,7 @@
 #define TILE_HEIGHT   32
 #define MAP_WIDTH     17
 #define MAP_HEIGHT    11
-#define RENDER_SCALE  1 /* Taille des pixels  */
+#define RENDER_SCALE  2 /* Taille des pixels  */
 #define WINDOW_WIDTH  RENDER_SCALE*TILE_WIDTH*MAP_WIDTH
 #define WINDOW_HEIGHT RENDER_SCALE*(TILE_HEIGHT*MAP_HEIGHT + HUD_HEIGHT)
 
