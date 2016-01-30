@@ -223,6 +223,7 @@ int maj_graph_entites(Game *jeu, Graphismes *g)
         if(jeu->explosions[i] == NULL)
             continue;
 
+        clip.x = jeu->explosions[i]->aspect*TILE_WIDTH;
         clip.y = (4 - jeu->explosions[i]->duree_de_vie/jeu->explosions[i]->temps_restant)*TILE_HEIGHT;
 
         pos.x = jeu->explosions[i]->pos.x;

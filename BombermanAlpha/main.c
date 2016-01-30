@@ -8,7 +8,7 @@
 #include "graphismes.h"
 #include "sound.h"
 
-#define DEMARRER_JEU 0
+#define DEMARRER_JEU 1
 
 int main(int agrc, char** argv)
 {
@@ -85,7 +85,9 @@ int main(int agrc, char** argv)
 
         maj_controles(&jeu->touches, &event);
 
+#if DEMARRER_JEU == 0
         maj_menu(g);
+#endif // DEMARRER_JEU
 
         /* MISE A JOUR DE L'ETAT DU JEU */
 
