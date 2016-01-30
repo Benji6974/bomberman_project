@@ -227,7 +227,7 @@ int maj_jeu(Game *jeu, int dt)
     maj_bombs(jeu, dt);
     for(i = 0; i < jeu->nb_joueurs; i++)
     {
-        maj_joueur(jeu, i);
+        maj_joueur(jeu, i, dt);
     }
 
     jeu->time -= dt;
@@ -256,7 +256,7 @@ int verif_fin_de_jeu(Game *jeu)
     }
     if(en_vie == 1)
     {
-        sprintf(message_fin, "Joueur %d gagne!", joueur);
+        sprintf(message_fin, "%s gagne!", jeu->players[joueur]->nom);
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Game Over", message_fin, NULL);
         return 1;
     }
@@ -269,7 +269,7 @@ int verif_fin_de_jeu(Game *jeu)
     if(jeu->time <= 0)
     {
         if(!egalite)
-            sprintf(message_fin, "Temps ecoule!\nGagnant: Joueur %d avec %d points", meilleur_score->id_player+1, meilleur_score->score);
+            sprintf(message_fin, "Temps ecoule!\nGagnant: Joueur %s avec %d points", meilleur_score->nom, meilleur_score->score);
         else
             sprintf(message_fin, "Temps ecoule!\nIl y a egalite!");
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Game Over", message_fin, NULL);
@@ -512,13 +512,18 @@ int degats_case(Game *jeu, Bomb *origine, int x, int y, int degats_mur)
         p = jeu->players[i];
         if(collision_rect_rect(rect_case, p->pos) && !p->est_mort)
         {
+            if(p->invincible > 0)
+                continue;
+
             if(p->bouclier)
             {
                 p->bouclier = 0;
+                p->invincible = DUREE_INVINCIBILITE;
             }
             else
             {
                 p->vie--;
+                p->invincible = DUREE_INVINCIBILITE;
                 if(p->vie <= 0)
                 {
                     p->est_mort = 1;
@@ -702,7 +707,7 @@ void maj_bombs(Game *jeu, int dt)
 /* Fonction qui met à jour la position et direction du joueur en fonction des touches pressées
  * Appelle poser_bomb si la touche correspondante est pressée
  */
-void maj_joueur(Game *jeu, int joueur)
+void maj_joueur(Game *jeu, int joueur, int dt)
 {
     Player *p = jeu->players[joueur];
     int k = p->keymap_offset, collision_decor = 0, collision_bombes = 0;
@@ -713,6 +718,9 @@ void maj_joueur(Game *jeu, int joueur)
 
     if(p->est_mort)
         return;
+
+    if(p->invincible > 0)
+        p->invincible -= dt;
 
     /* collision avant deplacement */
     collision_decor = collision_joueur_decor(jeu, joueur);
@@ -838,7 +846,7 @@ void init_tile(Tile* t,int type, int etat)
 Player* init_player(char *name, int id_player)
 {
     Player *p = malloc(sizeof(Player));
-    strcpy(p->nom,name);
+    strncpy(p->nom,name,256);
     p->vie = 1;
     p->est_mort = 0;
     p->score = 0;

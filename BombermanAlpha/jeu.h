@@ -39,6 +39,7 @@ typedef struct Player
     int est_mort;
     int score;
     int bouclier;
+    int invincible;
     int direction;
     int vitesse;
     SDL_Rect pos;
@@ -126,7 +127,7 @@ int donner_bonus(Game*, int, int);
 
 /* Fonctions sur les joueurs */
 Player* init_player(char *name, int id_player);
-void maj_joueur(Game *jeu, int joueur);
+void maj_joueur(Game *jeu, int joueur, int dt);
 void maj_controles(Controls*, SDL_Event*);
 
 void init_tile(Tile* t,int type, int etat);

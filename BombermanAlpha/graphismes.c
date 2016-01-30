@@ -343,7 +343,7 @@ int maj_HUD(Game *jeu, Graphismes *g)
             blit.x = SPRITE_CHAR_W*29;
         ecrire_mot(g,jeu->players[i]->nom,blit);
 
-        if (jeu->players[i]->est_mort == 0)
+        if (!jeu->players[i]->est_mort)
         {
 
 
