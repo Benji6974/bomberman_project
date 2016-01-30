@@ -312,8 +312,34 @@ int maj_HUD(Game *jeu, Graphismes *g)
             blit.x -= SPRITE_CHAR_W;
         }
     }
+    /* nom des perso test */
 
+    int z;
+    blit.x = 0;
+    for(i = 0; i < jeu->nb_joueurs; i++)
+    {
+        blit.y += 50;
+
+        ecrire_mot(g,jeu->players[i]->nom,blit);
+    }
+
+    char test[50] = {"ouais ouais c moche !!!!"};
+    char test2[50] = {"pour l'enlever ligne 315 graphismes.h"};
+    blit.y += 50;
+    ecrire_mot(g,test,blit);
+    blit.y += 50;
+    ecrire_mot(g,test2,blit);
     return 0;
+}
+
+void ecrire_mot(Graphismes *g,char *mot,SDL_Rect blit)
+{
+    int z;
+    for(z = 0; mot[z] != NULL ; z++)
+        {
+            afficher_char(g, mot[z], blit);
+            blit.x += SPRITE_CHAR_W;
+        }
 }
 
 int afficher_char(Graphismes *g, char c, SDL_Rect pos)
@@ -365,10 +391,251 @@ int afficher_char(Graphismes *g, char c, SDL_Rect pos)
         clip.x = 9;
         clip.y = 1;
         break;
+    case 'A':
+        clip.x = 1;
+        clip.y = 2;
+        break;
+    case 'B':
+        clip.x = 2;
+        clip.y = 2;
+        break;
+    case 'C':
+        clip.x = 3;
+        clip.y = 2;
+        break;
+    case 'D':
+        clip.x = 4;
+        clip.y = 2;
+        break;
+    case 'E':
+        clip.x = 5;
+        clip.y = 2;
+        break;
+    case 'F':
+        clip.x = 6;
+        clip.y = 2;
+        break;
+    case 'G':
+        clip.x = 7;
+        clip.y = 2;
+        break;
+    case 'H':
+        clip.x = 8;
+        clip.y = 2;
+        break;
+    case 'I':
+        clip.x = 9;
+        clip.y = 2;
+        break;
+    case 'J':
+        clip.x = 10;
+        clip.y = 2;
+        break;
+    case 'K':
+        clip.x = 11;
+        clip.y = 2;
+        break;
+    case 'L':
+        clip.x = 12;
+        clip.y = 2;
+        break;
+    case 'M':
+        clip.x = 13;
+        clip.y = 2;
+        break;
+    case 'N':
+        clip.x = 14;
+        clip.y = 2;
+        break;
+    case 'O':
+        clip.x = 15;
+        clip.y = 2;
+        break;
+    case 'P':
+        clip.x = 0;
+        clip.y = 3;
+        break;
+    case 'Q':
+        clip.x = 1;
+        clip.y = 3;
+        break;
+    case 'R':
+        clip.x = 2;
+        clip.y = 3;
+        break;
+    case 'S':
+        clip.x = 3;
+        clip.y = 3;
+        break;
+    case 'T':
+        clip.x = 4;
+        clip.y = 3;
+        break;
+    case 'U':
+        clip.x = 5;
+        clip.y = 3;
+        break;
+    case 'V':
+        clip.x = 6;
+        clip.y = 3;
+        break;
+    case 'W':
+        clip.x = 7;
+        clip.y = 3;
+        break;
+    case 'X':
+        clip.x = 8;
+        clip.y = 3;
+        break;
+    case 'Y':
+        clip.x = 9;
+        clip.y = 3;
+        break;
+    case 'Z':
+        clip.x = 10;
+        clip.y = 3;
+        break;
+    case 'a':
+        clip.x = 1;
+        clip.y = 4;
+        break;
+    case 'b':
+        clip.x = 2;
+        clip.y = 4;
+        break;
+    case 'c':
+        clip.x = 3;
+        clip.y = 4;
+        break;
+    case 'd':
+        clip.x = 4;
+        clip.y = 4;
+        break;
+    case 'e':
+        clip.x = 5;
+        clip.y = 4;
+        break;
+    case 'f':
+        clip.x = 6;
+        clip.y = 4;
+        break;
+    case 'g':
+        clip.x = 7;
+        clip.y = 4;
+        break;
+    case 'h':
+        clip.x = 8;
+        clip.y = 4;
+        break;
+    case 'i':
+        clip.x = 9;
+        clip.y = 4;
+        break;
+    case 'j':
+        clip.x = 10;
+        clip.y = 4;
+        break;
+    case 'k':
+        clip.x = 11;
+        clip.y = 4;
+        break;
+    case 'l':
+        clip.x = 12;
+        clip.y = 4;
+        break;
+    case 'm':
+        clip.x = 13;
+        clip.y = 4;
+        break;
+    case 'n':
+        clip.x = 14;
+        clip.y = 4;
+        break;
+    case 'o':
+        clip.x = 15;
+        clip.y = 4;
+        break;
+    case 'p':
+        clip.x = 0;
+        clip.y = 5;
+        break;
+    case 'q':
+        clip.x = 1;
+        clip.y = 5;
+        break;
+    case 'r':
+        clip.x = 2;
+        clip.y = 5;
+        break;
+    case 's':
+        clip.x = 3;
+        clip.y = 5;
+        break;
+    case 't':
+        clip.x = 4;
+        clip.y = 5;
+        break;
+    case 'u':
+        clip.x = 5;
+        clip.y = 5;
+        break;
+    case 'v':
+        clip.x = 6;
+        clip.y = 5;
+        break;
+    case 'w':
+        clip.x = 7;
+        clip.y = 5;
+        break;
+    case 'x':
+        clip.x = 8;
+        clip.y = 5;
+        break;
+    case 'y':
+        clip.x = 9;
+        clip.y = 5;
+        break;
+    case 'z':
+        clip.x = 10;
+        clip.y = 5;
+        break;
     case ':':
         clip.x = 10;
         clip.y = 1;
         break;
+            case '!':
+        clip.x = 1;
+        clip.y = 0;
+        break;
+            case '-':
+        clip.x = 6;
+        clip.y = 7;
+        break;
+            case '_':
+        clip.x = 15;
+        clip.y = 3;
+        break;
+            case '?':
+        clip.x = 15;
+        clip.y = 1;
+        break;
+        case 'à':
+        clip.x = 0;
+        clip.y = 12;
+        break;
+        case 'é':
+        clip.x = 9;
+        clip.y = 12;
+        break;
+        case 'è':
+        clip.x = 8;
+        clip.y = 12;
+        break;
+        case 'ç':
+        clip.x = 7;
+        clip.y = 12;
+        break;
+
     default:
         clip.x = 0;
         clip.y = 0;

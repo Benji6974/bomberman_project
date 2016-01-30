@@ -66,6 +66,7 @@ int maj_HUD(Game*, Graphismes*);
 
 int afficher(Graphismes *g, int feuille_sprite, SDL_Rect *clip, SDL_Rect *dest);
 int afficher_char(Graphismes *g, char c, SDL_Rect pos);
+void ecrire_mot(Graphismes *g,char *mot,SDL_Rect blit);
 
 void trier_par_y(Player **tab, int taille);
 

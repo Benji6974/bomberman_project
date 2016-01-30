@@ -84,7 +84,10 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
     jeu->players = (Player**)malloc(nb_joueurs*sizeof(Player*));
     for(i = 0; i < nb_joueurs; i++)
     {
-        p = init_player("Joueur", i);
+
+        char name[128] = "";
+        sprintf(name, "Joueur_%d", i);
+        p = init_player(name, i);
         p->keymap_offset = i*KEYS_PER_PLAYER;
 
         /* Positionne les joueurs aux 4 coins de la carte au centre de la case */
@@ -837,7 +840,7 @@ void init_tile(Tile* t,int type, int etat)
 Player* init_player(char *name, int id_player)
 {
     Player *p = malloc(sizeof(Player));
-    //strcpy(name, p->nom);
+    strcpy(p->nom,name);
     p->vie = 1;
     p->est_mort = 0;
     p->score = 0;
