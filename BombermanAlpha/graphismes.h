@@ -59,6 +59,7 @@ Graphismes;
 
 Graphismes* init_graphismes(char *titre, int x, int y, int l, int h, Uint32 flags_fenetre, Uint32 flags_renderer);
 
+int maj_menu(Graphismes *g);
 int maj_graphismes(Game *jeu, Graphismes *g);
 int maj_graph_carte(Game *jeu, Graphismes *g);
 int maj_graph_entites(Game *jeu, Graphismes *g);

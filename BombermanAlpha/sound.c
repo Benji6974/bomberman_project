@@ -32,11 +32,10 @@ int maj_audio(void* userdata, SDL_Event *event)
    if(event != NULL && event->type >= SDL_USEREVENT && event->user.timestamp != timestamp)
    {
       timestamp = event->user.timestamp;
-      for(channel = 1; channel <= NB_CANAUX; channel++)
-      {
-         if(!Mix_Playing(channel))
-            break;
-      }
+
+      /* Determination d'un canal vide */
+      for(channel = 1; channel <= NB_CANAUX && Mix_Playing(channel); channel++);
+
       switch(event->user.code)
       {
       case BOMBE_EXPLOSE:

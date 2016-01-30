@@ -8,7 +8,7 @@
 #include "graphismes.h"
 #include "sound.h"
 
-#define GRAPHISMES 1
+#define DEMARRER_JEU 0
 
 int main(int agrc, char** argv)
 {
@@ -85,8 +85,11 @@ int main(int agrc, char** argv)
 
         maj_controles(&jeu->touches, &event);
 
+        maj_menu(g);
+
         /* MISE A JOUR DE L'ETAT DU JEU */
 
+#if DEMARRER_JEU
         current_time = SDL_GetTicks();
         dt = current_time - previous_time;
         if(dt >= 1000/MAJ_PAR_SEC && !pause)
@@ -95,23 +98,10 @@ int main(int agrc, char** argv)
             previous_time = current_time;
         }
 
-
-
-//        system("cls");
-//        for(i = 0; i < jeu->nb_explosions; i++)
-//        {
-//            if(jeu->explosions[i] == 0)
-//                printf("NULL, ");
-//            else
-//                printf("%d, ", jeu->explosions[i]->aspect);
-//        }
-//        printf("\n");
-
         /* MISE A JOUR DES GRAPHISMES */
-#if GRAPHISMES
-        maj_graphismes(jeu, g);
 
-#endif // GRAPHISMES
+        maj_graphismes(jeu, g);
+#endif
 
         /* Compteur de FPS */
         current_time = SDL_GetTicks();

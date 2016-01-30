@@ -58,6 +58,18 @@ Graphismes* init_graphismes(char *titre, int x, int y, int w, int h, Uint32 flag
     return g; // pour avoir le renderer, suffit d'utiliser SDL_GetRenderer
 }
 
+int maj_menu(Graphismes *g)
+{
+    SDL_SetRenderDrawColor(g->renderer, 0, 0, 0, 255);
+    SDL_RenderClear(g->renderer);
+
+    /* Mettre ici les fonction de mise à jour du menu */
+
+    SDL_RenderPresent(g->renderer);
+
+    return 0;
+}
+
 int maj_graphismes(Game *jeu, Graphismes *g)
 {
     int erreur = 0;
