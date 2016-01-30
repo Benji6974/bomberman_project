@@ -705,26 +705,27 @@
 
 1454104306 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\constantes.h
 
-1454026931 source:j:\cours\polytech paris\bomberman\trunk\bombermanalpha\graphismes.c
+1454104779 source:j:\cours\polytech paris\bomberman\trunk\bombermanalpha\graphismes.c
 	<stdio.h>
 	"graphismes.h"
 
-1454026931 j:\cours\polytech paris\bomberman\trunk\bombermanalpha\graphismes.h
+1454104779 j:\cours\polytech paris\bomberman\trunk\bombermanalpha\graphismes.h
 	<SDL.h>
 	<math.h>
 	"constantes.h"
 	"jeu.h"
 
-1454026931 j:\cours\polytech paris\bomberman\trunk\bombermanalpha\constantes.h
+1454104779 j:\cours\polytech paris\bomberman\trunk\bombermanalpha\constantes.h
 
-1454020462 j:\cours\polytech paris\bomberman\trunk\bombermanalpha\jeu.h
+1454116079 j:\cours\polytech paris\bomberman\trunk\bombermanalpha\jeu.h
 	<stdlib.h>
 	<stdio.h>
 	<string.h>
 	<time.h>
+	<math.h>
 	<SDL.h>
 
-1454027631 source:j:\cours\polytech paris\bomberman\trunk\bombermanalpha\main.c
+1454116697 source:j:\cours\polytech paris\bomberman\trunk\bombermanalpha\main.c
 	<stdlib.h>
 	<stdio.h>
 	<SDL.h>
@@ -733,19 +734,20 @@
 	"graphismes.h"
 	"sound.h"
 
-1454020462 source:j:\cours\polytech paris\bomberman\trunk\bombermanalpha\jeu.c
+1454117827 source:j:\cours\polytech paris\bomberman\trunk\bombermanalpha\jeu.c
 	"constantes.h"
 	"jeu.h"
 
-1454027631 j:\cours\polytech paris\bomberman\trunk\bombermanalpha\sound.h
+1454104779 j:\cours\polytech paris\bomberman\trunk\bombermanalpha\sound.h
 	<SDL.h>
 
-1454027639 source:j:\cours\polytech paris\bomberman\trunk\bombermanalpha\sound.c
+1454104779 source:j:\cours\polytech paris\bomberman\trunk\bombermanalpha\sound.c
 	<SDL.h>
 	<SDL_mixer.h>
 	<stdio.h>
 	<stdlib.h>
 	"sound.h"
+	"constantes.h"
 
 1451801792 c:\program files (x86)\codeblocks\sdl2-2.0.4\i686-w64-mingw32\include\sdl2\sdl_mixer.h
 	"SDL_stdinc.h"

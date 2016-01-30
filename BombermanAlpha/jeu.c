@@ -158,7 +158,9 @@ int** lire_map_fichier(int **carte_data, int nb_joueurs, int typemap)
         }
         scanf(fi,"\n");
     }
-    fclose(fi);
+    fclose(fi); /* on ferme le fichier */
+
+    /* on remplace les cases par de l'herbe autour des joueurs*/
     int y,x;
     for (y=0; y<MAP_HEIGHT; y++)
     {
