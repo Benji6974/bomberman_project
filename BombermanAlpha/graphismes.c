@@ -323,6 +323,7 @@ int maj_HUD(Game *jeu, Graphismes *g)
     char nb_vie[10];
     char nb_vitesse[10];
     char nb_puissance[10];
+    char mort[10] = {"mort"};
     for(i = 0; i < jeu->nb_joueurs; i++)
     {
         /* ecrire le nom du joueur*/
@@ -339,57 +340,68 @@ int maj_HUD(Game *jeu, Graphismes *g)
             blit.x = SPRITE_CHAR_W*29;
         ecrire_mot(g,jeu->players[i]->nom,blit);
 
-        /* afficher les nombre d'options*/
-        blit.y = HUD_HEIGHT-SPRITE_CHAR_H/2;
-        blit.w = SPRITE_CHAR_W/2;
-        blit.h = SPRITE_CHAR_H/2;
-        blit.x -= SPRITE_CHAR_W*0.5;
-        sprintf(nb_bomb, "x%d", jeu->players[i]->nb_bomb_max);
-        sprintf(nb_vie, "x%d", jeu->players[i]->bouclier);
-        sprintf(nb_vitesse, "x%d", jeu->players[i]->vitesse);
-        sprintf(nb_puissance, "x%d", jeu->players[i]->typebomb.puissance);
-        ecrire_mot(g,nb_bomb,blit);
-        blit.x += SPRITE_CHAR_W*1.5;
-        ecrire_mot(g,nb_puissance,blit);
-        blit.x += SPRITE_CHAR_W*1.5;
-        ecrire_mot(g,nb_vitesse,blit);
-        blit.x += SPRITE_CHAR_W*1.5;
-        ecrire_mot(g,nb_vie,blit);
+        if (jeu->players[i]->est_mort == 0)
+        {
 
-        /* affiche les images items*/
-        if(i == 0)
-            blit.x = 0;
-        else if(i == 1)
-            blit.x = SPRITE_CHAR_W*6;
-        else if(i == 2)
-            blit.x = SPRITE_CHAR_W*22;
-        else
-            blit.x = SPRITE_CHAR_W*28;
-        clip.w = TILE_WIDTH;
-        clip.h = TILE_HEIGHT;
-        blit.y = TILE_WIDTH/1.35-HUD_HEIGHT;
-        blit.w = SPRITE_CHAR_W/2;
-        blit.h = SPRITE_CHAR_H/2;
 
-        clip.x = CLIP_ITEM_BOMB_X*TILE_WIDTH;
-        clip.y = CLIP_ITEM_BOMB_Y*TILE_HEIGHT;
-        if(afficher(g, 3, &clip, &blit) != 0)
-            erreur = 1;
-        blit.x += SPRITE_CHAR_W*1.5;
-        clip.x = CLIP_ITEM_RANGE_X*TILE_WIDTH;
-        clip.y = CLIP_ITEM_RANGE_Y*TILE_HEIGHT;
-        if(afficher(g, 3, &clip, &blit) != 0)
-            erreur = 1;
-        blit.x += SPRITE_CHAR_W*1.5;
-        clip.x = CLIP_ITEM_SPEED_X*TILE_WIDTH;
-        clip.y = CLIP_ITEM_SPEED_Y*TILE_HEIGHT;
-        if(afficher(g, 3, &clip, &blit) != 0)
-            erreur = 1;
-        blit.x += SPRITE_CHAR_W*1.5;
-        clip.x = CLIP_ITEM_SHIELD_X*TILE_WIDTH;
-        clip.y = CLIP_ITEM_SHIELD_Y*TILE_HEIGHT;
-        if(afficher(g, 3, &clip, &blit) != 0)
-            erreur = 1;
+            /* afficher les nombre d'options*/
+            blit.y = HUD_HEIGHT-SPRITE_CHAR_H/2;
+            blit.w = SPRITE_CHAR_W/2;
+            blit.h = SPRITE_CHAR_H/2;
+            blit.x -= SPRITE_CHAR_W*0.5;
+            sprintf(nb_bomb, "x%d", jeu->players[i]->nb_bomb_max);
+            sprintf(nb_vie, "x%d", jeu->players[i]->bouclier);
+            sprintf(nb_vitesse, "x%d", jeu->players[i]->vitesse);
+            sprintf(nb_puissance, "x%d", jeu->players[i]->typebomb.puissance);
+            ecrire_mot(g,nb_bomb,blit);
+            blit.x += SPRITE_CHAR_W*1.5;
+            ecrire_mot(g,nb_puissance,blit);
+            blit.x += SPRITE_CHAR_W*1.5;
+            ecrire_mot(g,nb_vitesse,blit);
+            blit.x += SPRITE_CHAR_W*1.5;
+            ecrire_mot(g,nb_vie,blit);
+
+            /* affiche les images items*/
+            if(i == 0)
+                blit.x = 0;
+            else if(i == 1)
+                blit.x = SPRITE_CHAR_W*6;
+            else if(i == 2)
+                blit.x = SPRITE_CHAR_W*22;
+            else
+                blit.x = SPRITE_CHAR_W*28;
+            clip.w = TILE_WIDTH;
+            clip.h = TILE_HEIGHT;
+            blit.y = TILE_WIDTH/1.35-HUD_HEIGHT;
+            blit.w = SPRITE_CHAR_W/2;
+            blit.h = SPRITE_CHAR_H/2;
+
+            clip.x = CLIP_ITEM_BOMB_X*TILE_WIDTH;
+            clip.y = CLIP_ITEM_BOMB_Y*TILE_HEIGHT;
+            if(afficher(g, 3, &clip, &blit) != 0)
+                erreur = 1;
+            blit.x += SPRITE_CHAR_W*1.5;
+            clip.x = CLIP_ITEM_RANGE_X*TILE_WIDTH;
+            clip.y = CLIP_ITEM_RANGE_Y*TILE_HEIGHT;
+            if(afficher(g, 3, &clip, &blit) != 0)
+                erreur = 1;
+            blit.x += SPRITE_CHAR_W*1.5;
+            clip.x = CLIP_ITEM_SPEED_X*TILE_WIDTH;
+            clip.y = CLIP_ITEM_SPEED_Y*TILE_HEIGHT;
+            if(afficher(g, 3, &clip, &blit) != 0)
+                erreur = 1;
+            blit.x += SPRITE_CHAR_W*1.5;
+            clip.x = CLIP_ITEM_SHIELD_X*TILE_WIDTH;
+            clip.y = CLIP_ITEM_SHIELD_Y*TILE_HEIGHT;
+            if(afficher(g, 3, &clip, &blit) != 0)
+                erreur = 1;
+
+        }else
+        {
+            blit.y = HUD_HEIGHT-SPRITE_CHAR_H/2;
+            ecrire_mot(g,mort,blit);
+
+        }
     }
 
     if (jeu->en_pause)
