@@ -7,7 +7,7 @@
 #include "constantes.h"
 #include "jeu.h"
 
-#define NB_FEUILLES_SPRITES 6
+#define NB_FEUILLES_SPRITES 9
 #define FEUILLE_TILES       "img/tileset.bmp"
 #define FEUILLE_PERSO       "img/character_silver.bmp"
 #define FEUILLE_OBJETS      "img/atlas5_32.bmp"

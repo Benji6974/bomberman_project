@@ -84,9 +84,6 @@ int maj_menu(Graphismes *g,int nb_joueurs,int temps,int map_jeu, int volume)
         char type_map[50] = {"Type de map : "};
         ecrire_mot(g,type_map,blit);
 
-
-            printf("?\n");
-
         blit.y = (2*TILE_HEIGHT + HUD_HEIGHT);
         blit.x = 14*SPRITE_CHAR_W;
         char type_map2[50];
