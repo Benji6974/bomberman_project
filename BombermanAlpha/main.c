@@ -48,9 +48,9 @@ int main(int agrc, char** argv)
     Menu *m = NULL;
     m = init_menu();
 
-      while(!m->lancer_jeu)
 
-    while(!stop)
+
+    while(!m->lancer_jeu)
 
     {
         SDL_PollEvent(&event);
@@ -65,7 +65,7 @@ int main(int agrc, char** argv)
     jeu = init_jeu(0, m->nb_joueurs, m->temps,m->map_jeu);
 
     stop = 0;
-    jeu = init_jeu(0, NB_JOUEURS, DUREE_DEFAUT_PARTIE,-1);
+
 
 
     while(!stop)
