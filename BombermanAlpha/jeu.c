@@ -886,7 +886,7 @@ void maj_menu_clic(int x, int y,Menu *m)
         if (y> 4*TILE_HEIGHT*RENDER_SCALE + HUD_HEIGHT*RENDER_SCALE && y< 4*TILE_HEIGHT*RENDER_SCALE + HUD_HEIGHT*RENDER_SCALE +TAILLE_CHAR_H*RENDER_SCALE &&
         x> 20*TAILLE_CHAR_W*RENDER_SCALE && x<21*TAILLE_CHAR_W*RENDER_SCALE)
         {
-            if (m->nb_joueurs>0){
+            if (m->nb_joueurs>1){
                 m->nb_joueurs--;
             }
         }
