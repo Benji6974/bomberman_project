@@ -345,16 +345,16 @@ int maj_HUD(Game *jeu, Graphismes *g)
         blit.h = SPRITE_CHAR_H/2;
         blit.x -= SPRITE_CHAR_W*0.5;
         sprintf(nb_bomb, "x%d", jeu->players[i]->nb_bomb_max);
-        sprintf(nb_vie, "x%d", jeu->players[i]->vie);
+        sprintf(nb_vie, "x%d", jeu->players[i]->bouclier);
         sprintf(nb_vitesse, "x%d", jeu->players[i]->vitesse);
         sprintf(nb_puissance, "x%d", jeu->players[i]->typebomb.puissance);
         ecrire_mot(g,nb_bomb,blit);
         blit.x += SPRITE_CHAR_W*1.5;
-        ecrire_mot(g,nb_vie,blit);
+        ecrire_mot(g,nb_puissance,blit);
         blit.x += SPRITE_CHAR_W*1.5;
         ecrire_mot(g,nb_vitesse,blit);
         blit.x += SPRITE_CHAR_W*1.5;
-        ecrire_mot(g,nb_puissance,blit);
+        ecrire_mot(g,nb_vie,blit);
 
         /* affiche les images items*/
         if(i == 0)
@@ -365,8 +365,9 @@ int maj_HUD(Game *jeu, Graphismes *g)
             blit.x = SPRITE_CHAR_W*22;
         else
             blit.x = SPRITE_CHAR_W*28;
-
-        blit.y = TILE_WIDTH/1.5-HUD_HEIGHT;
+        clip.w = TILE_WIDTH;
+        clip.h = TILE_HEIGHT;
+        blit.y = TILE_WIDTH/1.35-HUD_HEIGHT;
         blit.w = SPRITE_CHAR_W/2;
         blit.h = SPRITE_CHAR_H/2;
 
