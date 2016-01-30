@@ -200,7 +200,7 @@ int maj_graph_entites(Game *jeu, Graphismes *g)
     /* --- AFFICHAGE DES EXPLOSIONS --- */
 
     clip.x = 0;
-    clip.y = 0;
+    clip.y = 3*TILE_HEIGHT;
     clip.w = TILE_WIDTH;
     clip.h = TILE_HEIGHT;
 
@@ -210,6 +210,9 @@ int maj_graph_entites(Game *jeu, Graphismes *g)
     {
         if(jeu->explosions[i] == NULL)
             continue;
+
+        clip.y = (4 - jeu->explosions[i]->duree_de_vie/jeu->explosions[i]->temps_restant)*TILE_HEIGHT;
+
         pos.x = jeu->explosions[i]->pos.x;
         pos.y = jeu->explosions[i]->pos.y;
         afficher(g, 5, &clip, &pos);

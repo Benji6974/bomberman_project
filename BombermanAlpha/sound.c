@@ -4,7 +4,6 @@
 #include <stdlib.h>
 
 #include "sound.h"
-#include "constantes.h"
 
 Mix_Chunk *explosion,
           *bombe_posee,
@@ -29,23 +28,23 @@ int init_audio(int channels)
 
 int maj_audio(void* userdata, SDL_Event *event)
 {
-    if(event != NULL && event->type >= SDL_USEREVENT)
-    {
-        switch(event->user.code)
-        {
-        case BOMBE_EXPLOSE:
-            Mix_PlayChannel(1, explosion, 0);
-            break;
-        case BOMBE_POSEE:
-            Mix_PlayChannel(1, bombe_posee, 0);
-            break;
-        case BONUS_OBTENU:
-            Mix_PlayChannel(1, bonus_obtenu, 0);
-            break;
-        }
+   if(event != NULL && event->type >= SDL_USEREVENT)
+   {
+      switch(event->user.code)
+      {
+      case BOMBE_EXPLOSE:
+         Mix_PlayChannel(1, explosion, 0);
+         break;
+      case BOMBE_POSEE:
+         Mix_PlayChannel(1, bombe_posee, 0);
+         break;
+      case BONUS_OBTENU:
+         Mix_PlayChannel(1, bonus_obtenu, 0);
+         break;
+      }
         return 1;
-    }
-    return 0;
+   }
+   return 0;
 }
 
 void detruire_audio()

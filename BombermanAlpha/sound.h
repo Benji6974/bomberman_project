@@ -3,6 +3,9 @@
 
 #include <SDL.h>
 
+#include "constantes.h"
+#include "jeu.h"
+
 int init_audio(int);
 
 int maj_audio(void*, SDL_Event*);

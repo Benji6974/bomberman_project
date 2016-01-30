@@ -4,9 +4,7 @@
 int gKeys[KEYS_PER_PLAYER*NB_JOUEURS] = {SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_RCTRL,      /* Joueur 1 */
                                          SDLK_z, SDLK_s, SDLK_q, SDLK_d, SDLK_LCTRL,                 /* Joueur 2 */
                                          SDLK_i, SDLK_k, SDLK_j, SDLK_l, SDLK_b,                 /* Joueur 3 */
-                                         SDLK_KP_8, SDLK_KP_5, SDLK_KP_4, SDLK_KP_6, SDLK_KP_ENTER
-                                        }; /* Joueur 4 */
-
+                                         SDLK_KP_8, SDLK_KP_5, SDLK_KP_4, SDLK_KP_6, SDLK_KP_ENTER}; /* Joueur 4 */
 
 Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
 {
@@ -18,6 +16,7 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
     srand(time(NULL));
 
     int **carte_data;
+
     if (typemap == -1)
     {
         carte_data =  genere_map(carte_data,nb_joueurs);
@@ -85,7 +84,7 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
     {
 
         char name[128] = "";
-        sprintf(name, "Joueur_%d", i);
+        sprintf(name, "Joueur %d", i+1);
         p = init_player(name, i);
         p->keymap_offset = i*KEYS_PER_PLAYER;
 
@@ -144,7 +143,7 @@ int** lire_map_fichier(int **carte_data, int nb_joueurs, int typemap)
         {
             fscanf(fi,"%d",&carte_data[n][m]);
         }
-        scanf(fi,"\n");
+        fscanf(fi,"\n");
     }
     fclose(fi); /* on ferme le fichier */
 
