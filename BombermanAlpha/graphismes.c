@@ -316,19 +316,91 @@ int maj_HUD(Game *jeu, Graphismes *g)
 
     int z;
     blit.x = 0;
+    SDL_Rect clip;
+
+    int erreur;
+    char nb_bomb[10];
+    char nb_vie[10];
+    char nb_vitesse[10];
+    char nb_puissance[10];
     for(i = 0; i < jeu->nb_joueurs; i++)
     {
-        blit.y += 50;
-
+        /* ecrire le nom du joueur*/
+        blit.y = 0;
+        blit.w = SPRITE_CHAR_W/2;
+        blit.h = SPRITE_CHAR_H/2;
+        if(i == 0)
+            blit.x = SPRITE_CHAR_W;
+        else if(i == 1)
+            blit.x = SPRITE_CHAR_W*7;
+        else if(i == 2)
+            blit.x = SPRITE_CHAR_W*23;
+        else
+            blit.x = SPRITE_CHAR_W*29;
         ecrire_mot(g,jeu->players[i]->nom,blit);
+
+        /* afficher les nombre d'options*/
+        blit.y = HUD_HEIGHT-SPRITE_CHAR_H/2;
+        blit.w = SPRITE_CHAR_W/2;
+        blit.h = SPRITE_CHAR_H/2;
+        blit.x -= SPRITE_CHAR_W*0.5;
+        sprintf(nb_bomb, "x%d", jeu->players[i]->nb_bomb_max);
+        sprintf(nb_vie, "x%d", jeu->players[i]->vie);
+        sprintf(nb_vitesse, "x%d", jeu->players[i]->vitesse);
+        sprintf(nb_puissance, "x%d", jeu->players[i]->typebomb.puissance);
+        ecrire_mot(g,nb_bomb,blit);
+        blit.x += SPRITE_CHAR_W*1.5;
+        ecrire_mot(g,nb_vie,blit);
+        blit.x += SPRITE_CHAR_W*1.5;
+        ecrire_mot(g,nb_vitesse,blit);
+        blit.x += SPRITE_CHAR_W*1.5;
+        ecrire_mot(g,nb_puissance,blit);
+
+        /* affiche les images items*/
+        if(i == 0)
+            blit.x = 0;
+        else if(i == 1)
+            blit.x = SPRITE_CHAR_W*6;
+        else if(i == 2)
+            blit.x = SPRITE_CHAR_W*22;
+        else
+            blit.x = SPRITE_CHAR_W*28;
+
+        blit.y = TILE_WIDTH/1.5-HUD_HEIGHT;
+        blit.w = SPRITE_CHAR_W/2;
+        blit.h = SPRITE_CHAR_H/2;
+
+        clip.x = CLIP_ITEM_BOMB_X*TILE_WIDTH;
+        clip.y = CLIP_ITEM_BOMB_Y*TILE_HEIGHT;
+        if(afficher(g, 3, &clip, &blit) != 0)
+            erreur = 1;
+        blit.x += SPRITE_CHAR_W*1.5;
+        clip.x = CLIP_ITEM_RANGE_X*TILE_WIDTH;
+        clip.y = CLIP_ITEM_RANGE_Y*TILE_HEIGHT;
+        if(afficher(g, 3, &clip, &blit) != 0)
+            erreur = 1;
+        blit.x += SPRITE_CHAR_W*1.5;
+        clip.x = CLIP_ITEM_SPEED_X*TILE_WIDTH;
+        clip.y = CLIP_ITEM_SPEED_Y*TILE_HEIGHT;
+        if(afficher(g, 3, &clip, &blit) != 0)
+            erreur = 1;
+        blit.x += SPRITE_CHAR_W*1.5;
+        clip.x = CLIP_ITEM_SHIELD_X*TILE_WIDTH;
+        clip.y = CLIP_ITEM_SHIELD_Y*TILE_HEIGHT;
+        if(afficher(g, 3, &clip, &blit) != 0)
+            erreur = 1;
     }
 
-     if (jeu->en_pause)
+    if (jeu->en_pause)
     {
-        blit.y = HUD_HEIGHT;;
+        blit.y = HUD_HEIGHT;
+        blit.x = 0;
+        blit.h = SPRITE_CHAR_H;
+        blit.w = SPRITE_CHAR_W;
         char txt_pause[50] = {"EN PAUSE"};
         ecrire_mot(g,txt_pause,blit);
     }
+
 
 
     return 0;
@@ -338,10 +410,10 @@ void ecrire_mot(Graphismes *g,char *mot,SDL_Rect blit)
 {
     int z;
     for(z = 0; mot[z] != NULL ; z++)
-        {
-            afficher_char(g, mot[z], blit);
-            blit.x += SPRITE_CHAR_W;
-        }
+    {
+        afficher_char(g, mot[z], blit);
+        blit.x += blit.w;
+    }
 }
 
 int afficher_char(Graphismes *g, char c, SDL_Rect pos)
@@ -605,38 +677,39 @@ int afficher_char(Graphismes *g, char c, SDL_Rect pos)
         clip.x = 10;
         clip.y = 1;
         break;
-            case '!':
+    case '!':
         clip.x = 1;
         clip.y = 0;
         break;
-            case '-':
+    case '-':
         clip.x = 6;
         clip.y = 7;
         break;
-            case '_':
+    case '_':
         clip.x = 15;
         clip.y = 3;
         break;
-            case '?':
+    case '?':
         clip.x = 15;
         clip.y = 1;
         break;
-        case 'à':
+    case 'à':
         clip.x = 0;
         clip.y = 12;
         break;
-        case 'é':
+    case 'é':
         clip.x = 9;
         clip.y = 12;
         break;
-        case 'è':
+    case 'è':
         clip.x = 8;
         clip.y = 12;
         break;
-        case 'ç':
+    case 'ç':
         clip.x = 7;
         clip.y = 12;
         break;
+
 
     default:
         clip.x = 0;
