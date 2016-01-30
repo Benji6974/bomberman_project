@@ -59,7 +59,7 @@ Graphismes* init_graphismes(char *titre, int x, int y, int w, int h, Uint32 flag
     return g; // pour avoir le renderer, suffit d'utiliser SDL_GetRenderer
 }
 
-int maj_menu(Graphismes *g)
+int maj_menu(Graphismes *g,int nb_joueurs,int temps,int map_jeu)
 {
     SDL_SetRenderDrawColor(g->renderer, 0, 0, 0, 255);
     SDL_RenderClear(g->renderer);
@@ -87,7 +87,20 @@ int maj_menu(Graphismes *g)
 
         blit.y = (2*TILE_HEIGHT + HUD_HEIGHT);
         blit.x = 14*SPRITE_CHAR_W;
-        char type_map2[50] = {"< Aleatoire >"};
+        char type_map2[50];
+        if (map_jeu == -1)
+        {
+              strncpy(type_map2,"< Aleatoire >",50);
+        }
+        else if (map_jeu == 0)
+        {
+              strncpy(type_map2,"<    Old    >",50);
+        }
+        else
+        {
+              sprintf(type_map2,"<    Map_%d  >",map_jeu);
+        }
+
         ecrire_mot(g,type_map2,blit);
 
         blit.y = (4*TILE_HEIGHT + HUD_HEIGHT);
@@ -98,7 +111,7 @@ int maj_menu(Graphismes *g)
         blit.y = (4*TILE_HEIGHT + HUD_HEIGHT);
         blit.x = 20*SPRITE_CHAR_W;
         char nombrejoueurs_int[50];
-        sprintf(nombrejoueurs_int, "- %d +", NB_JOUEURS);
+        sprintf(nombrejoueurs_int, "- %d +", nb_joueurs);
         ecrire_mot(g,nombrejoueurs_int,blit);
 
         blit.y = (8*TILE_HEIGHT + HUD_HEIGHT);
@@ -114,7 +127,7 @@ int maj_menu(Graphismes *g)
         blit.y = (6*TILE_HEIGHT + HUD_HEIGHT);
         blit.x = 15*SPRITE_CHAR_W;
         char char_heure[50];
-        copie_heure(char_heure,DUREE_DEFAUT_PARTIE);
+        copie_heure(char_heure,temps);
         ecrire_mot(g,char_heure,blit);
 
 

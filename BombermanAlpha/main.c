@@ -8,7 +8,7 @@
 #include "graphismes.h"
 #include "sound.h"
 
-#define DEMARRER_JEU 1
+#define DEMARRER_JEU 0
 
 int main(int agrc, char** argv)
 {
@@ -44,16 +44,29 @@ int main(int agrc, char** argv)
     sprintf(message, "Version SDL: %d.%d.%d\nMoteur de rendu: %s\nTaille de la fenetre: %d*%d\n", version.major, version.minor, version.patch, info.name, WINDOW_WIDTH, WINDOW_HEIGHT);
     //SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "SDL initialisee", message, g->fenetre);
 
+
+    Menu *m = NULL;
+    m = init_menu();
+
+      while(!m->lancer_jeu)
+
     while(!stop)
+
     {
         SDL_PollEvent(&event);
         if(event.window.event == SDL_WINDOWEVENT_CLOSE)
             stop = 1;
-        maj_menu(g);
+        maj_menu(g,m->nb_joueurs,m->temps,m->map_jeu);
+        maj_control_menu(&event,m);
+        printf("nb_joueur %d",m->nb_joueurs);
     }
+
+
+    jeu = init_jeu(0, m->nb_joueurs, m->temps,m->map_jeu);
 
     stop = 0;
     jeu = init_jeu(0, NB_JOUEURS, DUREE_DEFAUT_PARTIE,-1);
+
 
     while(!stop)
     {
@@ -102,7 +115,6 @@ int main(int agrc, char** argv)
 
         /* MISE A JOUR DE L'ETAT DU JEU */
 
-#if DEMARRER_JEU
         current_time = SDL_GetTicks();
         dt = current_time - previous_time;
         if(dt >= 1000/MAJ_PAR_SEC && !pause)
@@ -114,8 +126,8 @@ int main(int agrc, char** argv)
         /* MISE A JOUR DES GRAPHISMES */
 
         maj_graphismes(jeu, g);
-#endif
         printf("%d\n", jeu->players[0]->score);
+
 
         /* Compteur de FPS */
         current_time = SDL_GetTicks();

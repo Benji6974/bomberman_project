@@ -43,6 +43,11 @@
 #define SCORE_JOUEUR_KILL 100
 #define SCORE_ITEM_GET    20
 
+#define TAILLE_CHAR_H 16
+#define TAILLE_CHAR_W 16
+
+#define NB_MAP 1
+
 /* Evenements */
 enum {BOMBE_EXPLOSE, BOMBE_POSEE, BONUS_OBTENU};
 

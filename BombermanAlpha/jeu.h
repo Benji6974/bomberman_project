@@ -95,6 +95,15 @@ typedef struct Game
     int en_pause;
 } Game;
 
+typedef struct Menu
+{
+    int clic;
+    int nb_joueurs;
+    int temps;
+    int map_jeu;
+    int lancer_jeu;
+}Menu;
+
 
 /* Prototypes des fonctions */
 
@@ -130,9 +139,15 @@ Player* init_player(char *name, int id_player);
 void maj_joueur(Game *jeu, int joueur, int dt);
 void maj_controles(Controls*, SDL_Event*);
 
+
 void init_tile(Tile* t,int type, int etat);
 int** genere_map(int **carte_data, int nb_joueurs);
 int** lire_map_fichier(int **carte_data, int nb_joueurs, int typemap);
+
+/*menu*/
+void maj_control_menu(SDL_Event *event,Menu *m);
+void maj_menu_clic(int x, int y,Menu *m);
+Menu* init_menu();
 
 void detruire_map(int **carte_data);
 void detruire_jeu(Game *jeu);
