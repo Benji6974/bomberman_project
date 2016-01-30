@@ -54,6 +54,8 @@ Graphismes* init_graphismes(char *titre, int x, int y, int w, int h, Uint32 flag
     g->feuilles_sprites[4] = charger_sprite(renderer, FEUILLE_TEXTE);
     g->feuilles_sprites[5] = charger_sprite(renderer, FEUILLE_EXPLOSIONS);
     g->feuilles_sprites[6] = charger_sprite(renderer, FEUILLE_COMMANDES);
+    g->feuilles_sprites[7] = charger_sprite(renderer, FEUILLE_LOGO);
+
 
 
     return g; // pour avoir le renderer, suffit d'utiliser SDL_GetRenderer
@@ -68,10 +70,6 @@ int maj_menu(Graphismes *g,int nb_joueurs,int temps,int map_jeu)
     SDL_Rect blit;
         blit.y = (HUD_HEIGHT - SPRITE_CHAR_H)/2;
         blit.x = (MAP_WIDTH*TILE_WIDTH - 8*SPRITE_CHAR_W*2)/2;
-        blit.h = SPRITE_CHAR_H*2;
-        blit.w = SPRITE_CHAR_W*2;
-        char txt_pause[50] = {"BOMBERMAN"};
-        ecrire_mot(g,txt_pause,blit);
 
         blit.h = SPRITE_CHAR_H;
         blit.w = SPRITE_CHAR_W;
@@ -84,6 +82,9 @@ int maj_menu(Graphismes *g,int nb_joueurs,int temps,int map_jeu)
         blit.x = 0;
         char type_map[50] = {"Type de map : "};
         ecrire_mot(g,type_map,blit);
+
+
+
 
         blit.y = (2*TILE_HEIGHT + HUD_HEIGHT);
         blit.x = 14*SPRITE_CHAR_W;
@@ -136,6 +137,20 @@ int maj_menu(Graphismes *g,int nb_joueurs,int temps,int map_jeu)
         blit.h = 4*SPRITE_CHAR_H;
         blit.w = 20*SPRITE_CHAR_W;
          if(afficher(g, 6, NULL, &blit) != 0)
+                erreur = 1;
+
+        blit.y = (1.5*TILE_HEIGHT + HUD_HEIGHT);
+        blit.x = 0;
+        blit.h = SPRITE_CHAR_H/2;
+        blit.w = SPRITE_CHAR_W/2;
+        char copiright[50] = {"Created by Benjamin.D & Jean-Marc.A "};
+        ecrire_mot(g,copiright,blit);
+
+        blit.y = -HUD_HEIGHT;
+        blit.x = 7*SPRITE_CHAR_W;
+        blit.h = 4*SPRITE_CHAR_H;
+        blit.w = 20*SPRITE_CHAR_W;
+         if(afficher(g, 7, NULL, &blit) != 0)
                 erreur = 1;
         /*1632*414*/
 
@@ -832,6 +847,14 @@ int afficher_char(Graphismes *g, char c, SDL_Rect pos)
         break;
          case '+':
         clip.x = 11;
+        clip.y = 0;
+        break;
+        case '&':
+        clip.x = 6;
+        clip.y = 0;
+        break;
+         case '.':
+        clip.x = 14;
         clip.y = 0;
         break;
 

@@ -15,6 +15,7 @@
 #define FEUILLE_TEXTE       "img/text.bmp"
 #define FEUILLE_EXPLOSIONS  "img/explosion.bmp"
 #define FEUILLE_COMMANDES  "img/comandes.bmp"
+#define FEUILLE_LOGO  "img/preview-bomberman_logo.bmp"
 
 #define CLIP_PERSO_X 0
 #define CLIP_PERSO_Y 0
