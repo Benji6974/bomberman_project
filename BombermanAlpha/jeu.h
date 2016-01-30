@@ -91,6 +91,7 @@ typedef struct Game
     /* Gestion des évènements */
     Controls touches;
     SDL_Event **events;
+    int en_pause;
 } Game;
 
 

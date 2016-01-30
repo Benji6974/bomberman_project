@@ -14,7 +14,6 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
     Game *jeu = NULL;
     Tile ***carte = NULL;
     Player *p = NULL;
-
     /* - Tableau pour tester la carte - */
     srand(time(NULL));
 
@@ -35,7 +34,7 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
     jeu = malloc(sizeof(Game));
 
     jeu->events = init_events(NB_EVENTS);
-
+    jeu->en_pause = 0;
     /* Initialisation tableaux des entités */
     jeu->bombs = (Bomb**)malloc(NB_BOMBES_MAX*sizeof(Bomb*));
     jeu->nb_bombs = 0;

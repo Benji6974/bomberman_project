@@ -70,7 +70,9 @@ int main(int agrc, char** argv)
                 if(!pause_b)
                 {
                     pause ^= 1;
+                    jeu->en_pause ^=1;
                     pause_b = 1;
+
                 }
                 break;
             default:
@@ -93,6 +95,8 @@ int main(int agrc, char** argv)
             previous_time = current_time;
         }
 
+
+
 //        system("cls");
 //        for(i = 0; i < jeu->nb_explosions; i++)
 //        {
@@ -106,6 +110,7 @@ int main(int agrc, char** argv)
         /* MISE A JOUR DES GRAPHISMES */
 #if GRAPHISMES
         maj_graphismes(jeu, g);
+
 #endif // GRAPHISMES
 
         /* Compteur de FPS */

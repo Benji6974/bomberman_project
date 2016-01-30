@@ -323,12 +323,14 @@ int maj_HUD(Game *jeu, Graphismes *g)
         ecrire_mot(g,jeu->players[i]->nom,blit);
     }
 
-    char test[50] = {"ouais ouais c moche !!!!"};
-    char test2[50] = {"pour l'enlever ligne 315 graphismes.h"};
-    blit.y += 50;
-    ecrire_mot(g,test,blit);
-    blit.y += 50;
-    ecrire_mot(g,test2,blit);
+     if (jeu->en_pause)
+    {
+        blit.y = HUD_HEIGHT;;
+        char txt_pause[50] = {"EN PAUSE"};
+        ecrire_mot(g,txt_pause,blit);
+    }
+
+
     return 0;
 }
 
