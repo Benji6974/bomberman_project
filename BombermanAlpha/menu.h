@@ -2,6 +2,8 @@
 #define MENU_H
 
 #include <SDL.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #include "constantes.h"
 

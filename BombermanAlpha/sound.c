@@ -19,13 +19,23 @@ int init_audio(int channels)
        return -1;
    }
    Mix_AllocateChannels(channels);
-   Mix_Volume(1, MIX_MAX_VOLUME);
+
    explosion    = Mix_LoadWAV("sound/explosion2.wav");
    bombe_posee  = Mix_LoadWAV("sound/woosh.wav");
    bonus_obtenu = Mix_LoadWAV("sound/bonus.wav");
 
    return 0;
 }
+
+void changer_volume(int niveau)
+{
+   int i;
+   for(i = 0; i < NB_CANAUX; i++)
+   {
+      Mix_Volume(i, niveau*MIX_MAX_VOLUME/3);
+   }
+}
+
 int maj_audio(void* userdata, SDL_Event *event)
 {
    int channel;

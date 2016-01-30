@@ -60,6 +60,7 @@ int main(int agrc, char** argv)
             stop = 1;
 
         maj_menu(g,m->nb_joueurs,m->temps,m->map_jeu,m->volume_son);
+        changer_volume(m->volume_son);
         maj_control_menu(&event,m);
     }
     jeu = init_jeu(0, m->nb_joueurs, m->temps, m->map_jeu);
@@ -122,6 +123,21 @@ int main(int agrc, char** argv)
         /* MISE A JOUR DES GRAPHISMES */
 
         maj_graphismes(jeu, g);
+
+        if(partie_terminee)
+        {
+            char temps_ecoule[50] = "";
+
+            if(jeu->time <= 0)
+                sprintf(temps_ecoule, "Temps ecoule!\n");
+
+            if(jeu->gagnant != NULL)
+                sprintf(message, "%sGagnant: %s avec %d points!", temps_ecoule, jeu->gagnant->nom, jeu->gagnant->score);
+            else
+                sprintf(message, "%sIl y a egalite!", temps_ecoule);
+
+            //SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Game Over", message, g->fenetre);
+        }
 
 
         /* Compteur de FPS */

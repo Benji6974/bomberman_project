@@ -76,6 +76,7 @@ typedef struct Game
     /* Variables de jeu */
     int type;
     int time;
+    Player* gagnant;
 
     Tile*** carte;
 

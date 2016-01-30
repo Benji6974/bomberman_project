@@ -15,11 +15,11 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
     /* - Tableau pour tester la carte - */
     srand(time(NULL));
 
-    int **carte_data;
+    int **carte_data = NULL;
 
     if (typemap == -1)
     {
-        carte_data =  genere_map(carte_data,nb_joueurs);
+        carte_data = genere_map(carte_data,nb_joueurs);
     }
     else
     {
@@ -50,6 +50,7 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
 
     jeu->type = type;
     jeu->time = temps*1000;
+    jeu->gagnant = NULL;
     jeu->nb_joueurs = nb_joueurs;
 
     /* Génération de la carte */
@@ -236,12 +237,13 @@ int maj_jeu(Game *jeu, int dt)
     return verif_fin_de_jeu(jeu);
 }
 
+/* Fonction qui vérifie si on a un gagnant, et termine la partie */
 int verif_fin_de_jeu(Game *jeu)
 {
-    int i, joueur, egalite = 0, en_vie = 0;
-    char message_fin[256];
+    int i, joueur, egalite = 0, en_vie = 0, fin = 0;
     Player *meilleur_score = NULL;
 
+    /* Determiantion du meilleur score */
     for(i = 0; i < jeu->nb_joueurs; i++)
     {
         if(!jeu->players[i]->est_mort)
@@ -255,28 +257,22 @@ int verif_fin_de_jeu(Game *jeu)
             egalite = meilleur_score == NULL || jeu->players[i]->score == meilleur_score->score;
         }
     }
+    /* Si il reste un joueur en vie, c'est le gagnant */
     if(en_vie == 1)
     {
-        sprintf(message_fin, "%s gagne!", jeu->players[joueur]->nom);
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Game Over", message_fin, NULL);
-        return 1;
+        jeu->gagnant = jeu->players[joueur];
+        fin = 1;
     }
-    else if(en_vie == 0)
-    {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Game Over", "Tout le monde est mort!", NULL);
-        return 1;
-    }
-
+    /* Si le temps s'est écoulé, le gagnant est celui avec le meilleur score */
     if(jeu->time <= 0)
     {
         if(!egalite)
-            sprintf(message_fin, "Temps ecoule!\nGagnant: %s avec %d points", meilleur_score->nom, meilleur_score->score);
-        else
-            sprintf(message_fin, "Temps ecoule!\nIl y a egalite!");
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Game Over", message_fin, NULL);
-        return 1;
+        {
+            jeu->gagnant = meilleur_score;
+        }
+        fin = 1;
     }
-    return 0;
+    return fin;
 }
 
 /* Fonction qui renvoie 1 si les deux rectangles a et b se superposent d'au moins un pixel, 0 sinon */
@@ -933,13 +929,9 @@ SDL_Event** init_events(int num)
 
 void detruire_map(int **carte_data)
 {
-    int i,j;
+    int i;
     for(i = 0; i < MAP_HEIGHT; i++)
     {
-        for(j = 0; j < MAP_WIDTH; j++)
-        {
-            free(carte_data[i][j]);
-        }
         free(carte_data[i]);
     }
     free(carte_data);

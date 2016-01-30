@@ -348,11 +348,11 @@
 1452677563 c:\users\benji\documents\bomberman\trunk\bombermanalpha\jeu.h
 	"graphismes.h"
 
-1454193300 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\graphismes.c
+1454196017 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\graphismes.c
 	<stdio.h>
 	"graphismes.h"
 
-1454193426 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\graphismes.h
+1454195986 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\graphismes.h
 	<SDL.h>
 	<math.h>
 	"constantes.h"
@@ -677,11 +677,11 @@
 	"begin_code.h"
 	"close_code.h"
 
-1454192156 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\jeu.c
+1454196086 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\jeu.c
 	"constantes.h"
 	"jeu.h"
 
-1454192163 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\jeu.h
+1454194001 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\jeu.h
 	<stdlib.h>
 	<stdio.h>
 	<string.h>
@@ -689,7 +689,7 @@
 	<math.h>
 	<SDL.h>
 
-1454193046 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\main.c
+1454196455 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\main.c
 	<stdlib.h>
 	<stdio.h>
 	<SDL.h>
@@ -760,12 +760,12 @@
 	"begin_code.h"
 	"close_code.h"
 
-1454168647 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\sound.h
+1454196231 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\sound.h
 	<SDL.h>
 	"constantes.h"
 	"jeu.h"
 
-1454174053 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\sound.c
+1454196440 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\sound.c
 	<SDL.h>
 	<SDL_mixer.h>
 	<stdio.h>
@@ -781,10 +781,12 @@
 	"begin_code.h"
 	"close_code.h"
 
-1454193046 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\menu.h
+1454196119 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\menu.h
 	<SDL.h>
+	<stdlib.h>
+	<stdio.h>
 	"constantes.h"
 
-1454193046 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\menu.c
+1454196575 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\menu.c
 	"menu.h"
 

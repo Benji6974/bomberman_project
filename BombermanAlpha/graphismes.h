@@ -14,9 +14,9 @@
 #define FEUILLE_BONUS       "img/items.bmp"
 #define FEUILLE_TEXTE       "img/text.bmp"
 #define FEUILLE_EXPLOSIONS  "img/explosion.bmp"
-#define FEUILLE_COMMANDES  "img/comandes.bmp"
-#define FEUILLE_LOGO  "img/preview-bomberman_logo.bmp"
-#define FEUILLE_VOLUME  "img/Low-Volume.bmp"
+#define FEUILLE_COMMANDES   "img/comandes.bmp"
+#define FEUILLE_LOGO        "img/preview-bomberman_logo.bmp"
+#define FEUILLE_VOLUME      "img/Low-Volume.bmp"
 
 #define CLIP_PERSO_X 0
 #define CLIP_PERSO_Y 0
@@ -74,6 +74,8 @@ int maj_HUD(Game*, Graphismes*);
 int afficher(Graphismes *g, int feuille_sprite, SDL_Rect *clip, SDL_Rect *dest);
 int afficher_char(Graphismes *g, char c, SDL_Rect pos);
 void ecrire_mot(Graphismes *g,char *mot,SDL_Rect blit);
+
+void copie_heure(char*, int);
 
 void trier_par_y(Player **tab, int taille);
 

@@ -10,6 +10,8 @@
 
 int init_audio(int);
 
+void changer_volume(int);
+
 int maj_audio(void*, SDL_Event*);
 
 void detruire_audio();

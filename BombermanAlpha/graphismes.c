@@ -441,7 +441,6 @@ int maj_HUD(Game *jeu, Graphismes *g)
     }
     /* nom des perso test */
 
-    int z;
     blit.x = 0;
     SDL_Rect clip;
 
@@ -543,7 +542,7 @@ int maj_HUD(Game *jeu, Graphismes *g)
 
 
 
-    return 0;
+    return erreur;
 }
 
 void ecrire_mot(Graphismes *g,char *mot,SDL_Rect blit)
