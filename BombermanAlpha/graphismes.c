@@ -55,19 +55,21 @@ Graphismes* init_graphismes(char *titre, int x, int y, int w, int h, Uint32 flag
     g->feuilles_sprites[5] = charger_sprite(renderer, FEUILLE_EXPLOSIONS);
     g->feuilles_sprites[6] = charger_sprite(renderer, FEUILLE_COMMANDES);
     g->feuilles_sprites[7] = charger_sprite(renderer, FEUILLE_LOGO);
+    g->feuilles_sprites[8] = charger_sprite(renderer, FEUILLE_VOLUME);
 
 
 
     return g; // pour avoir le renderer, suffit d'utiliser SDL_GetRenderer
 }
 
-int maj_menu(Graphismes *g,int nb_joueurs,int temps,int map_jeu)
+int maj_menu(Graphismes *g,int nb_joueurs,int temps,int map_jeu, int volume)
 {
     SDL_SetRenderDrawColor(g->renderer, 0, 0, 0, 255);
     SDL_RenderClear(g->renderer);
     int erreur;
     /* Mettre ici les fonction de mise à jour du menu */
     SDL_Rect blit;
+    SDL_Rect clip;
         blit.y = (HUD_HEIGHT - SPRITE_CHAR_H)/2;
         blit.x = (MAP_WIDTH*TILE_WIDTH - 8*SPRITE_CHAR_W*2)/2;
 
@@ -125,6 +127,11 @@ int maj_menu(Graphismes *g,int nb_joueurs,int temps,int map_jeu)
         char temps_partie[50] = {"Temps de jeu : "};
         ecrire_mot(g,temps_partie,blit);
 
+        blit.y = (7*TILE_HEIGHT + HUD_HEIGHT);
+        blit.x = (MAP_WIDTH*TILE_WIDTH - 8*SPRITE_CHAR_W);
+        char audio[50] = {"Audio : "};
+        ecrire_mot(g,audio,blit);
+
         blit.y = (6*TILE_HEIGHT + HUD_HEIGHT);
         blit.x = 15*SPRITE_CHAR_W;
         char char_heure[50];
@@ -151,6 +158,19 @@ int maj_menu(Graphismes *g,int nb_joueurs,int temps,int map_jeu)
         blit.h = 4*SPRITE_CHAR_H;
         blit.w = 20*SPRITE_CHAR_W;
          if(afficher(g, 7, NULL, &blit) != 0)
+                erreur = 1;
+
+
+        blit.y = (8*TILE_HEIGHT + HUD_HEIGHT);
+        blit.x = (MAP_WIDTH*TILE_WIDTH - 8*SPRITE_CHAR_W);
+        blit.h = SPRITE_SON_W;
+        blit.w = SPRITE_SON_H;
+        clip.y = SPRITE_SON_W;
+        clip.x = volume*SPRITE_SON_H;
+        clip.h = SPRITE_SON_W;
+        clip.w = SPRITE_SON_H;
+
+         if(afficher(g, 8, &clip, &blit) != 0)
                 erreur = 1;
         /*1632*414*/
 

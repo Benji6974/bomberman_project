@@ -56,7 +56,7 @@ int main(int agrc, char** argv)
         SDL_PollEvent(&event);
         if(event.window.event == SDL_WINDOWEVENT_CLOSE)
             stop = 1;
-        maj_menu(g,m->nb_joueurs,m->temps,m->map_jeu);
+        maj_menu(g,m->nb_joueurs,m->temps,m->map_jeu,m->volume_son);
         maj_control_menu(&event,m);
         printf("nb_joueur %d",m->nb_joueurs);
     }

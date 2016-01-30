@@ -16,6 +16,7 @@
 #define FEUILLE_EXPLOSIONS  "img/explosion.bmp"
 #define FEUILLE_COMMANDES  "img/comandes.bmp"
 #define FEUILLE_LOGO  "img/preview-bomberman_logo.bmp"
+#define FEUILLE_VOLUME  "img/Low-Volume.bmp"
 
 #define CLIP_PERSO_X 0
 #define CLIP_PERSO_Y 0
@@ -49,6 +50,9 @@
 #define SPRITE_CHAR_W 16
 #define SPRITE_CHAR_H 16
 
+#define SPRITE_SON_W 439
+#define SPRITE_SON_H 386
+
 #define SCORE_NB_CHIFFRES 4
 
 typedef struct Graphismes
@@ -61,7 +65,7 @@ Graphismes;
 
 Graphismes* init_graphismes(char *titre, int x, int y, int l, int h, Uint32 flags_fenetre, Uint32 flags_renderer);
 
-int maj_menu(Graphismes *g,int nb_joueurs,int temps,int map_jeu);
+int maj_menu(Graphismes *g,int nb_joueurs,int temps,int map_jeu, int volume);
 int maj_graphismes(Game *jeu, Graphismes *g);
 int maj_graph_carte(Game *jeu, Graphismes *g);
 int maj_graph_entites(Game *jeu, Graphismes *g);

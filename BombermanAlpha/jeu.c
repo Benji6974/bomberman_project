@@ -941,6 +941,7 @@ Menu* init_menu()
     m->temps = DUREE_DEFAUT_PARTIE;
     m->map_jeu = -1;
     m->lancer_jeu = 0;
+    m->volume_son = 1;
     return m;
 }
 

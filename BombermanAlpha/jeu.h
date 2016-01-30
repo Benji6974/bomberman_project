@@ -102,6 +102,7 @@ typedef struct Menu
     int temps;
     int map_jeu;
     int lancer_jeu;
+    int volume_son;
 }Menu;
 
 
