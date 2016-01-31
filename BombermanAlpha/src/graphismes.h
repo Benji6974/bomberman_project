@@ -1,7 +1,15 @@
 #ifndef GRAPHISMES_H
 #define GRAPHISMES_H
 
-#include <SDL.h>
+
+#ifdef __linux__
+    #include <SDL2/SDL.h>
+#elif _WIN32
+    #include <SDL.h>
+#else
+
+#endif
+
 #include <math.h>
 
 #include "constantes.h"

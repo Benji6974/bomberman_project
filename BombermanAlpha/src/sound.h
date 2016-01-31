@@ -1,8 +1,16 @@
 #ifndef SOUND_H
 #define SOUND_H
 
-#include <SDL.h>
-#include <SDL_mixer.h>
+#ifdef __linux__
+    #include <SDL2/SDL.h>
+    #include <SDL/SDL_mixer.h>
+#elif _WIN32
+    #include <SDL.h>
+    #include <SDL_mixer.h>
+#else
+
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 
