@@ -134,13 +134,24 @@ int main(int agrc, char** argv)
         {
             char temps_ecoule[50] = "";
 
-            if(jeu->time <= 0)
-                sprintf(temps_ecoule, "Temps ecoule!\n");
-
-            if(jeu->gagnant != NULL)
-                sprintf(message, "%sGagnant: %s avec %d points!", temps_ecoule, jeu->gagnant->nom, jeu->gagnant->score);
-            else
-                sprintf(message, "%sIl y a egalite!", temps_ecoule);
+            if(jeu->nb_joueurs > 1)
+            {
+                if(jeu->time <= 0)
+                    sprintf(temps_ecoule, "Temps ecoule!\n");
+                if(jeu->gagnant != NULL)
+                    sprintf(message, "%sGagnant: %s avec %d points!", temps_ecoule, jeu->gagnant->nom, jeu->gagnant->score);
+                else
+                    sprintf(message, "%sIl y a egalite!", temps_ecoule);
+            }
+            else /* Partie solo */
+            {
+                if(jeu->time <= 0)
+                    sprintf(message, "Temps ecoule!\nVous avez perdu!");
+                else if(jeu->players[0]->est_mort)
+                    sprintf(message, "Vous etes mort!\nVous avez perdu!");
+                else
+                    sprintf(message, "Vous avez gagne!\n");
+            }
 
             SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Game Over", message, g->fenetre);
         }

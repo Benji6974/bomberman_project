@@ -768,7 +768,7 @@
 	"constantes.h"
 	"jeu.h"
 
-1454248840 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\sound.c
+1454249172 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\sound.c
 	"sound.h"
 
 1451801791 g:\program files (x86)\codeblocks\sdl2-2.0.4\i686-w64-mingw32\include\sdl2\sdl_mixer.h
@@ -788,4 +788,64 @@
 
 1454248894 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\menu.c
 	"menu.h"
+
+1454268210 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\src\graphismes.c
+	<stdio.h>
+	"graphismes.h"
+
+1454268210 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\src\graphismes.h
+	<SDL2/SDL.h>
+	<SDL.h>
+	<math.h>
+	"constantes.h"
+	"jeu.h"
+
+1454268210 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\src\constantes.h
+
+1454268210 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\src\jeu.h
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	<time.h>
+	<math.h>
+	<SDL2/SDL.h>
+	<SDL.h>
+
+1454268509 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\src\jeu.c
+	"constantes.h"
+	"jeu.h"
+
+1454268210 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\src\main.c
+	<stdlib.h>
+	<stdio.h>
+	<SDL2/SDL.h>
+	<SDL.h>
+	"constantes.h"
+	"jeu.h"
+	"graphismes.h"
+	"sound.h"
+	"menu.h"
+
+1454268210 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\src\sound.h
+	<SDL2/SDL.h>
+	<SDL/SDL_mixer.h>
+	<SDL.h>
+	<SDL_mixer.h>
+	<stdio.h>
+	<stdlib.h>
+	"constantes.h"
+	"jeu.h"
+
+1454268210 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\src\menu.h
+	<SDL2/SDL.h>
+	<SDL.h>
+	<stdlib.h>
+	<stdio.h>
+	"constantes.h"
+
+1454268210 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\src\menu.c
+	"menu.h"
+
+1454268210 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\src\sound.c
+	"sound.h"
 

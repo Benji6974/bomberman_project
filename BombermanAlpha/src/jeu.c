@@ -24,7 +24,6 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
     else
     {
         carte_data = lire_map_fichier(carte_data,nb_joueurs,typemap);
-
     }
 
 
@@ -121,8 +120,6 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
     {
         jeu->touches.key_map[i] = gKeys[i];
     }
-
-
 
     return jeu;
 }
@@ -245,8 +242,11 @@ int maj_jeu(Game *jeu, int dt)
 /* Fonction qui vérifie si on a un gagnant, et termine la partie */
 int verif_fin_de_jeu(Game *jeu)
 {
-    int i, joueur, egalite = 0, en_vie = 0, fin = 0;
+    int i, x, y;
+    int joueur, egalite = 0, en_vie = 0, nb_blocs_intacts = 0, fin = 0;
     Player *meilleur_score = NULL;
+
+    /* Détermination gagnant pour des partie à plus d'un joueur */
 
     /* Determiantion du meilleur score */
     for(i = 0; i < jeu->nb_joueurs; i++)
@@ -263,13 +263,13 @@ int verif_fin_de_jeu(Game *jeu)
         }
     }
     /* Si il reste un joueur en vie, c'est le gagnant */
-    if(en_vie == 1)
+    if(en_vie == 1 && jeu->nb_joueurs > 1)
     {
         jeu->gagnant = jeu->players[joueur];
         fin = 1;
     }
     /* Si le temps s'est écoulé, le gagnant est celui avec le meilleur score */
-    if(jeu->time <= 0)
+    if(jeu->time <= 0 && jeu->nb_joueurs > 1)
     {
         if(!egalite)
         {
@@ -277,6 +277,31 @@ int verif_fin_de_jeu(Game *jeu)
         }
         fin = 1;
     }
+
+    /* Détermination de la fin du jeu pour les partie solo */
+
+    if(jeu->nb_joueurs == 1)
+    {
+        /* Détermination du nombre de blocs encore non détruits */
+        for(y = 0; y < MAP_HEIGHT; y++)
+        {
+            for(x = 0; x < MAP_WIDTH; x++)
+            {
+                if(jeu->carte[y][x]->type == 2 || jeu->carte[y][x]->type == 3)
+                    nb_blocs_intacts++;
+            }
+        }
+
+        /* Si il n'en reste plus, le joueur solo gagne */
+        if(nb_blocs_intacts <= 0)
+        {
+            jeu->gagnant = jeu->players[0];
+            fin = 1;
+        }
+        if(jeu->time <= 0 || jeu->players[0]->est_mort) /* Si le temps est écoulé ou il est mort, le joueur perd */
+            fin = 1;
+    }
+
     return fin;
 }
 
