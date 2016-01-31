@@ -10,7 +10,7 @@ SDL_Texture* charger_sprite(SDL_Renderer *renderer, char *chemin)
     SDL_Surface *image_chargee = SDL_LoadBMP(chemin); /* on charge l'image en tant que surface */
 
 #ifdef __linux__
-    SDL_SetColorKey(image_chargee, SDL_SRCCOLORKEY, SDL_MapRGB(image_chargee, 255, 0, 255));
+    SDL_SetColorKey(image_chargee, SDL_TRUE, SDL_MapRGB(image_chargee->format, 255, 0, 255));
 #endif
 
     if(image_chargee != NULL)
