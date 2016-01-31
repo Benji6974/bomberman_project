@@ -15,20 +15,14 @@ Menu* init_menu()
 /* Gère les évènements de souris */
 void maj_control_menu(SDL_Event *event, Menu *m)
 {
-    SDL_Rect spritepos;
-
-
-    /* Si oui, quel type? */
     switch (event->type)
     {
-        /* Appui sur une touche */
-
-    /* Déplacement souris */
-    case SDL_MOUSEMOTION:
-        spritepos.x += event->motion.xrel;
-        spritepos.y += event->motion.yrel;
+    case SDL_KEYDOWN:
+        if(event->key.keysym.sym == SDLK_RETURN)
+        {
+            m->lancer_jeu = 1;
+        }
         break;
-    /* Enfoncement bouton souris */
     case SDL_MOUSEBUTTONDOWN:
         if (!m->clic)
         {
@@ -36,7 +30,6 @@ void maj_control_menu(SDL_Event *event, Menu *m)
             maj_menu_clic(event->motion.x,event->motion.y,m);
         }
         break;
-    /* Relâchement bouton souris */
     case SDL_MOUSEBUTTONUP:
         if (m->clic)
         {

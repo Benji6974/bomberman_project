@@ -16,14 +16,14 @@ int init_audio(int channels)
    }
    Mix_AllocateChannels(channels);
 
-   explosion    = Mix_LoadWAV("data/sound/explosion2.wav");
+   explosion    = Mix_LoadWAV("data/sound/explosion.wav");
    bombe_posee  = Mix_LoadWAV("data/sound/woosh.wav");
    bonus_obtenu = Mix_LoadWAV("data/sound/bonus.wav");
 
    return 0;
 }
 
-/* Change le volume de chaque canal */
+/* Change le volume de chaque tout les canaux */
 void changer_volume(int niveau)
 {
    int i;
