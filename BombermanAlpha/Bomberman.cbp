@@ -40,31 +40,31 @@
 			<Add option="-lSDL2_mixer" />
 			<Add directory="%HOMEDRIVE%/Program Files (x86)/CodeBlocks/SDL2-2.0.4/i686-w64-mingw32/lib" />
 		</Linker>
-		<Unit filename="cb.bmp" />
-		<Unit filename="constantes.h" />
-		<Unit filename="graphismes.c">
+		<Unit filename="src/constantes.h" />
+		<Unit filename="src/graphismes.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="graphismes.h" />
-		<Unit filename="jeu.c">
+		<Unit filename="src/graphismes.h" />
+		<Unit filename="src/jeu.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="jeu.h" />
-		<Unit filename="main.c">
+		<Unit filename="src/jeu.h" />
+		<Unit filename="src/main.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="menu.c">
+		<Unit filename="src/menu.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="menu.h" />
-		<Unit filename="sound.c">
+		<Unit filename="src/menu.h" />
+		<Unit filename="src/sound.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="sound.h" />
+		<Unit filename="src/sound.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />
 			<envvars />
+			<lib_finder disable_auto="1" />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
