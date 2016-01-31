@@ -18,14 +18,26 @@
 /* NE PAS OUBLIER DE CHANGER NB_FEUILLES_SPRITES QUAND ON AJOUTE UNE FEUILLE, SINON RISQUE DE CRASH ! */
 #define NB_FEUILLES_SPRITES 9
 #define FEUILLE_TILES       "data/img/tileset.bmp"
-#define FEUILLE_PERSO       "data/img/character_silver.bmp"
-#define FEUILLE_OBJETS      "data/img/atlas5_32.bmp"
-#define FEUILLE_BONUS       "data/img/items.bmp"
 #define FEUILLE_TEXTE       "data/img/text.bmp"
-#define FEUILLE_EXPLOSIONS  "data/img/explosion.bmp"
-#define FEUILLE_COMMANDES   "data/img/comandes.bmp"
-#define FEUILLE_LOGO        "data/img/preview-bomberman_logo.bmp"
+
+#define FEUILLE_COMMANDES   "data/img/comandes2.bmp"
 #define FEUILLE_VOLUME      "data/img/Low-Volume.bmp"
+
+#ifdef __linux__
+    #define FEUILLE_PERSO       "data/img/character_silver2.bmp"
+    #define FEUILLE_OBJETS      "data/img/atlas5_322.bmp"
+    #define FEUILLE_BONUS       "data/img/items2.bmp"
+    #define FEUILLE_LOGO        "data/img/preview-bomberman_logo2.bmp"
+    #define FEUILLE_EXPLOSIONS  "data/img/explosion2.bmp"
+#elif _WIN32
+    #define FEUILLE_PERSO       "data/img/character_silver.bmp"
+    #define FEUILLE_OBJETS      "data/img/atlas5_32.bmp"
+    #define FEUILLE_BONUS       "data/img/items.bmp"
+    #define FEUILLE_LOGO        "data/img/preview-bomberman_logo.bmp"
+    #define FEUILLE_EXPLOSIONS  "data/img/explosion.bmp"
+#else
+
+#endif
 
 #define CLIP_PERSO_X 0
 #define CLIP_PERSO_Y 0

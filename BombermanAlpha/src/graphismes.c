@@ -9,6 +9,10 @@ SDL_Texture* charger_sprite(SDL_Renderer *renderer, char *chemin)
     SDL_Texture *finale = NULL;
     SDL_Surface *image_chargee = SDL_LoadBMP(chemin); /* on charge l'image en tant que surface */
 
+#ifdef __linux__
+    SDL_SetColorKey(image_chargee, SDL_SRCCOLORKEY, SDL_MapRGB(image_chargee, 255, 0, 255));
+#endif
+
     if(image_chargee != NULL)
     {
         finale = SDL_CreateTextureFromSurface(renderer, image_chargee); /* on créer une texture à partir de la surface */
@@ -60,6 +64,8 @@ Graphismes* init_graphismes(char *titre, int x, int y, int w, int h, Uint32 flag
     g->feuilles_sprites[6] = charger_sprite(renderer, FEUILLE_COMMANDES);
     g->feuilles_sprites[7] = charger_sprite(renderer, FEUILLE_LOGO);
     g->feuilles_sprites[8] = charger_sprite(renderer, FEUILLE_VOLUME);
+
+
 
     return g;
 }
