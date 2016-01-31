@@ -31,13 +31,13 @@ int main(int agrc, char** argv)
 
     init_audio(NB_CANAUX);
 
-    g = init_graphismes("Bomberman Beta",
+    g = init_graphismes("Bomberman",
                         SDL_WINDOWPOS_CENTERED,
                         SDL_WINDOWPOS_CENTERED,
                         WINDOW_WIDTH,
                         WINDOW_HEIGHT,
                         SDL_WINDOW_SHOWN,
-                        SDL_RENDERER_PRESENTVSYNC);
+                        SDL_RENDERER_PRESENTVSYNC); /* On active la synchronisation verticale */
 
     SDL_RendererInfo info;
     SDL_GetRenderDriverInfo(0, &info);
@@ -140,15 +140,15 @@ int main(int agrc, char** argv)
         }
 
 
-        /* Compteur de FPS */
-        current_time = SDL_GetTicks();
-        frame_compte++;
-        if(current_time - previous_time2 >= 1000)
-        {
-            printf("FPS: %d\n", frame_compte);
-            frame_compte = 0;
-            previous_time2 = current_time;
-        }
+//        /* Compteur de FPS */
+//        current_time = SDL_GetTicks();
+//        frame_compte++;
+//        if(current_time - previous_time2 >= 1000)
+//        {
+//            printf("FPS: %d\n", frame_compte);
+//            frame_compte = 0;
+//            previous_time2 = current_time;
+//        }
 
     }
 

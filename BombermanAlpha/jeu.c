@@ -360,6 +360,7 @@ int collision_joueur_items(Game *jeu, int joueur)
                     free(jeu->objets[i]);
                     jeu->objets[i] = NULL;
 
+                    /* Reorganisation tableau des objets */
                     for(j = i; j < jeu->nb_objets; j++)
                     {
                         if(jeu->objets[j+1] != NULL)
@@ -372,7 +373,7 @@ int collision_joueur_items(Game *jeu, int joueur)
                     jeu->nb_objets--;
                     jeu->players[joueur]->score += SCORE_ITEM_GET;
 
-                    SDL_PushEvent(jeu->events[BONUS_OBTENU]);
+                    SDL_PushEvent(jeu->events[BONUS_OBTENU]); /* Evenement pour le son */
 
                     return 1;
                 }
@@ -430,12 +431,14 @@ int poser_bomb(Game *jeu, int joueur)
     Player *p = jeu->players[joueur];
     Bomb *b = NULL;
     int i, x, y;
+
     if (p->nb_bomb_jeu < p->nb_bomb_max && jeu->nb_bombs < NB_BOMBES_MAX)
     {
         /* Milieu de la hitbox du joueur */
         x = (p->pos.x + p->pos.w/2)/TILE_WIDTH;
         y = (p->pos.y + p->pos.h/2)/TILE_HEIGHT;
 
+        /* On vérifie si un autre joueur ne se trouve déjà pas sur la case */
         for(i = 0; i < jeu->nb_joueurs; i++)
         {
             if(x == jeu->players[i]->pos.x/TILE_WIDTH
@@ -445,6 +448,7 @@ int poser_bomb(Game *jeu, int joueur)
                 return -1;
         }
 
+        /* On vérifie si une bombe ne se trouve déjà pas sur la case */
         for(i = 0; jeu->bombs[i] != NULL; i++)
         {
             if(x == jeu->bombs[i]->pos.x
@@ -453,6 +457,8 @@ int poser_bomb(Game *jeu, int joueur)
                 return -1;
             }
         }
+
+        /* Création de la bombe */
 
         b = malloc(sizeof(Bomb));
         *b = p->typebomb; /* copie de la bombe interne du joueur */
@@ -471,7 +477,7 @@ int poser_bomb(Game *jeu, int joueur)
     return 0;
 }
 
-/* Fonction qui applique des effets sur une case, tel que détruire un mur ou blesser un joueur */
+/* Fonction qui applique des effets sur une case, tels que détruire un mur ou blesser un joueur */
 int degats_case(Game *jeu, Bomb *origine, int x, int y)
 {
     int i, obstacle = 2;
