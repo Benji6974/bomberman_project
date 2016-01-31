@@ -9,15 +9,15 @@
 
 /* NE PAS OUBLIER DE CHANGER NB_FEUILLES_SPRITES QUAND ON AJOUTE UNE FEUILLE, SINON RISQUE DE CRASH ! */
 #define NB_FEUILLES_SPRITES 9
-#define FEUILLE_TILES       "img/tileset.bmp"
-#define FEUILLE_PERSO       "img/character_silver.bmp"
-#define FEUILLE_OBJETS      "img/atlas5_32.bmp"
-#define FEUILLE_BONUS       "img/items.bmp"
-#define FEUILLE_TEXTE       "img/text.bmp"
-#define FEUILLE_EXPLOSIONS  "img/explosion.bmp"
-#define FEUILLE_COMMANDES   "img/comandes.bmp"
-#define FEUILLE_LOGO        "img/preview-bomberman_logo.bmp"
-#define FEUILLE_VOLUME      "img/Low-Volume.bmp"
+#define FEUILLE_TILES       "data/img/tileset.bmp"
+#define FEUILLE_PERSO       "data/img/character_silver.bmp"
+#define FEUILLE_OBJETS      "data/img/atlas5_32.bmp"
+#define FEUILLE_BONUS       "data/img/items.bmp"
+#define FEUILLE_TEXTE       "data/img/text.bmp"
+#define FEUILLE_EXPLOSIONS  "data/img/explosion.bmp"
+#define FEUILLE_COMMANDES   "data/img/comandes.bmp"
+#define FEUILLE_LOGO        "data/img/preview-bomberman_logo.bmp"
+#define FEUILLE_VOLUME      "data/img/Low-Volume.bmp"
 
 #define CLIP_PERSO_X 0
 #define CLIP_PERSO_Y 0
