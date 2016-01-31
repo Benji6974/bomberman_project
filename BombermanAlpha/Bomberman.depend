@@ -348,11 +348,11 @@
 1452677563 c:\users\benji\documents\bomberman\trunk\bombermanalpha\jeu.h
 	"graphismes.h"
 
-1454196017 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\graphismes.c
+1454203978 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\graphismes.c
 	<stdio.h>
 	"graphismes.h"
 
-1454195986 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\graphismes.h
+1454200625 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\graphismes.h
 	<SDL.h>
 	<math.h>
 	"constantes.h"
@@ -677,7 +677,7 @@
 	"begin_code.h"
 	"close_code.h"
 
-1454196086 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\jeu.c
+1454204601 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\jeu.c
 	"constantes.h"
 	"jeu.h"
 
@@ -689,7 +689,7 @@
 	<math.h>
 	<SDL.h>
 
-1454196455 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\main.c
+1454203609 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\main.c
 	<stdlib.h>
 	<stdio.h>
 	<SDL.h>
@@ -704,7 +704,7 @@
 
 1452679375 c:\users\benji\documents\bomberman\trunk\bombermanalpha\constantes.h
 
-1454187336 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\constantes.h
+1454205096 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\constantes.h
 
 1454189035 source:j:\cours\polytech paris\bomberman\trunk\bombermanalpha\graphismes.c
 	<stdio.h>
@@ -760,16 +760,15 @@
 	"begin_code.h"
 	"close_code.h"
 
-1454196231 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\sound.h
-	<SDL.h>
-	"constantes.h"
-	"jeu.h"
-
-1454196440 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\sound.c
+1454202013 g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\sound.h
 	<SDL.h>
 	<SDL_mixer.h>
 	<stdio.h>
 	<stdlib.h>
+	"constantes.h"
+	"jeu.h"
+
+1454202111 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\sound.c
 	"sound.h"
 
 1451801791 g:\program files (x86)\codeblocks\sdl2-2.0.4\i686-w64-mingw32\include\sdl2\sdl_mixer.h
@@ -787,6 +786,6 @@
 	<stdio.h>
 	"constantes.h"
 
-1454196575 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\menu.c
+1454204904 source:g:\users\marco\programmation\c\bomberman (git)\trunk\bombermanalpha\menu.c
 	"menu.h"
 

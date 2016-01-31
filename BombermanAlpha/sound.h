@@ -2,6 +2,9 @@
 #define SOUND_H
 
 #include <SDL.h>
+#include <SDL_mixer.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "constantes.h"
 #include "jeu.h"

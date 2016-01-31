@@ -7,7 +7,9 @@
 #define TILE_HEIGHT   32
 #define MAP_WIDTH     17
 #define MAP_HEIGHT    11
+
 #define RENDER_SCALE  2 /* Taille des pixels  */
+
 #define WINDOW_WIDTH  RENDER_SCALE*TILE_WIDTH*MAP_WIDTH
 #define WINDOW_HEIGHT RENDER_SCALE*(TILE_HEIGHT*MAP_HEIGHT + HUD_HEIGHT)
 
@@ -34,7 +36,7 @@
 #define BONUS_MAX_RANGE        5
 #define BONUS_MAX_BOMB         5
 #define BONUS_MAX_SPEED        5
-#define PROBA_MUR_BRIQUES      20
+#define PROBA_MUR_BRIQUES      15
 #define PROBA_MUR_SOLIDE       30
 
 #define SCORE_MUR_BRIQUES 10
@@ -48,7 +50,7 @@
 
 #define NB_MAP 1
 
-/* Evenements */
+/* Evenements (pour les sons) */
 enum {BOMBE_EXPLOSE, BOMBE_POSEE, BONUS_OBTENU};
 
 /* Types de murs */
@@ -56,10 +58,13 @@ enum TYPE_MUR {MUR_METAL = -1, HERBE, MUR_INDESTRUCTIBLE, MUR_BRIQUES, MUR_SOLID
 
 /* Objets */
 enum {ITEM_SHIELD, ITEM_RANGE, ITEM_BOMB, ITEM_SPEED};
+/* Probabilité d'appartion d'un objet bonus */
 enum {P_SHIELD = 10, P_RANGE = 30, P_BOMB = 30, P_SPEED = 30};
-enum {P_HERBE = 10,P_MUR_INDESTRUCTIBLE =  20,P_MUR_BRIQUES = 50,P_MUR_SOLIDE = 20};
+
+/* Probabilité d'apparition pour la génération alétoire de carte */
+enum {P_HERBE = 10, P_MUR_INDESTRUCTIBLE =  30, P_MUR_BRIQUES = 40, P_MUR_SOLIDE = 20};
 
 /* Actions des touches */
-enum TOUCHES {UP, DOWN, LEFT, RIGHT, BOMB};
+enum {UP, DOWN, LEFT, RIGHT, BOMB};
 
 #endif // CONSTANTES_H

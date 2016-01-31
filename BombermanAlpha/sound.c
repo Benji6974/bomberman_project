@@ -1,8 +1,3 @@
-#include <SDL.h>
-#include <SDL_mixer.h>
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "sound.h"
 
 Mix_Chunk *explosion,
@@ -11,6 +6,7 @@ Mix_Chunk *explosion,
 
 Uint32 timestamp = 0;
 
+/* Initialisation de l'audio et chargement des sons */
 int init_audio(int channels)
 {
    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) == -1) //Initialisation de l'API Mixer
@@ -27,6 +23,7 @@ int init_audio(int channels)
    return 0;
 }
 
+/* Change le volume de chaque canal */
 void changer_volume(int niveau)
 {
    int i;
@@ -36,6 +33,7 @@ void changer_volume(int niveau)
    }
 }
 
+/* Récupère un évenement utilisateur et joue le son approprié sur un canal libre */
 int maj_audio(void* userdata, SDL_Event *event)
 {
    int channel;

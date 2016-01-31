@@ -4,7 +4,7 @@ Menu* init_menu()
 {
     Menu *m = malloc(sizeof(Menu));
     m->clic = 0;
-    m->nb_joueurs = NB_JOUEURS;
+    m->nb_joueurs = 2;
     m->temps = DUREE_DEFAUT_PARTIE;
     m->map_jeu = -1;
     m->lancer_jeu = 0;
@@ -12,7 +12,8 @@ Menu* init_menu()
     return m;
 }
 
-void maj_control_menu(SDL_Event *event,Menu *m)
+/* Gère les évènements de souris */
+void maj_control_menu(SDL_Event *event, Menu *m)
 {
     SDL_Rect spritepos;
 
@@ -26,14 +27,11 @@ void maj_control_menu(SDL_Event *event,Menu *m)
     case SDL_MOUSEMOTION:
         spritepos.x += event->motion.xrel;
         spritepos.y += event->motion.yrel;
-        printf("Position souris: %d %d\n", event->motion.x,
-               event->motion.y);
         break;
     /* Enfoncement bouton souris */
     case SDL_MOUSEBUTTONDOWN:
         if (!m->clic)
         {
-            printf("Click bouton souris %d\n", event->button.button);
             m->clic = 1;
             maj_menu_clic(event->motion.x,event->motion.y,m);
         }
@@ -42,7 +40,6 @@ void maj_control_menu(SDL_Event *event,Menu *m)
     case SDL_MOUSEBUTTONUP:
         if (m->clic)
         {
-            printf("Relâchement bouton souris %d\n", event->button.button);
             m->clic = 0;
         }
         break;
@@ -50,6 +47,7 @@ void maj_control_menu(SDL_Event *event,Menu *m)
 
 }
 
+/* Gère les clics de souris dans le menu */
 void maj_menu_clic(int x, int y,Menu *m)
 {
     if (y> 4*TILE_HEIGHT*RENDER_SCALE + HUD_HEIGHT*RENDER_SCALE && y< 4*TILE_HEIGHT*RENDER_SCALE + HUD_HEIGHT*RENDER_SCALE +TAILLE_CHAR_H*RENDER_SCALE &&

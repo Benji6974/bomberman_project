@@ -136,7 +136,7 @@ int main(int agrc, char** argv)
             else
                 sprintf(message, "%sIl y a egalite!", temps_ecoule);
 
-            //SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Game Over", message, g->fenetre);
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Game Over", message, g->fenetre);
         }
 
 

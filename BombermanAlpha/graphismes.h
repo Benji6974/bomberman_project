@@ -7,6 +7,7 @@
 #include "constantes.h"
 #include "jeu.h"
 
+/* NE PAS OUBLIER DE CHANGER NB_FEUILLES_SPRITES QUAND ON AJOUTE UNE FEUILLE, SINON RISQUE DE CRASH ! */
 #define NB_FEUILLES_SPRITES 9
 #define FEUILLE_TILES       "img/tileset.bmp"
 #define FEUILLE_PERSO       "img/character_silver.bmp"

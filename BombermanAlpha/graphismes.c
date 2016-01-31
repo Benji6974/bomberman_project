@@ -1,24 +1,28 @@
 #include <stdio.h>
 #include "graphismes.h"
 
+/* Charge une texture SDL a partir d'une image BMP
+ * Utilisée pour charger les feuilles de sprites en mémoire
+ */
 SDL_Texture* charger_sprite(SDL_Renderer *renderer, char *chemin)
 {
     SDL_Texture *finale = NULL;
-    SDL_Surface *image_chargee = SDL_LoadBMP(chemin); // on charge l'image en tant que surface
+    SDL_Surface *image_chargee = SDL_LoadBMP(chemin); /* on charge l'image en tant que surface */
 
     if(image_chargee != NULL)
     {
-        finale = SDL_CreateTextureFromSurface(renderer, image_chargee); // on créer une texture à partir de la surface
+        finale = SDL_CreateTextureFromSurface(renderer, image_chargee); /* on créer une texture à partir de la surface */
         if(finale == NULL)
             printf("Erreur lors de la creation de %s\n", chemin);
-        SDL_FreeSurface(image_chargee); // on détruit la surface
+        SDL_FreeSurface(image_chargee); /* on détruit la surface */
     }
     else
         printf("Erreur lors du chargement de %s\n", chemin);
 
-    return finale; // on renvoie la nouvelle texture contenant l'image
+    return finale; /* on renvoie la nouvelle texture contenant l'image */
 }
 
+/* Créer la fenêtre et le moteur de rendu et charge toutes les feuilles de sprites dont on aura besoin, et met le tout dans la structure Graphismes */
 Graphismes* init_graphismes(char *titre, int x, int y, int w, int h, Uint32 flags_fenetre, Uint32 flags_renderer)
 {
     SDL_Window* fenetre = NULL;
@@ -57,16 +61,16 @@ Graphismes* init_graphismes(char *titre, int x, int y, int w, int h, Uint32 flag
     g->feuilles_sprites[7] = charger_sprite(renderer, FEUILLE_LOGO);
     g->feuilles_sprites[8] = charger_sprite(renderer, FEUILLE_VOLUME);
 
-
     return g;
 }
 
+/* Affiche le menu */
 int maj_menu(Graphismes *g,int nb_joueurs,int temps,int map_jeu, int volume)
 {
     SDL_SetRenderDrawColor(g->renderer, 0, 0, 0, 255);
     SDL_RenderClear(g->renderer);
     int erreur;
-    /* Mettre ici les fonction de mise à jour du menu */
+
     SDL_Rect blit;
     SDL_Rect clip;
         blit.y = (HUD_HEIGHT - SPRITE_CHAR_H)/2;
@@ -75,13 +79,13 @@ int maj_menu(Graphismes *g,int nb_joueurs,int temps,int map_jeu, int volume)
         blit.h = SPRITE_CHAR_H;
         blit.w = SPRITE_CHAR_W;
         blit.y = (MAP_HEIGHT*TILE_HEIGHT - TILE_HEIGHT + HUD_HEIGHT);
-        blit.x = (MAP_WIDTH*TILE_WIDTH - 10*SPRITE_CHAR_W);
-        char jouer[50] = {"Jouer =>"};
+        blit.x = (MAP_WIDTH*TILE_WIDTH - 8*SPRITE_CHAR_W);
+        char jouer[50] = {"Jouer !"};
         ecrire_mot(g,jouer,blit);
 
         blit.y = (2*TILE_HEIGHT + HUD_HEIGHT);
         blit.x = 0;
-        char type_map[50] = {"Type de map : "};
+        char type_map[50] = {" Type de map: "};
         ecrire_mot(g,type_map,blit);
 
         blit.y = (2*TILE_HEIGHT + HUD_HEIGHT);
@@ -89,22 +93,22 @@ int maj_menu(Graphismes *g,int nb_joueurs,int temps,int map_jeu, int volume)
         char type_map2[50];
         if (map_jeu == -1)
         {
-              strncpy(type_map2,"< Aleatoire >",50);
+              strncpy(type_map2,"< Aléatoire >",50);
         }
         else if (map_jeu == 0)
         {
-              strncpy(type_map2,"<    Old    >",50);
+              strncpy(type_map2,"< Classique >",50);
         }
         else
         {
-              sprintf(type_map2,"<    Map_%d  >",map_jeu);
+              sprintf(type_map2,"< Fichier %d >",map_jeu);
         }
 
         ecrire_mot(g,type_map2,blit);
 
         blit.y = (4*TILE_HEIGHT + HUD_HEIGHT);
         blit.x = 0;
-        char nombrejoueurs[50] = {"Nombre de Joueurs : "};
+        char nombrejoueurs[50] = {" Nombre de Joueurs: "};
         ecrire_mot(g,nombrejoueurs,blit);
 
         blit.y = (4*TILE_HEIGHT + HUD_HEIGHT);
@@ -115,17 +119,17 @@ int maj_menu(Graphismes *g,int nb_joueurs,int temps,int map_jeu, int volume)
 
         blit.y = (8*TILE_HEIGHT + HUD_HEIGHT);
         blit.x = 0;
-        char controls[50] = {"Controles : "};
+        char controls[50] = {" Contrôles: "};
         ecrire_mot(g,controls,blit);
 
         blit.y = (6*TILE_HEIGHT + HUD_HEIGHT);
         blit.x = 0;
-        char temps_partie[50] = {"Temps de jeu : "};
+        char temps_partie[50] = {" Temps de jeu: "};
         ecrire_mot(g,temps_partie,blit);
 
         blit.y = (7*TILE_HEIGHT + HUD_HEIGHT);
         blit.x = (MAP_WIDTH*TILE_WIDTH - 8*SPRITE_CHAR_W);
-        char audio[50] = {"Audio : "};
+        char audio[50] = {" Audio: "};
         ecrire_mot(g,audio,blit);
 
         blit.y = (6*TILE_HEIGHT + HUD_HEIGHT);
@@ -196,6 +200,7 @@ int maj_graphismes(Game *jeu, Graphismes *g)
     return erreur;
 }
 
+/* Affiche la carte à partir du tableau carte qui se trouve dans la structure Game */
 int maj_graph_carte(Game *jeu, Graphismes *g)
 {
     int i, j, erreur = 0;
@@ -241,7 +246,7 @@ int maj_graph_carte(Game *jeu, Graphismes *g)
                     clip.x++;
                 break;
             case MUR_SOLIDE:
-                clip.x = 2*((4-jeu->carte[i][j]->etat)-1) + CLIP_MUR_SOLIDE_X;
+                clip.x = 2*((4-jeu->carte[i][j]->etat)-1) + CLIP_MUR_SOLIDE_X; /* Aspect different en fonction de l'état du mur */
                 clip.y = CLIP_MUR_SOLIDE_Y;
                 if(i+1 < MAP_HEIGHT && jeu->carte[i+1][j] != NULL && jeu->carte[i+1][j]->type == 0)
                     clip.x++;
@@ -261,7 +266,7 @@ int maj_graph_carte(Game *jeu, Graphismes *g)
 int maj_graph_entites(Game *jeu, Graphismes *g)
 {
     int i, erreur = 0;
-    SDL_Rect clip, pos;
+    SDL_Rect clip, pos, pos_nom;
     Player **blit_order = malloc(jeu->nb_joueurs*sizeof(int));
 
     /* ----- AFFICHAGE DES OBJETS ------ */
@@ -344,6 +349,7 @@ int maj_graph_entites(Game *jeu, Graphismes *g)
 
     /* ----- AFFICHAGE DES JOUEURS ----- */
 
+    /* Le tableau blit_order permet de déterminer quel joueur afficher devant quel autre en fonction de leurs positions verticale */
     memcpy(blit_order, jeu->players, jeu->nb_joueurs*sizeof(int));
     trier_par_y(blit_order, jeu->nb_joueurs);
 
@@ -375,11 +381,20 @@ int maj_graph_entites(Game *jeu, Graphismes *g)
         clip.y *= SPRITE_PERSO_H;
 
         pos.x = blit_order[i]->pos.x;
-        pos.y = blit_order[i]->pos.y - (SPRITE_PERSO_H - HITBOX_PLAYER_H);
+        pos.y = blit_order[i]->pos.y - (SPRITE_PERSO_H - HITBOX_PLAYER_H); /* Décalage par rapport à la hitbox du joueur (qui se trouve a ses pieds) */
 
+        /* Rect pour la banniere au dessus du joueur */
+        pos_nom = pos;
+
+        pos_nom.x += SPRITE_CHAR_W/2;
+        pos_nom.y += 22;
+        pos_nom.w = SPRITE_CHAR_W/2;
+        pos_nom.h = SPRITE_CHAR_H/2;
+
+        /* un joueur mort n'est plus mis à jour ni affiché */
         if(!blit_order[i]->est_mort)
         {
-            if(afficher(g, 1, &clip, &pos) != 0)
+            if(afficher(g, 1, &clip, &pos) != 0 || afficher_char(g, blit_order[i]->id_player + 1 + 48, pos_nom) != 0) /* 48 est le code ASCII du caractère '0' */
                 erreur = 1;
         }
     }
@@ -388,7 +403,8 @@ int maj_graph_entites(Game *jeu, Graphismes *g)
     return erreur;
 }
 
-int afficher(Graphismes *g, int feuille_sprite, SDL_Rect *clip, SDL_Rect *dest)
+/* Affiche une region de la feuille de sprites passée en paramètre, de la region clip vers la region dest du moteur de rendu */
+int afficher(Graphismes *g, int feuille_sprites, SDL_Rect *clip, SDL_Rect *dest)
 {
     SDL_Rect blit;
 
@@ -397,9 +413,10 @@ int afficher(Graphismes *g, int feuille_sprite, SDL_Rect *clip, SDL_Rect *dest)
     blit.w = RENDER_SCALE*dest->w;
     blit.h = RENDER_SCALE*dest->h;
 
-    return SDL_RenderCopy(g->renderer, g->feuilles_sprites[feuille_sprite], clip, &blit);
+    return SDL_RenderCopy(g->renderer, g->feuilles_sprites[feuille_sprites], clip, &blit);
 }
 
+/* Mise a jour de la barre d'information du jeu en haut de l'écran */
 int maj_HUD(Game *jeu, Graphismes *g)
 {
     SDL_Rect blit;
@@ -545,16 +562,9 @@ int maj_HUD(Game *jeu, Graphismes *g)
     return erreur;
 }
 
-void ecrire_mot(Graphismes *g,char *mot,SDL_Rect blit)
-{
-    int z;
-    for(z = 0; mot[z] != 0 ; z++)
-    {
-        afficher_char(g, mot[z], blit);
-        blit.x += blit.w;
-    }
-}
-
+/* Affiche un caractère dans le rectangle pos depuis la feuille des caractères
+ * Attention c'est long!
+*/
 int afficher_char(Graphismes *g, char c, SDL_Rect pos)
 {
     SDL_Rect clip;
@@ -848,31 +858,34 @@ int afficher_char(Graphismes *g, char c, SDL_Rect pos)
         clip.x = 7;
         clip.y = 12;
         break;
-        case '=':
+    case 'ô':
+        clip.x = 4;
+        clip.y = 11;
+        break;
+    case '=':
         clip.x = 13;
         clip.y = 1;
         break;
-        case '>':
+    case '>':
         clip.x = 14;
         clip.y = 1;
         break;
-        case '<':
+    case '<':
         clip.x = 12;
         clip.y = 1;
         break;
-         case '+':
+    case '+':
         clip.x = 11;
         clip.y = 0;
         break;
-        case '&':
+    case '&':
         clip.x = 6;
         clip.y = 0;
         break;
-         case '.':
+    case '.':
         clip.x = 14;
         clip.y = 0;
         break;
-
 
     default:
         clip.x = 0;
@@ -887,6 +900,18 @@ int afficher_char(Graphismes *g, char c, SDL_Rect pos)
     pos.w *= RENDER_SCALE;
     pos.h *= RENDER_SCALE;
     return SDL_RenderCopy(g->renderer, g->feuilles_sprites[4], &clip, &pos);
+}
+
+
+/* Ecrit une chaine de caractère entière en utilisant la fonction ci-dessus */
+void ecrire_mot(Graphismes *g,char *mot,SDL_Rect blit)
+{
+    int z;
+    for(z = 0; mot[z] != 0 ; z++)
+    {
+        afficher_char(g, mot[z], blit);
+        blit.x += blit.w;
+    }
 }
 
 /* Fonction utilisée pour trier le tableau des joueurs en fonction de leur position verticale

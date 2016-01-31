@@ -12,7 +12,7 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
     Game *jeu = NULL;
     Tile ***carte = NULL;
     Player *p = NULL;
-    /* - Tableau pour tester la carte - */
+
     srand(time(NULL));
 
     int **carte_data = NULL;
@@ -36,22 +36,65 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
     jeu->en_pause = 0;
 
     /* Initialisation tableaux des entités */
+
+    /* Bombes */
     jeu->bombs = (Bomb**)malloc(NB_BOMBES_MAX*sizeof(Bomb*));
     jeu->nb_bombs = 0;
     memset(jeu->bombs, 0, NB_BOMBES_MAX*sizeof(Bomb*));
 
+    /* Explosions */
     jeu->explosions = (Explosion**)malloc(NB_EXPLOSIONS_MAX*sizeof(Explosion*));
     jeu->nb_explosions = 0;
     memset(jeu->explosions, 0, NB_EXPLOSIONS_MAX*sizeof(Explosion*));
 
+    /* Objets bonus */
     jeu->objets = (Objet**)malloc(NB_OBJETS_MAX*sizeof(Objet*));
     jeu->nb_objets = 0;
     memset(jeu->objets, 0, NB_OBJETS_MAX*sizeof(Objet*));
 
+    /* Variables de jeu */
     jeu->type = type;
     jeu->time = temps*1000;
     jeu->gagnant = NULL;
     jeu->nb_joueurs = nb_joueurs;
+
+    /* Generation du/des joueur */
+
+    jeu->players = (Player**)malloc(nb_joueurs*sizeof(Player*));
+    for(i = 0; i < nb_joueurs; i++)
+    {
+        char name[128] = "";
+        sprintf(name, "Joueur %d", i+1);
+        p = init_player(name, i);
+        p->keymap_offset = i*KEYS_PER_PLAYER;
+
+        /* Positionne les joueurs aux 4 coins de la carte au centre de la case */
+
+        p->pos.x = MAP_WIDTH-2;
+        p->pos.y = MAP_HEIGHT-2;
+
+        if(i==0)
+        {
+            p->pos.x = 1;
+            p->pos.y = 1;
+        }
+        if(i==2)
+        {
+            p->pos.y = 1;
+        }
+        if(i==3)
+        {
+            p->pos.x = 1;
+        }
+
+        p->pos.x *= TILE_WIDTH;
+        p->pos.y *= TILE_HEIGHT;
+
+        p->pos.x += (TILE_WIDTH - p->pos.w)/2;
+        p->pos.y += (TILE_HEIGHT - p->pos.h)/2;
+
+        jeu->players[i] = p;
+    }
 
     /* Génération de la carte */
     carte = (Tile***)malloc(MAP_HEIGHT*sizeof(Tile**)); /* tableau 2D de pointeurs sur Tiles */
@@ -79,60 +122,23 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
         jeu->touches.key_map[i] = gKeys[i];
     }
 
-    /* Generation du/des players*/
 
-    jeu->players = (Player**)malloc(nb_joueurs*sizeof(Player*));
-    for(i = 0; i < nb_joueurs; i++)
-    {
-
-        char name[128] = "";
-        sprintf(name, "Joueur %d", i+1);
-        p = init_player(name, i);
-        p->keymap_offset = i*KEYS_PER_PLAYER;
-
-        /* Positionne les joueurs aux 4 coins de la carte au centre de la case */
-
-        p->pos.x = MAP_WIDTH-2;
-        p->pos.y = MAP_HEIGHT-2;
-
-        if(i==0)
-        {
-            p->pos.x = 1;
-            p->pos.y = 1;
-        }
-        if(i==1)
-        {
-            p->pos.y = 1;
-        }
-        if(i==2)
-        {
-            p->pos.x = 1;
-        }
-
-        p->pos.x *= TILE_WIDTH;
-        p->pos.y *= TILE_HEIGHT;
-
-        p->pos.x += (TILE_WIDTH - p->pos.w)/2;
-        p->pos.y += (TILE_HEIGHT - p->pos.h)/2;
-
-        jeu->players[i] = p;
-    }
 
     return jeu;
 }
 
+/* Génère une carte à partir d'un fichier texte */
 int** lire_map_fichier(int **carte_data, int nb_joueurs, int typemap)
 {
+    int z, n, m, x, y;
     carte_data = (int**)malloc(MAP_HEIGHT*sizeof(int*));
-    int z;
     for (z=0; z<MAP_HEIGHT; z++)
     {
         carte_data[z] = (int*)malloc(MAP_WIDTH*sizeof(int));
     }
     char fichier[128] = "";
-    snprintf(fichier, sizeof fichier, "map/map%d.txt", typemap);
+    snprintf(fichier, sizeof(fichier), "map/map%d.txt", typemap);
     FILE* fi=fopen(fichier,"r");
-    int n,m;
 
     if(fi==NULL)
     {
@@ -147,10 +153,9 @@ int** lire_map_fichier(int **carte_data, int nb_joueurs, int typemap)
         }
         fscanf(fi,"\n");
     }
-    fclose(fi); /* on ferme le fichier */
+    fclose(fi);
 
     /* on remplace les cases par de l'herbe autour des joueurs*/
-    int y,x;
     for (y=0; y<MAP_HEIGHT; y++)
     {
         for (x=0; x<MAP_WIDTH; x++)
@@ -160,28 +165,28 @@ int** lire_map_fichier(int **carte_data, int nb_joueurs, int typemap)
                 carte_data[y][x] = -1;
             else if(nb_joueurs >= 1 && ((x == 1 && y == 1) || (x == 2 && y == 1) || (x == 1 && y == 2)))
                 carte_data[y][x] = HERBE;
-            else if(nb_joueurs >= 2 && ((x == MAP_WIDTH-2 && y == 1) || (x == MAP_WIDTH-3 && y == 1) || (x == MAP_WIDTH-2 && y == 2)))
+            else if(nb_joueurs >= 2 && ((x == MAP_WIDTH-2 && y == MAP_HEIGHT-2) || (x == MAP_WIDTH-3 && y == MAP_HEIGHT-2) || (x == MAP_WIDTH-2 && y == MAP_HEIGHT-3)))
                 carte_data[y][x] = HERBE;
-            else if(nb_joueurs >= 3 && ((x == 1 && y == MAP_HEIGHT-2) || (x == 2 && y == MAP_HEIGHT-2) || (x == 1 && y == MAP_HEIGHT-3)))
+            else if(nb_joueurs >= 3 && ((x == MAP_WIDTH-2 && y == 1) || (x == MAP_WIDTH-3 && y == 1) || (x == MAP_WIDTH-2 && y == 2)))
                 carte_data[y][x] = HERBE;
-            else if(nb_joueurs >= 4 && ((x == MAP_WIDTH-2 && y == MAP_HEIGHT-2) || (x == MAP_WIDTH-3 && y == MAP_HEIGHT-2) || (x == MAP_WIDTH-2 && y == MAP_HEIGHT-3)))
+            else if(nb_joueurs >= 4 && ((x == 1 && y == MAP_HEIGHT-2) || (x == 2 && y == MAP_HEIGHT-2) || (x == 1 && y == MAP_HEIGHT-3)))
                 carte_data[y][x] = HERBE;
-
         }
     }
     return carte_data;
 }
 
+/* Génère une carte alétoire en fonction du nombre des joueurs */
 int** genere_map(int **carte_data, int nb_joueurs)
 {
+    int z, x, y, proba;
     carte_data = (int**)malloc(MAP_HEIGHT*sizeof(int*));
-    int z;
+
     for (z=0; z<MAP_HEIGHT; z++)
     {
         carte_data[z] = (int*)malloc(MAP_WIDTH*sizeof(int));
     }
-    int proba;
-    int x,y;
+
     for (y=0; y<MAP_HEIGHT; y++)
     {
         for (x=0; x<MAP_WIDTH; x++)
@@ -191,11 +196,11 @@ int** genere_map(int **carte_data, int nb_joueurs)
                 carte_data[y][x] = -1;
             else if(nb_joueurs >= 1 && ((x == 1 && y == 1) || (x == 2 && y == 1) || (x == 1 && y == 2)))
                 carte_data[y][x] = HERBE;
-            else if(nb_joueurs >= 2 && ((x == MAP_WIDTH-2 && y == 1) || (x == MAP_WIDTH-3 && y == 1) || (x == MAP_WIDTH-2 && y == 2)))
+            else if(nb_joueurs >= 2 && ((x == MAP_WIDTH-2 && y == MAP_HEIGHT-2) || (x == MAP_WIDTH-3 && y == MAP_HEIGHT-2) || (x == MAP_WIDTH-2 && y == MAP_HEIGHT-3)))
                 carte_data[y][x] = HERBE;
-            else if(nb_joueurs >= 3 && ((x == 1 && y == MAP_HEIGHT-2) || (x == 2 && y == MAP_HEIGHT-2) || (x == 1 && y == MAP_HEIGHT-3)))
+            else if(nb_joueurs >= 3 && ((x == MAP_WIDTH-2 && y == 1) || (x == MAP_WIDTH-3 && y == 1) || (x == MAP_WIDTH-2 && y == 2)))
                 carte_data[y][x] = HERBE;
-            else if(nb_joueurs >= 4 && ((x == MAP_WIDTH-2 && y == MAP_HEIGHT-2) || (x == MAP_WIDTH-3 && y == MAP_HEIGHT-2) || (x == MAP_WIDTH-2 && y == MAP_HEIGHT-3)))
+            else if(nb_joueurs >= 4 && ((x == 1 && y == MAP_HEIGHT-2) || (x == 2 && y == MAP_HEIGHT-2) || (x == 1 && y == MAP_HEIGHT-3)))
                 carte_data[y][x] = HERBE;
             else
             {
@@ -431,10 +436,19 @@ int poser_bomb(Game *jeu, int joueur)
         x = (p->pos.x + p->pos.w/2)/TILE_WIDTH;
         y = (p->pos.y + p->pos.h/2)/TILE_HEIGHT;
 
+        for(i = 0; i < jeu->nb_joueurs; i++)
+        {
+            if(x == jeu->players[i]->pos.x/TILE_WIDTH
+            && y == jeu->players[i]->pos.y/TILE_HEIGHT
+            && jeu->players[i] != p
+            && !jeu->players[i]->est_mort)
+                return -1;
+        }
+
         for(i = 0; jeu->bombs[i] != NULL; i++)
         {
-            if(jeu->bombs[i]->pos.x == x
-                    && jeu->bombs[i]->pos.y == y)
+            if(x == jeu->bombs[i]->pos.x
+            && y == jeu->bombs[i]->pos.y)
             {
                 return -1;
             }
@@ -606,6 +620,9 @@ int exploser_bombe(Game *jeu, int bombe)
         degats_case(jeu, b, x, y);
         init_explosion(jeu, b, x, y, 0, DUREE_DEFAUT_EXPLOSION);
 
+        /* On fait des dégats aux cases dans la portée de la bombe
+         * Et on fait apparaître des explosions dont l'apparence change en fonction de leur position relative à la bombe et un obstacle
+         */
 
         /* vers le haut */
         for(i = 1; i <= b->puissance; i++)
@@ -821,7 +838,7 @@ void maj_joueur(Game *jeu, int joueur, int dt)
         poser_bomb(jeu, joueur);
 }
 
-/* Fonction qui met à jour la carte des touches pressées en fonction de l'évènement SDL reçus */
+/* Fonction qui met à jour le tableau des touches pressées en fonction de l'évènement SDL reçu */
 void maj_controles(Controls *controles, SDL_Event *event)
 {
     if(event->type != SDL_KEYDOWN && event->type != SDL_KEYUP)
@@ -893,7 +910,7 @@ Player* init_player(char *name, int id_player)
     p->invincible = 0;
     p->score = 0;
     p->bouclier = 0;
-    p->vitesse = 2; /* pixels par ticks */
+    p->vitesse = 2; /* pixels par màj */
     p->id_player = id_player;
     p->direction = DOWN;
     p->pos.x = TILE_WIDTH;
@@ -952,21 +969,23 @@ void detruire_jeu(Game* jeu)
     }
     free(jeu->carte);
 
-    /* Libération du tableau des joueurs */
+    /* Libération des joueurs */
     for(i = 0; i < jeu->nb_joueurs; i++)
     {
         free(jeu->players[i]);
     }
 
+    /* Tableaux des touches clavier */
     free(jeu->touches.key_map);
     free(jeu->touches.keys_pressed);
 
-    /* Libération du tableau des bombes (au cas où) */
+    /* Libération des bombes (au cas où) */
     for(i = 0; i < jeu->nb_bombs; i++)
     {
         free(jeu->bombs[i]);
     }
 
+    /* Explosions (au cas où) */
     for(i = 0; i < jeu->nb_explosions; i++)
     {
         free(jeu->explosions[i]);
@@ -978,11 +997,13 @@ void detruire_jeu(Game* jeu)
         free(jeu->objets[i]);
     }
 
+    /* Evenements utilisateur */
     for(i = 0; i < NB_EVENTS; i++)
     {
         free(jeu->events[i]);
     }
 
+    /* Libération des tableaux */
     free(jeu->players);
     free(jeu->bombs);
     free(jeu->explosions);
@@ -990,6 +1011,6 @@ void detruire_jeu(Game* jeu)
 
     free(jeu->events);
 
-    /* Destruction du jeu */
+    /* Destruction de la structure du jeu */
     free(jeu);
 }
