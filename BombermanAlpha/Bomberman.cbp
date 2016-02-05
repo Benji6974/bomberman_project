@@ -29,6 +29,9 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-Wfloat-equal" />
+			<Add option="-Wunreachable-code" />
+			<Add option="-Wextra" />
 			<Add option="-Wall" />
 			<Add option="`sdl-config --cflags`" />
 			<Add directory="%HOMEDRIVE%/Program Files (x86)/CodeBlocks/SDL2-2.0.4/i686-w64-mingw32/include/SDL2" />

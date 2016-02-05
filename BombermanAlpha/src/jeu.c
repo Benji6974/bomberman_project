@@ -34,7 +34,7 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
     jeu->events = init_events(NB_EVENTS);
     jeu->en_pause = 0;
 
-    /* Initialisation tableaux des entitÃ©s */
+    /* Initialisation tableaux des entités */
 
     /* Bombes */
     jeu->bombs = (Bomb**)malloc(NB_BOMBES_MAX*sizeof(Bomb*));
@@ -95,7 +95,7 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
         jeu->players[i] = p;
     }
 
-    /* GÃ©nÃ©ration de la carte */
+    /* Génération de la carte */
     carte = (Tile***)malloc(MAP_HEIGHT*sizeof(Tile**)); /* tableau 2D de pointeurs sur Tiles */
     for(i = 0; i < MAP_HEIGHT; i++)
     {
@@ -124,7 +124,7 @@ Game* init_jeu(int type, int nb_joueurs, int temps, int typemap)
     return jeu;
 }
 
-/* GÃ©nÃ¨re une carte Ã  partir d'un fichier texte */
+/* Génère une carte à partir d'un fichier texte */
 int** lire_map_fichier(int **carte_data, int nb_joueurs, int typemap)
 {
     int z, n, m, x, y;
@@ -173,7 +173,7 @@ int** lire_map_fichier(int **carte_data, int nb_joueurs, int typemap)
     return carte_data;
 }
 
-/* GÃ©nÃ¨re une carte alÃ©toire en fonction du nombre des joueurs */
+/* Génère une carte alétoire en fonction du nombre des joueurs */
 int** genere_map(int **carte_data, int nb_joueurs)
 {
     int z, x, y, proba;
@@ -239,14 +239,14 @@ int maj_jeu(Game *jeu, int dt)
     return verif_fin_de_jeu(jeu);
 }
 
-/* Fonction qui vÃ©rifie si on a un gagnant, et termine la partie */
+/* Fonction qui vérifie si on a un gagnant, et termine la partie */
 int verif_fin_de_jeu(Game *jeu)
 {
     int i, x, y;
     int joueur, egalite = 0, en_vie = 0, nb_blocs_intacts = 0, fin = 0;
     Player *meilleur_score = NULL;
 
-    /* DÃ©termination gagnant pour des partie Ã  plus d'un joueur */
+    /* Détermination gagnant pour des partie à plus d'un joueur */
 
     /* Determiantion du meilleur score */
     for(i = 0; i < jeu->nb_joueurs; i++)
@@ -268,7 +268,7 @@ int verif_fin_de_jeu(Game *jeu)
         jeu->gagnant = jeu->players[joueur];
         fin = 1;
     }
-    /* Si le temps s'est Ã©coulÃ©, le gagnant est celui avec le meilleur score */
+    /* Si le temps s'est écoulé, le gagnant est celui avec le meilleur score */
     if(jeu->time <= 0 && jeu->nb_joueurs > 1)
     {
         if(!egalite)
@@ -278,11 +278,11 @@ int verif_fin_de_jeu(Game *jeu)
         fin = 1;
     }
 
-    /* DÃ©termination de la fin du jeu pour les partie solo */
+    /* Détermination de la fin du jeu pour les partie solo */
 
     if(jeu->nb_joueurs == 1)
     {
-        /* DÃ©termination du nombre de blocs encore non dÃ©truits */
+        /* Détermination du nombre de blocs encore non détruits */
         for(y = 0; y < MAP_HEIGHT; y++)
         {
             for(x = 0; x < MAP_WIDTH; x++)
@@ -298,7 +298,7 @@ int verif_fin_de_jeu(Game *jeu)
             jeu->gagnant = jeu->players[0];
             fin = 1;
         }
-        if(jeu->time <= 0 || jeu->players[0]->est_mort) /* Si le temps est Ã©coulÃ© ou il est mort, le joueur perd */
+        if(jeu->time <= 0 || jeu->players[0]->est_mort) /* Si le temps est écoulé ou il est mort, le joueur perd */
             fin = 1;
     }
 
@@ -343,7 +343,7 @@ int collision_joueur_decor(Game *jeu, int joueur)
 }
 
 /* Fonction qui renvoie 1 si le rectangle du joueur se superpose avec celui d'une bombe, 0 sinon
- * Si le joueur Ã©tait dÃ©jÃ  sur une bombe avant (comme au moment de la poser), elle ne prend pas en compte la superposition
+ * Si le joueur était déjà sur une bombe avant (comme au moment de la poser), elle ne prend pas en compte la superposition
  */
 int collision_joueur_bombes(Game *jeu, int joueur, int last_col)
 {
@@ -370,7 +370,7 @@ int collision_joueur_bombes(Game *jeu, int joueur, int last_col)
     return 0;
 }
 
-/* Fonction qui vÃ©rifie la superposition du rectangle du joueur avec celui d'un objet bonus, pour Ã©ventuellement appeller donner_bonus */
+/* Fonction qui vérifie la superposition du rectangle du joueur avec celui d'un objet bonus, pour éventuellement appeller donner_bonus */
 int collision_joueur_items(Game *jeu, int joueur)
 {
     int i, j;
@@ -408,7 +408,7 @@ int collision_joueur_items(Game *jeu, int joueur)
     return 0;
 }
 
-/* Fonction qui modifie les stats du joueur en fonction de l'objet bonus ramassÃ© */
+/* Fonction qui modifie les stats du joueur en fonction de l'objet bonus ramassé */
 int donner_bonus(Game *jeu, int joueur, int type)
 {
     int succes = 0;
@@ -462,7 +462,7 @@ int poser_bomb(Game *jeu, int joueur)
         x = (p->pos.x + p->pos.w/2)/TILE_WIDTH;
         y = (p->pos.y + p->pos.h/2)/TILE_HEIGHT;
 
-        /* On vÃ©rifie si un autre joueur ne se trouve dÃ©jÃ  pas sur la case */
+        /* On vérifie si un autre joueur ne se trouve déjà pas sur la case */
         for(i = 0; i < jeu->nb_joueurs; i++)
         {
             if(x == jeu->players[i]->pos.x/TILE_WIDTH
@@ -472,7 +472,7 @@ int poser_bomb(Game *jeu, int joueur)
                 return -1;
         }
 
-        /* On vÃ©rifie si une bombe ne se trouve dÃ©jÃ  pas sur la case */
+        /* On vérifie si une bombe ne se trouve déjà pas sur la case */
         for(i = 0; jeu->bombs[i] != NULL; i++)
         {
             if(x == jeu->bombs[i]->pos.x
@@ -482,7 +482,7 @@ int poser_bomb(Game *jeu, int joueur)
             }
         }
 
- /* CrÃ©ation de la bombe */
+ /* Création de la bombe */
         b = malloc(sizeof(Bomb));
         *b = p->typebomb; /* copie de la bombe interne du joueur */
 
@@ -500,7 +500,7 @@ int poser_bomb(Game *jeu, int joueur)
     return 0;
 }
 
-/* Fonction qui applique des effets sur une case, tels que dÃ©truire un mur ou blesser un joueur */
+/* Fonction qui applique des effets sur une case, tels que détruire un mur ou blesser un joueur */
 int degats_case(Game *jeu, Bomb *origine, int x, int y)
 {
     int i, obstacle = 2;
@@ -514,7 +514,7 @@ int degats_case(Game *jeu, Bomb *origine, int x, int y)
     rect_case.w = TILE_WIDTH;
     rect_case.h = TILE_HEIGHT;
 
-    /* si la case est hors de la map, on arrÃªte tout et on renvoie 1 */
+    /* si la case est hors de la map, on arrête tout et on renvoie 1 */
     if(x < 0 || y < 0 || x > MAP_WIDTH || y > MAP_HEIGHT)
         return 1;
 
@@ -581,11 +581,11 @@ int degats_case(Game *jeu, Bomb *origine, int x, int y)
             b->delai = 100;
     }
 
-    /* Renvoie 0 si aucun mur n'a Ã©tÃ© touchÃ©, 1 si un mur a Ã©tÃ© dÃ©truit et 2 si il mur a Ã©tÃ© rencontrÃ© mais pas dÃ©truit */
+    /* Renvoie 0 si aucun mur n'a été touché, 1 si un mur a été détruit et 2 si il mur a été rencontré mais pas détruit */
     return obstacle;
 }
 
-/* Fonction qui fait apparaÃ®tre un objet bonus sur une case avec une cartaine probabilitÃ© */
+/* Fonction qui fait apparaître un objet bonus sur une case avec une cartaine probabilité */
 void generer_bonus(Game *jeu, int x, int y, int t)
 {
     int i, type;
@@ -627,7 +627,7 @@ void generer_bonus(Game *jeu, int x, int y, int t)
     }
 }
 
-/* Fonction qui dÃ©truit une bombe et appelle degats_case sur les cases adjacentes (plus si le joueur possÃ¨de un bonus portÃ©e) */
+/* Fonction qui détruit une bombe et appelle degats_case sur les cases adjacentes (plus si le joueur possède un bonus portée) */
 int exploser_bombe(Game *jeu, int bombe)
 {
     int i, x, y, d;
@@ -643,14 +643,14 @@ int exploser_bombe(Game *jeu, int bombe)
 
         SDL_PushEvent(jeu->events[BOMBE_EXPLOSE]);
 
-        /* destruction du dÃ©cor et des joueurs */
+        /* destruction du décor et des joueurs */
 
-        /* Explosion Ã  la position de la bombe */
+        /* Explosion à la position de la bombe */
         degats_case(jeu, b, x, y);
         init_explosion(jeu, b, x, y, 0, DUREE_DEFAUT_EXPLOSION);
 
-        /* On fait des dÃ©gats aux cases dans la portÃ©e de la bombe
-         * Et on fait apparaÃ®tre des explosions dont l'apparence change en fonction de leur position relative Ã  la bombe et un obstacle
+        /* On fait des dégats aux cases dans la portée de la bombe
+         * Et on fait apparaître des explosions dont l'apparence change en fonction de leur position relative à la bombe et un obstacle
          */
 
         /* vers le haut */
@@ -739,7 +739,7 @@ int exploser_bombe(Game *jeu, int bombe)
     else
         return -1;
 
-    /* dÃ©crÃ©mentation nombres de bombes du joueur et jeu */
+    /* décrémentation nombres de bombes du joueur et jeu */
     if(jeu->nb_bombs > 0)
         jeu->nb_bombs--;
     if(p->nb_bomb_jeu > 0)
@@ -747,7 +747,7 @@ int exploser_bombe(Game *jeu, int bombe)
     return 0;
 }
 
-/* Fonction qui met Ã  jour l'attribut delai des bombes en jeu, puis les fait exploser si il atteint 0 */
+/* Fonction qui met à jour l'attribut delai des bombes en jeu, puis les fait exploser si il atteint 0 */
 void maj_bombs(Game *jeu, int dt)
 {
     int i, j;
@@ -790,10 +790,17 @@ void maj_bombs(Game *jeu, int dt)
             }
         }
     }
+
+    for(i = 0; i < jeu->nb_objets; i++)
+    {
+        jeu->objets[i]->anim_state += dt/100.;
+        if((int)jeu->objets[i]->anim_state >= 10)
+            jeu->objets[i]->anim_state = 0;
+    }
 }
 
-/* Fonction qui met Ã  jour la position et direction du joueur en fonction des touches pressÃ©es
- * Appelle poser_bomb si la touche correspondante est pressÃ©e
+/* Fonction qui met à jour la position et direction du joueur en fonction des touches pressées
+ * Appelle poser_bomb si la touche correspondante est pressée
  */
 void maj_joueur(Game *jeu, int joueur, int dt)
 {
@@ -815,7 +822,7 @@ void maj_joueur(Game *jeu, int joueur, int dt)
     collision_bombes = collision_joueur_bombes(jeu, joueur, 0);
     collision_joueur_items(jeu, joueur);
 
-    /* On dÃ©place le joueur en fonction des touches appuyÃ©es */
+    /* On déplace le joueur en fonction des touches appuyées */
     if(jeu->touches.keys_pressed[k+UP])
     {
         move_y += -1;
@@ -862,12 +869,21 @@ void maj_joueur(Game *jeu, int joueur, int dt)
     else if(dx > 0 && dy == 0)
         p->direction = RIGHT;
 
+    if(abs(dx) > 0 || abs(dy) > 0) /* Si il y a eu déplacement */
+    {
+        p->anim_state = p->anim_state + dt*p->vitesse/(200.); /* on change l'état de l'animation en fonction de la vitesse du joueur */
+        if((int)p->anim_state >= 4)
+            p->anim_state = 0;
+    }
+    else
+        p->anim_state = 0;
+
     /* Si le joueur appuie sur la touche pour poser une bombe */
     if(jeu->touches.keys_pressed[k+BOMB])
         poser_bomb(jeu, joueur);
 }
 
-/* Fonction qui met Ã  jour le tableau des touches pressÃ©es en fonction de l'Ã©vÃ¨nement SDL reÃ§u */
+/* Fonction qui met à jour le tableau des touches pressées en fonction de l'évènement SDL reçu */
 void maj_controles(Controls *controles, SDL_Event *event)
 {
     if(event->type != SDL_KEYDOWN && event->type != SDL_KEYUP)
@@ -899,10 +915,12 @@ Explosion* init_explosion(Game *jeu, Bomb* origine, int x, int y, int aspect, in
 
     e->origine = origine;
 
-    e->pos.x = x*TILE_WIDTH;
-    e->pos.y = y*TILE_HEIGHT;
-    e->pos.w = TILE_WIDTH;
-    e->pos.h = TILE_HEIGHT;
+    e->pos.w = TILE_WIDTH/2;
+    e->pos.h = TILE_HEIGHT/2;
+
+    e->pos.x = x*TILE_WIDTH + (TILE_WIDTH - e->pos.w)/2;
+    e->pos.y = y*TILE_HEIGHT + (TILE_HEIGHT - e->pos.h)/2;
+
     e->aspect = aspect;
 
     e->duree_de_vie = duree;
@@ -917,9 +935,11 @@ Explosion* init_explosion(Game *jeu, Bomb* origine, int x, int y, int aspect, in
 Objet* init_objet(int type)
 {
     Objet* o = malloc(sizeof(Objet));
-    o->type= type;
+    o->type = type;
     o->pos.h = HITBOX_ITEM_W;
     o->pos.w = HITBOX_ITEM_H;
+
+    o->anim_state = 0;
 
     return o;
 }
@@ -939,7 +959,7 @@ Player* init_player(char *name, int id_player)
     p->invincible = 0;
     p->score = 0;
     p->bouclier = 0;
-    p->vitesse = 2; /* pixels par mÃ j */
+    p->vitesse = 2; /* pixels par màj */
     p->id_player = id_player;
     p->direction = DOWN;
     p->pos.x = TILE_WIDTH;
@@ -949,6 +969,8 @@ Player* init_player(char *name, int id_player)
     p->typebomb = *init_bomb(1, id_player);
     p->nb_bomb_max = 1;
     p->nb_bomb_jeu = 0;
+
+    p->anim_state = 0;
 
     return p;
 }
@@ -998,7 +1020,7 @@ void detruire_jeu(Game* jeu)
     }
     free(jeu->carte);
 
-    /* LibÃ©ration des joueurs */
+    /* Libération des joueurs */
     for(i = 0; i < jeu->nb_joueurs; i++)
     {
         free(jeu->players[i]);
@@ -1008,19 +1030,19 @@ void detruire_jeu(Game* jeu)
     free(jeu->touches.key_map);
     free(jeu->touches.keys_pressed);
 
-    /* LibÃ©ration des bombes (au cas oÃ¹) */
+    /* Libération des bombes (au cas où) */
     for(i = 0; i < jeu->nb_bombs; i++)
     {
         free(jeu->bombs[i]);
     }
 
-    /* Explosions (au cas oÃ¹) */
+    /* Explosions (au cas où) */
     for(i = 0; i < jeu->nb_explosions; i++)
     {
         free(jeu->explosions[i]);
     }
 
-    /* LibÃ©ration du tableau des objets */
+    /* Libération du tableau des objets */
     for(i = 0; i < jeu->nb_objets; i++)
     {
         free(jeu->objets[i]);
@@ -1032,7 +1054,7 @@ void detruire_jeu(Game* jeu)
         free(jeu->events[i]);
     }
 
-    /* LibÃ©ration des tableaux */
+    /* Libération des tableaux */
     free(jeu->players);
     free(jeu->bombs);
     free(jeu->explosions);

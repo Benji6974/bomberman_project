@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "graphismes.h"
 
+#define to_char(int) int + '0'
+
 /* Charge une texture SDL a partir d'une image BMP
  * Utilisée pour charger les feuilles de sprites en mémoire
  */
@@ -73,112 +75,113 @@ Graphismes* init_graphismes(char *titre, int x, int y, int w, int h, Uint32 flag
 /* Affiche le menu */
 int maj_menu(Graphismes *g,int nb_joueurs,int temps,int map_jeu, int volume)
 {
+    int erreur;
+
     SDL_SetRenderDrawColor(g->renderer, 0, 0, 0, 255);
     SDL_RenderClear(g->renderer);
-    int erreur;
 
     SDL_Rect blit;
     SDL_Rect clip;
-        blit.y = (HUD_HEIGHT - SPRITE_CHAR_H)/2;
-        blit.x = (MAP_WIDTH*TILE_WIDTH - 8*SPRITE_CHAR_W*2)/2;
+    blit.y = (HUD_HEIGHT - SPRITE_CHAR_H)/2;
+    blit.x = (MAP_WIDTH*TILE_WIDTH - 8*SPRITE_CHAR_W*2)/2;
 
-        blit.h = SPRITE_CHAR_H;
-        blit.w = SPRITE_CHAR_W;
-        blit.y = (MAP_HEIGHT*TILE_HEIGHT - TILE_HEIGHT + HUD_HEIGHT);
-        blit.x = (MAP_WIDTH*TILE_WIDTH - 8*SPRITE_CHAR_W);
-        char jouer[50] = {"Jouer !"};
-        ecrire_mot(g,jouer,blit);
+    blit.h = SPRITE_CHAR_H;
+    blit.w = SPRITE_CHAR_W;
+    blit.y = (MAP_HEIGHT*TILE_HEIGHT - TILE_HEIGHT + HUD_HEIGHT);
+    blit.x = (MAP_WIDTH*TILE_WIDTH - 8*SPRITE_CHAR_W);
+    char jouer[50] = {"Jouer !"};
+    ecrire_mot(g,jouer,blit);
 
-        blit.y = (2*TILE_HEIGHT + HUD_HEIGHT);
-        blit.x = 0;
-        char type_map[50] = {" Type de map: "};
-        ecrire_mot(g,type_map,blit);
+    blit.y = (2*TILE_HEIGHT + HUD_HEIGHT);
+    blit.x = 0;
+    char type_map[50] = {" Type de map: "};
+    ecrire_mot(g,type_map,blit);
 
-        blit.y = (2*TILE_HEIGHT + HUD_HEIGHT);
-        blit.x = 14*SPRITE_CHAR_W;
-        char type_map2[50];
-        if (map_jeu == -1)
-        {
-              strncpy(type_map2,"< Aléatoire >",50);
-        }
-        else if (map_jeu == 0)
-        {
-              strncpy(type_map2,"< Classique >",50);
-        }
-        else
-        {
-              sprintf(type_map2,"< Fichier %d >",map_jeu);
-        }
+    blit.y = (2*TILE_HEIGHT + HUD_HEIGHT);
+    blit.x = 14*SPRITE_CHAR_W;
+    char type_map2[50];
+    if (map_jeu == -1)
+    {
+        strncpy(type_map2,"< Aléatoire >",50);
+    }
+    else if (map_jeu == 0)
+    {
+        strncpy(type_map2,"< Classique >",50);
+    }
+    else
+    {
+        sprintf(type_map2,"< Fichier %d >",map_jeu);
+    }
 
-        ecrire_mot(g,type_map2,blit);
+    ecrire_mot(g,type_map2,blit);
 
-        blit.y = (4*TILE_HEIGHT + HUD_HEIGHT);
-        blit.x = 0;
-        char nombrejoueurs[50] = {" Nombre de Joueurs: "};
-        ecrire_mot(g,nombrejoueurs,blit);
+    blit.y = (4*TILE_HEIGHT + HUD_HEIGHT);
+    blit.x = 0;
+    char nombrejoueurs[50] = {" Nombre de Joueurs: "};
+    ecrire_mot(g,nombrejoueurs,blit);
 
-        blit.y = (4*TILE_HEIGHT + HUD_HEIGHT);
-        blit.x = 20*SPRITE_CHAR_W;
-        char nombrejoueurs_int[50];
-        sprintf(nombrejoueurs_int, "- %d +", nb_joueurs);
-        ecrire_mot(g,nombrejoueurs_int,blit);
+    blit.y = (4*TILE_HEIGHT + HUD_HEIGHT);
+    blit.x = 20*SPRITE_CHAR_W;
+    char nombrejoueurs_int[50];
+    sprintf(nombrejoueurs_int, "- %d +", nb_joueurs);
+    ecrire_mot(g,nombrejoueurs_int,blit);
 
-        blit.y = (8*TILE_HEIGHT + HUD_HEIGHT);
-        blit.x = 0;
-        char controls[50] = {" Contrôles: "};
-        ecrire_mot(g,controls,blit);
+    blit.y = (8*TILE_HEIGHT + HUD_HEIGHT);
+    blit.x = 0;
+    char controls[50] = {" Contrôles: "};
+    ecrire_mot(g,controls,blit);
 
-        blit.y = (6*TILE_HEIGHT + HUD_HEIGHT);
-        blit.x = 0;
-        char temps_partie[50] = {" Temps de jeu: "};
-        ecrire_mot(g,temps_partie,blit);
+    blit.y = (6*TILE_HEIGHT + HUD_HEIGHT);
+    blit.x = 0;
+    char temps_partie[50] = {" Temps de jeu: "};
+    ecrire_mot(g,temps_partie,blit);
 
-        blit.y = (7*TILE_HEIGHT + HUD_HEIGHT);
-        blit.x = (MAP_WIDTH*TILE_WIDTH - 8*SPRITE_CHAR_W);
-        char audio[50] = {" Audio: "};
-        ecrire_mot(g,audio,blit);
+    blit.y = (7*TILE_HEIGHT + HUD_HEIGHT);
+    blit.x = (MAP_WIDTH*TILE_WIDTH - 8*SPRITE_CHAR_W);
+    char audio[50] = {" Audio: "};
+    ecrire_mot(g,audio,blit);
 
-        blit.y = (6*TILE_HEIGHT + HUD_HEIGHT);
-        blit.x = 15*SPRITE_CHAR_W;
-        char char_heure[50];
-        copie_heure(char_heure,temps);
-        ecrire_mot(g,char_heure,blit);
-
-
-        blit.y = (8*TILE_HEIGHT + HUD_HEIGHT);
-        blit.x = 0;
-        blit.h = 4*SPRITE_CHAR_H;
-        blit.w = 20*SPRITE_CHAR_W;
-         if(afficher(g, 6, NULL, &blit) != 0)
-                erreur = 1;
-
-        blit.y = (1.5*TILE_HEIGHT + HUD_HEIGHT);
-        blit.x = 0;
-        blit.h = SPRITE_CHAR_H/2;
-        blit.w = SPRITE_CHAR_W/2;
-        char copiright[50] = {"Created by Benjamin.D & Jean-Marc.A "};
-        ecrire_mot(g,copiright,blit);
-
-        blit.y = -HUD_HEIGHT;
-        blit.x = 7*SPRITE_CHAR_W;
-        blit.h = 4*SPRITE_CHAR_H;
-        blit.w = 20*SPRITE_CHAR_W;
-         if(afficher(g, 7, NULL, &blit) != 0)
-                erreur = 1;
+    blit.y = (6*TILE_HEIGHT + HUD_HEIGHT);
+    blit.x = 15*SPRITE_CHAR_W;
+    char char_heure[50];
+    copie_heure(char_heure,temps);
+    ecrire_mot(g,char_heure,blit);
 
 
-        blit.y = (8*TILE_HEIGHT);
-        blit.x = (MAP_WIDTH*TILE_WIDTH - 6*SPRITE_CHAR_W);
-        blit.h = 3*SPRITE_CHAR_H;
-        blit.w = 3*SPRITE_CHAR_W;
-        clip.y = 0;
-        clip.x = volume*SPRITE_SON_W;
-        clip.h = SPRITE_SON_H;
-        clip.w = SPRITE_SON_W;
+    blit.y = (8*TILE_HEIGHT + HUD_HEIGHT);
+    blit.x = 0;
+    blit.h = 4*SPRITE_CHAR_H;
+    blit.w = 20*SPRITE_CHAR_W;
+    if(afficher(g, 6, NULL, &blit) != 0)
+        erreur = 1;
 
-         if(afficher(g, 8, &clip, &blit) != 0)
-                erreur = 1;
-        /*1632*414*/
+    blit.y = (1.5*TILE_HEIGHT + HUD_HEIGHT);
+    blit.x = 0;
+    blit.h = SPRITE_CHAR_H/2;
+    blit.w = SPRITE_CHAR_W/2;
+    char copiright[50] = {"Created by Benjamin.D & Jean-Marc.A "};
+    ecrire_mot(g,copiright,blit);
+
+    blit.y = -HUD_HEIGHT;
+    blit.x = 7*SPRITE_CHAR_W;
+    blit.h = 4*SPRITE_CHAR_H;
+    blit.w = 20*SPRITE_CHAR_W;
+    if(afficher(g, 7, NULL, &blit) != 0)
+        erreur = 1;
+
+
+    blit.y = (8*TILE_HEIGHT);
+    blit.x = (MAP_WIDTH*TILE_WIDTH - 6*SPRITE_CHAR_W);
+    blit.h = 3*SPRITE_CHAR_H;
+    blit.w = 3*SPRITE_CHAR_W;
+    clip.y = 0;
+    clip.x = volume*SPRITE_SON_W;
+    clip.h = SPRITE_SON_H;
+    clip.w = SPRITE_SON_W;
+
+    if(afficher(g, 8, &clip, &blit) != 0)
+        erreur = 1;
+    /*1632*414*/
 
 
     SDL_RenderPresent(g->renderer);
@@ -281,11 +284,17 @@ int maj_graph_entites(Game *jeu, Graphismes *g)
 
     for(i = 0; i < jeu->nb_objets; i++)
     {
+        int offset;
         if(jeu->objets[i] == NULL)
             continue;
 
+        if((int)jeu->objets[i]->anim_state <= 5)
+            offset = (int)jeu->objets[i]->anim_state;
+        else
+            offset = 10 - (int)jeu->objets[i]->anim_state;
+
         pos.x = jeu->objets[i]->pos.x - (TILE_WIDTH - jeu->objets[i]->pos.w)/2;
-        pos.y = jeu->objets[i]->pos.y - (TILE_HEIGHT - jeu->objets[i]->pos.h)/2 - 4;
+        pos.y = jeu->objets[i]->pos.y - (TILE_HEIGHT - jeu->objets[i]->pos.h)/2 - offset;
 
         switch(jeu->objets[i]->type)
         {
@@ -309,6 +318,8 @@ int maj_graph_entites(Game *jeu, Graphismes *g)
 
         clip.x *= TILE_WIDTH;
         clip.y *= TILE_HEIGHT;
+        clip.w = TILE_WIDTH;
+        clip.h = TILE_HEIGHT;
 
         if(afficher(g, 3, &clip, &pos) != 0)
             erreur = 1;
@@ -316,18 +327,24 @@ int maj_graph_entites(Game *jeu, Graphismes *g)
 
     /* ----- AFFICHAGE DES BOMBES ----- */
 
-    clip.x = 2*TILE_WIDTH;
-    clip.y = 0*TILE_HEIGHT;
-    clip.w = TILE_WIDTH;
-    clip.h = TILE_HEIGHT;
-
-    pos = clip;
 
     for(i = 0; i < jeu->nb_bombs; i++)
     {
+        clip.x = 0;
+        clip.y = 0;
+        clip.w = TILE_WIDTH;
+        clip.h = TILE_HEIGHT;
+
+        pos = clip;
+
+        clip.y += 13 - (int)(14*jeu->bombs[i]->delai/(float)DELAI_DEFAUT_BOMBE);
+
 
         pos.x = jeu->bombs[i]->pos.x*TILE_WIDTH;
         pos.y = jeu->bombs[i]->pos.y*TILE_HEIGHT;
+
+        clip.x *= TILE_WIDTH;
+        clip.y *= TILE_HEIGHT;
 
         if(afficher(g, 2, &clip, &pos) != 0)
             erreur = 1;
@@ -350,8 +367,8 @@ int maj_graph_entites(Game *jeu, Graphismes *g)
         clip.x = jeu->explosions[i]->aspect*TILE_WIDTH;
         clip.y = floor(4*jeu->explosions[i]->temps_restant/(float)jeu->explosions[i]->duree_de_vie)*TILE_HEIGHT; /* Anime l'explosion en fonction de son temps restant */
 
-        pos.x = jeu->explosions[i]->pos.x;
-        pos.y = jeu->explosions[i]->pos.y;
+        pos.x = jeu->explosions[i]->pos.x - (TILE_WIDTH - jeu->explosions[i]->pos.w)/2;
+        pos.y = jeu->explosions[i]->pos.y - (TILE_HEIGHT - jeu->explosions[i]->pos.h)/2;
         afficher(g, 5, &clip, &pos);
     }
 
@@ -361,15 +378,16 @@ int maj_graph_entites(Game *jeu, Graphismes *g)
     memcpy(blit_order, jeu->players, jeu->nb_joueurs*sizeof(int));
     trier_par_y(blit_order, jeu->nb_joueurs);
 
-    clip.x = CLIP_PERSO_X;
-    clip.y = CLIP_PERSO_Y;
-    clip.w = SPRITE_PERSO_W;
-    clip.h = SPRITE_PERSO_H;
-
-    pos = clip;
-
     for(i = 0; i < jeu->nb_joueurs; i++)
     {
+
+        clip.x = CLIP_PERSO_X + blit_order[i]->anim_state; /* affichage de la frame de l'animation */
+        clip.y = CLIP_PERSO_Y;
+        clip.w = SPRITE_PERSO_W;
+        clip.h = SPRITE_PERSO_H;
+
+        pos = clip;
+
         switch(blit_order[i]->direction)
         {
         case DOWN:
@@ -386,6 +404,7 @@ int maj_graph_entites(Game *jeu, Graphismes *g)
             break;
         }
 
+        clip.x *= SPRITE_PERSO_W;
         clip.y *= SPRITE_PERSO_H;
 
         pos.x = blit_order[i]->pos.x;
@@ -439,15 +458,15 @@ int maj_HUD(Game *jeu, Graphismes *g)
     /* Horloge */
     blit.x = (WINDOW_WIDTH/RENDER_SCALE - 5*SPRITE_CHAR_W)/2;
     blit.y = (HUD_HEIGHT - SPRITE_CHAR_W)/2;
-    afficher_char(g, minutes/10 + 48, blit);
+    afficher_char(g, to_char(minutes/10), blit);
     blit.x += SPRITE_CHAR_W;
-    afficher_char(g, minutes%10 + 48, blit);
+    afficher_char(g, to_char(minutes%10), blit);
     blit.x += SPRITE_CHAR_W;
     afficher_char(g, ':', blit);
     blit.x += SPRITE_CHAR_W;
-    afficher_char(g, secondes/10 + 48, blit);
+    afficher_char(g, to_char(secondes/10), blit);
     blit.x += SPRITE_CHAR_W;
-    afficher_char(g, secondes%10 + 48, blit);
+    afficher_char(g, to_char(secondes%10), blit);
 
     /* Scores */
     blit.y = (HUD_HEIGHT - SPRITE_CHAR_W)/2;
@@ -547,7 +566,8 @@ int maj_HUD(Game *jeu, Graphismes *g)
             if(afficher(g, 3, &clip, &blit) != 0)
                 erreur = 1;
 
-        }else
+        }
+        else
         {
             blit.y = HUD_HEIGHT-SPRITE_CHAR_H/2;
             ecrire_mot(g,mort,blit);
@@ -927,7 +947,7 @@ void ecrire_mot(Graphismes *g,char *mot,SDL_Rect blit)
  */
 void trier_par_y(Player **tab, int taille)
 {
-    int i, j;
+    short i, j;
     Player *tmp;
     for(i = 1; i < taille; i++)
     {

@@ -17,7 +17,7 @@
 
 #define DEMARRER_JEU 0
 
-int main(int agrc, char** argv)
+int main(int argc, char *argv[])
 {
     int pause = 0, stop = 0, partie_terminee = 0, pause_b = 0, current_time = 0, previous_time = 0, previous_time2 = 0, frame_compte = 0;
     int dt = 0;

@@ -53,6 +53,8 @@ typedef struct Player
     Bomb typebomb;    /* Type de bombes à créer lorsqu'on appele poser_bomb */
     int nb_bomb_max;
     int nb_bomb_jeu;
+
+    float anim_state;
 }
 Player;
 
@@ -75,6 +77,7 @@ typedef struct Objet
 {
     int type;
     SDL_Rect pos;
+    float anim_state;
 } Objet;
 
 typedef struct Game

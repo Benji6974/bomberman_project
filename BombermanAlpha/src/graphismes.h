@@ -31,7 +31,7 @@
     #define FEUILLE_EXPLOSIONS  "data/img/explosion2.bmp"
 #elif _WIN32
     #define FEUILLE_PERSO       "data/img/character_silver.bmp"
-    #define FEUILLE_OBJETS      "data/img/atlas5_32.bmp"
+    #define FEUILLE_OBJETS      "data/img/bomb_32x32_2.bmp"
     #define FEUILLE_BONUS       "data/img/items.bmp"
     #define FEUILLE_LOGO        "data/img/preview-bomberman_logo.bmp"
     #define FEUILLE_EXPLOSIONS  "data/img/explosion.bmp"
