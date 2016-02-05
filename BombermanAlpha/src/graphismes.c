@@ -276,6 +276,8 @@ int maj_graph_entites(Game *jeu, Graphismes *g)
     Player **blit_order = malloc(jeu->nb_joueurs*sizeof(int));
 
     /* ----- AFFICHAGE DES OBJETS ------ */
+    clip.w = TILE_WIDTH;
+    clip.h = TILE_HEIGHT;
 
     for(i = 0; i < jeu->nb_objets; i++)
     {

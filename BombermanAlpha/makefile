@@ -21,7 +21,7 @@ all: $(EXEC)
 
 Bomberman: $(OBJ)
 	   $(CC) $^ -o $@ $(LDFLAGS)
-	   rm src/*.o
+	   
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
